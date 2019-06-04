@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "ca.uwaterloo.cs349.ezbill"
+        applicationId "ca.uwaterloo.cs446.ezbill"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
