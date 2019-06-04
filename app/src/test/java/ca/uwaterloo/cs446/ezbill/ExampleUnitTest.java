@@ -1,4 +1,4 @@
-package ca.uwaterloo.cs349.ezbill;
+package ca.uwaterloo.cs446.ezbill;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package ca.uwaterloo.cs349.ezbill;
+package ca.uwaterloo.cs446.ezbill;
 
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;

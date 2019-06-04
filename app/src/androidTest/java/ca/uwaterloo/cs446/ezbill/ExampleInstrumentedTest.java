@@ -1,4 +1,4 @@
-package ca.uwaterloo.cs349.ezbill;
+package ca.uwaterloo.cs446.ezbill;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("ca.uwaterloo.cs349.ezbill", appContext.getPackageName());
+        assertEquals("ca.uwaterloo.cs446.ezbill", appContext.getPackageName());
     }
 }
