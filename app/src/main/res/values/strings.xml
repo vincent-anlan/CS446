@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">EzBill</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_my_account_book">My Account Book</string>
+    <string name="title_group_account_book">Group Account Book</string>
 </resources>
