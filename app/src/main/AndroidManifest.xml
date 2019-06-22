@@ -21,6 +21,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".GroupAccountBook"
+            android:label="@string/app_name"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
+        <activity
+            android:name=".IndividualAccountBook"
+            android:label="@string/app_name"
+            android:parentActivityName=".MainActivity">
+        </activity>
     </application>
 
 </manifest>
