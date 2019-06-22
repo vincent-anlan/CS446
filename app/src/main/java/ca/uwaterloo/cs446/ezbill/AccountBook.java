@@ -1,8 +1,11 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
+
 import java.util.ArrayList;
 
-public class AccountBook {
+public class AccountBook extends AppCompatActivity {
 
     private int id;
     private String name;
