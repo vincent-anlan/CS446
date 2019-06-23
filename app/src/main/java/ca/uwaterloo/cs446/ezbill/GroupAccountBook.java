@@ -5,13 +5,23 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GroupAccountBook extends AccountBook {
+public class GroupAccountBook extends AccountBook implements Serializable {
 
     private int myExpense;
     private int groupExpense;
     private ArrayList<Participant> participantList;
+
+    GroupAccountBook(String id, String name, String startDate, String endDate, String defaultCurrency) {
+            super(id, name, startDate, endDate, defaultCurrency);
+            myExpense = 0;
+            groupExpense = 0;
+            Participant participant = new Participant();
+            participantList = new ArrayList<Participant>();
+            participantList.add(participant);
+    }
 
     public int getMyExpense() {
         return myExpense;
@@ -33,35 +43,10 @@ public class GroupAccountBook extends AccountBook {
         return participantList;
     }
 
-    public void setParticipantList(ArrayList<Participant> participantList) {
-        this.participantList = participantList;
+    public void addParticipant(Participant participant) {
+        this.participantList.add(participant);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.group_account_book);
 
-
-        // set up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
-        TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        // Get the intent that started this activity
-        Intent intent = getIntent();
-        String text = intent.getStringExtra("title");
-        title.setText(text);
-
-        TextView numOfParticipants = (TextView)findViewById(R.id.num_of_participants);
-        numOfParticipants.setText("5 People");
-
-
-
-
-    }
 
 }

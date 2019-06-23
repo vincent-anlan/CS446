@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -16,96 +17,83 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:orientation="vertical"
     >
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0"/>
+
         <!--Participants-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/num_of_participants"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_weight="2"
-                android:textStyle="bold" />
+                android:gravity="center" />
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <LinearLayout
+                android:id="@+id/participantIcons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_weight="3"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                >
+                android:layout_weight="3"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/circle"
-                    android:text="A"
-                    android:textColor="#000000"/>
-                <TextView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/circle"
-                    android:text="B"
-                    android:textColor="#000000"/>
-                <TextView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/circle"
-                    android:text="C"
-                    android:textColor="#000000"/>
-                <TextView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/circle"
-                    android:text="D"
-                    android:textColor="#000000"/>
+                <!--<TextView-->
+                <!--android:layout_width="35dp"-->
+                <!--android:layout_height="35dp"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_marginTop="0dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:background="@drawable/circle"-->
+                <!--android:text="A"-->
+                <!--android:textColor="#000000"/>-->
 
-                <TextView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/circle"
-                    android:text="..."
-                    android:textColor="#000000"/>
+                <!--<TextView-->
+                <!--android:id="@+id/addMorePeopleBtn"-->
+                <!--android:layout_width="35dp"-->
+                <!--android:layout_height="35dp"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_marginTop="0dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:background="@drawable/circle"-->
+                <!--android:text="..."-->
+                <!--android:textColor="#000000"-->
+                <!--android:onClick="addMorePeople"-->
+                <!--android:clickable="true"-->
+                <!--android:focusable="true"/>-->
 
             </LinearLayout>
         </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0"/>
 
         <!--Total expense-->
         <LinearLayout
@@ -123,6 +111,7 @@
                 android:layout_gravity="center"
                 >
                 <TextView
+                    android:id="@+id/myExpense"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -143,6 +132,7 @@
                 android:layout_gravity="center"
                 >
                 <TextView
+                    android:id="@+id/totalExpense"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -164,26 +154,211 @@
                 android:layout_gravity="center"
                 >
                 <Button
+                    android:id="@+id/calculateBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:layout_gravity="center"
-                    android:text="Calculate" />
+                    android:text="Calculate"
+                    android:onClick="doCalculation"/>
             </LinearLayout>
         </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0"/>
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:textStyle="bold"
-            android:text="Bills"/>
+            android:text="Bills"
+            android:textSize="20sp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0"/>
+
+
+        <!--Transaction-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginLeft="30dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:layout_gravity="center"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transportation"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today 00:30"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:layout_gravity="center"
+                android:layout_marginRight="30dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Paid by Sylvia"/>
+            </LinearLayout>
+        </LinearLayout>
 
 
 
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0"/>
+
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginLeft="30dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:layout_gravity="center"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Food"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Today 00:30"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="30dp"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Paid by Eve"/>
+                </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0"/>
+
+        <TextView
+            android:id="@+id/txtTermsConditions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:onClick="viewAllBillsClicked"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="View All Bills"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textStyle="bold"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="bottom"
+            android:background="#EDEEE8" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0" />
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:layout_gravity="center"
+
+            android:orientation="vertical">
+
+            <!--<android.support.design.widget.FloatingActionButton-->
+                <!--android:id="@+id/floatingActionButton2"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:clickable="true"-->
+                <!--android:focusable="true"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_gravity="center|bottom"-->
+                <!--app:layout_constraintTop_toTopOf="parent"-->
+                <!--app:srcCompat="@drawable/circle" />-->
+            <Button
+                android:id="@+id/floatingActionButton2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center|bottom"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="\u002B"
+                android:textSize="30dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/circle"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/circle" />
+
+
+
+        </LinearLayout>
 
     </LinearLayout>
 
