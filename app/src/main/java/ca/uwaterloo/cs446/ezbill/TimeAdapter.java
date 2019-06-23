@@ -18,14 +18,15 @@ public class TimeAdapter extends RecyclerView.Adapter {
 
     private Context context;
     private LayoutInflater inflater;
-    private ArrayList<String> listItem;
-    private ArrayList<AccountBook> data;
+    private ArrayList<GroupAccountBook> data;
+    Model model;
 
 
-    public TimeAdapter(Context context, ArrayList<AccountBook> data) {
+    public TimeAdapter(Context context, ArrayList<GroupAccountBook> data) {
         inflater = LayoutInflater.from(context);
         this.data = data;
         this.context = context;
+        model = Model.getInstance();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -44,12 +45,8 @@ public class TimeAdapter extends RecyclerView.Adapter {
         @Override
         public void onClick(View view) {
             Intent groupIntent = new Intent(context,GroupAccountBookActivity.class);
-            Log.d("READ", this.getAdapterPosition()+"@@@@@@@@@@@@");
-//            View parentRow = (View) view.getParent();
-//            RecyclerView listView = (RecyclerView) parentRow.getParent();
-//            int position = listView.getChildLayoutPosition(parentRow);
 
-            groupIntent.putExtra("accountBook", data.get(this.getAdapterPosition()));
+            groupIntent.putExtra("accountBookId", data.get(this.getAdapterPosition()).getId());
             context.startActivity(groupIntent);
         }
     }
@@ -67,7 +64,7 @@ public class TimeAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return model.getGroupAccountBookList().size();
     }
 
 }

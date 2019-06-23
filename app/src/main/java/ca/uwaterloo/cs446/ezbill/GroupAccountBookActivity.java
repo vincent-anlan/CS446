@@ -39,6 +39,7 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
     TextView numOfParticipants;
     LinearLayout linearLayout;
     LinearLayout.LayoutParams params;
+    String accountBookId;
 
 
     @Override
@@ -49,9 +50,9 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
         // Get the intent that started this activity
         Intent intent = getIntent();
 
-        AccountBook accountBook = (AccountBook) intent.getSerializableExtra("accountBook");
+        accountBookId = intent.getStringExtra("accountBookId");
 
-        model = Model.getInstance(accountBook.getId(), accountBook.getName(), accountBook.getStartDate(), accountBook.getEndDate(), accountBook.getDefaultCurrency());
+        model = Model.getInstance();
         model.addObserver(this);
 
         calculateBtn = (Button) findViewById(R.id.calculateBtn);
@@ -69,8 +70,7 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        title.setText(accountBook.getName());
-        String accountBookId = model.getGroupAccountBook().getId();
+        title.setText(model.getGroupAccountBook(accountBookId).getName());
 
         params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -89,7 +89,7 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
     }
 
     public void drawParticipantIcons() {
-        int numOfParticipants = model.groupAccountBook.getParticipantList().size();
+        int numOfParticipants = model.getParticipantsById(accountBookId).size();
         for (int i = 1; i <= numOfParticipants; i++) {
             if (i > 4) {
                 break;
@@ -105,9 +105,9 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
 
     public void addMorePeople(View view) {
         Log.d("WRITE", "Add more people clicked!");
-        model.addParticipant();
+        model.addParticipant(accountBookId);
 
-        int numOfParticipants = model.groupAccountBook.getParticipantList().size();
+        int numOfParticipants = model.getParticipantsById(accountBookId).size();
         if (numOfParticipants > 4) {
             return;
         }
@@ -159,9 +159,9 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
 
     @Override
     public void update(Observable o, Object arg) {
-        numOfParticipants.setText(model.groupAccountBook.getParticipantList().size() + " People");
-        myExpense.setText(String.valueOf(model.groupAccountBook.getMyExpense()));
-        totalExpense.setText(String.valueOf(model.groupAccountBook.getGroupExpense()));
+        numOfParticipants.setText(model.getParticipantsById(accountBookId).size() + " People");
+        myExpense.setText(String.valueOf(model.getGroupAccountBook(accountBookId).getMyExpense()));
+        totalExpense.setText(String.valueOf(model.getGroupAccountBook(accountBookId).getGroupExpense()));
     }
 
 }

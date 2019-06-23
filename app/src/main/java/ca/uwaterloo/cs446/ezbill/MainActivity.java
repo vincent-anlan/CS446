@@ -26,18 +26,19 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Observer {
+
+    Model model;
     private TextView mTextMessage;
-    private ArrayList<AccountBook> accountBooks = new ArrayList<AccountBook>();
     private ArrayList<String> listItem;
     private ArrayList<String> dates;
     private TimeAdapter myAdapter;
     private RecyclerView Rv;
     private String userEmail = "alice@gmail.com";
-    private String userId;
-    private ArrayList<String> accountBookIds = new ArrayList<String>();
     private Context context;
 
 //    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -62,8 +63,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //        BottomNavigationView navView = findViewById(R.id.nav_view);
-        mTextMessage = findViewById(R.id.message);
+//        mTextMessage = findViewById(R.id.message);
 //        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        model = Model.getInstance();
+        model.addObserver(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
@@ -131,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 //                });
 //
 //
-        // read data from database
+//      read data from database
         db.collection("user_account_book_info")
                 .whereEqualTo("email", userEmail)
                 .get()
@@ -140,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                userId = document.getData().get("userId").toString();
+                                model.setCurrentUserId(document.getData().get("userId").toString());
+
                                 String accountBookId = document.getData().get("accountBookId").toString();
                                 String accountBookName = document.getData().get("accountBookName").toString();
                                 String startDate = document.getData().get("accountBookStartDate").toString();
@@ -148,15 +153,16 @@ public class MainActivity extends AppCompatActivity {
                                 String defaultCurrency = document.getData().get("accountBookCurrency").toString();
                                 String type = document.getData().get("accountBookType").toString();
 
-                                listItem.add(accountBookName);
-                                dates.add("2017.4.04");
-
                                 if (type.equals("Group")) {
-                                    GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
-                                    accountBooks.add(groupAccountBook);
+                                    if (!model.hasGroupAccountBook(accountBookId)) {
+                                        GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
+                                        model.addGroupAccountBook(groupAccountBook);
+                                    }
                                 } else {
-                                    IndividualAccountBook individualAccountBook = new IndividualAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
-                                    accountBooks.add(individualAccountBook);
+                                    if (!model.hasIndividualAccountBook(accountBookId)) {
+                                        IndividualAccountBook individualAccountBook = new IndividualAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
+                                        model.addIndividualAccountBook(individualAccountBook);
+                                    }
                                 }
 
                                 Rv = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -164,9 +170,13 @@ public class MainActivity extends AppCompatActivity {
                                 Rv.setLayoutManager(layoutManager);
                                 Rv.setHasFixedSize(true);
                                 DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
+                                for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
+                                    dates.add("2017.4.03");
+//                                    dates.add(groupAccountBook.getEndDate());
+                                }
                                 dividerItemDecoration.setDates(dates);
                                 Rv.addItemDecoration(dividerItemDecoration);
-                                myAdapter = new TimeAdapter(context,accountBooks);
+                                myAdapter = new TimeAdapter(context, model.getGroupAccountBookList());
                                 Rv.setAdapter(myAdapter);
                                 Log.d("READ", document.getId() + " => " + document.getData());
                             }
@@ -178,6 +188,19 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Remove observer when activity is destroyed.
+        model.deleteObserver(this);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        ;
     }
 
 }
