@@ -13,6 +13,10 @@ public class GroupAccountBook extends AccountBook {
     private int groupExpense;
     private ArrayList<Participant> participantList;
 
+    GroupAccountBook(String id, String name, String startDate, String endDate, String defaultCurrency) {
+        super(id, name, startDate, endDate, defaultCurrency);
+    }
+
     public int getMyExpense() {
         return myExpense;
     }

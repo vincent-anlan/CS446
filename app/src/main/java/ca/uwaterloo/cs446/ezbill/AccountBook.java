@@ -7,17 +7,25 @@ import java.util.ArrayList;
 
 public class AccountBook extends AppCompatActivity {
 
-    private int id;
+    private String id;
     private String name;
     private String startDate;
     private String endDate;
     private String defaultCurrency;
 
-    public int getId() {
+    AccountBook(String id, String name, String startDate, String endDate, String defaultCurrency) {
+        this.id = id;
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.defaultCurrency = defaultCurrency;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

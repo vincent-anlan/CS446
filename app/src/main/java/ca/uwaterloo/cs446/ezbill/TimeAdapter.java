@@ -1,6 +1,7 @@
 package ca.uwaterloo.cs446.ezbill;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,24 +14,35 @@ import java.util.List;
 
 public class TimeAdapter extends RecyclerView.Adapter {
 
+    private Context context;
     private LayoutInflater inflater;
     private ArrayList<String> data;
+
 
     public TimeAdapter(Context context, ArrayList<String> data) {
         inflater = LayoutInflater.from(context);
         this.data = data;
+        this.context = context;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView text;
 
         public ViewHolder(View root) {
             super(root);
             text = (TextView) root.findViewById(R.id.Itemtext);
+            text.setOnClickListener(this);
         }
 
         public TextView getText() {
             return text;
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent groupIntent = new Intent(context,GroupAccountBook.class);
+            groupIntent.putExtra("title", "bbb");
+            context.startActivity(groupIntent);
         }
     }
 
