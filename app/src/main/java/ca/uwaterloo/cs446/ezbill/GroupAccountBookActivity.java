@@ -72,8 +72,7 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
 
         title.setText(model.getGroupAccountBook(accountBookId).getName());
 
-        params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params = new LinearLayout.LayoutParams(120, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, dpTopx(10), 0, dpTopx(10));
         linearLayout.removeAllViews();
 
@@ -120,20 +119,20 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
     }
 
     public void addParticipantTextView(boolean isClickable, String text) {
-        TextView tv = new TextView(this);
-        tv.setText(text);
-        tv.setTextSize(20);
+        Button btn = new Button(this);
+        btn.setText(text);
+        btn.setTextSize(20);
 //        tv.setPadding(0, 0, 10, 0);
-        tv.setLayoutParams(params);
-        tv.setTextColor(Color.parseColor("#000000"));
-        tv.setGravity(Gravity.CENTER);
-        tv.setBackgroundResource(R.drawable.circle);
-        tv.setWidth(dpTopx(35));
-        tv.setHeight(dpTopx(35));
+        btn.setLayoutParams(params);
+        btn.setTextColor(Color.parseColor("#000000"));
+        btn.setGravity(Gravity.CENTER);
+        btn.setBackgroundResource(R.drawable.circle);
+//        btn.setWidth(dpTopx(35));
+//        btn.setHeight(dpTopx(35));
         if (isClickable) {
-            tv.setClickable(true);
-            tv.setFocusable(true);
-            tv.setOnClickListener(new View.OnClickListener() {
+            btn.setClickable(true);
+            btn.setFocusable(true);
+            btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     addMorePeople(v);
@@ -141,7 +140,7 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
             });
         }
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.addView(tv);
+        linearLayout.addView(btn);
     }
 
 
