@@ -5,6 +5,11 @@ public class Participant {
     private int id;
     private String name;
 
+    Participant (int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }

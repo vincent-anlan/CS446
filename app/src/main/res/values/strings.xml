@@ -2,4 +2,22 @@
     <string name="app_name">EzBill</string>
     <string name="title_my_account_book">My Account Book</string>
     <string name="title_group_account_book">Group Account Book</string>
+    <string name="new_expense">New Expense</string>
+    <string name="Note">Note</string>
+    <string name="enter_note">Enter Note</string>
+    <string name="Date">Date</string>
+    <string name="select_date">Select Date</string>
+    <string name="a">A</string>
+    <string name="payer">Payer</string>
+    <string name="b">B</string>
+    <string name="c">C</string>
+    <string name="d">D</string>
+    <string name="MORE">...</string>
+    <string name="amount">Amount</string>
+    <string name="auto_sum">Auto Sum</string>
+    <string name="participant">Participant</string>
+    <string name="select_participant">Select Participant</string>
+    <string name="Text_view">TextView</string>
+    <string name="exbill">EzBill</string>
+    <string name="new_expense_toolbar">New Expense</string>
 </resources>
