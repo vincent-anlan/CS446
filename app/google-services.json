@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "998336668322",
+    "firebase_url": "https://cs446-ezbill-bd436.firebaseio.com",
+    "project_id": "cs446-ezbill-bd436",
+    "storage_bucket": "cs446-ezbill-bd436.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998336668322:android:b3f44690fea2b77e",
+        "android_client_info": {
+          "package_name": "ca.uwaterloo.cs446.ezbill"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998336668322-q0l13vvb705igsgc3laopup762616me9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ca.uwaterloo.cs446.ezbill",
+            "certificate_hash": "276dfe7be1222fbb73d69712ac31fa59c21030df"
+          }
+        },
+        {
+          "client_id": "998336668322-44pus09mimu7i1kb05a8kt37psm3ub5e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXEKb1ghLqp2_B7y5K0aYlWgcA0cUjgZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998336668322-44pus09mimu7i1kb05a8kt37psm3ub5e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
