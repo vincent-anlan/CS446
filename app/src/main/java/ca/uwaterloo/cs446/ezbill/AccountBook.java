@@ -1,11 +1,12 @@
 package ca.uwaterloo.cs446.ezbill;
 
-import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 
-import java.util.ArrayList;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class AccountBook extends AppCompatActivity {
+import java.io.Serializable;
+
+public class AccountBook implements Serializable {
 
     private String id;
     private String name;

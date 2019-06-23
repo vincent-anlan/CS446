@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                                 DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
                                 dividerItemDecoration.setDates(dates);
                                 Rv.addItemDecoration(dividerItemDecoration);
-                                myAdapter = new TimeAdapter(context,listItem);
+                                myAdapter = new TimeAdapter(context,accountBooks);
                                 Rv.setAdapter(myAdapter);
                                 Log.d("READ", document.getId() + " => " + document.getData());
                             }

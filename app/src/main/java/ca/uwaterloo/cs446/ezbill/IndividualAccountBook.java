@@ -1,6 +1,8 @@
 package ca.uwaterloo.cs446.ezbill;
 
-public class IndividualAccountBook extends AccountBook {
+import java.io.Serializable;
+
+public class IndividualAccountBook extends AccountBook implements Serializable {
 
     private int income;
     private int expense;
