@@ -113,12 +113,31 @@ public class LoginActivity extends AppCompatActivity {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
+                if(! usernameEditText.getText().toString().equals("admin")){
+                    Toast.makeText(getApplicationContext(), "User not found!", Toast.LENGTH_SHORT).show();
+                    Intent myIntent = new Intent(LoginActivity.this, LoginActivity.class);
+//                    EditText editText = (EditText) findViewById(R.id.username);
+//                    String message = editText.getText().toString();
+                    myIntent.putExtra("Input_username", usernameEditText.getText().toString());
+                    startActivity(myIntent);
+                    //return;
+                }else if(! passwordEditText.getText().toString().equals("test123")){
+                    Toast.makeText(getApplicationContext(), "Wrong Password!", Toast.LENGTH_SHORT).show();
+                    Intent myIntent = new Intent(LoginActivity.this, LoginActivity.class);
+//                  EditText editText = (EditText) findViewById(R.id.username);
+//                  String message = editText.getText().toString();
+                    myIntent.putExtra("Input_username", usernameEditText.getText().toString());
+                    startActivity(myIntent);
+                    //return;
+                }else {
 
-                Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
 //                EditText editText = (EditText) findViewById(R.id.username);
 //                String message = editText.getText().toString();
-                myIntent.putExtra("Input_username",usernameEditText.getText().toString());
-                startActivity(myIntent);
+                    myIntent.putExtra("Input_username", usernameEditText.getText().toString());
+                    startActivity(myIntent);
+                }
+
             }
         });
     }
