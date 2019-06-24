@@ -1,12 +1,17 @@
 package ca.uwaterloo.cs446.ezbill;
 
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,11 +35,14 @@ public class Model extends Observable {
     String setCurrentUsername;
     String clickedAccountBookId;
     ArrayList<GroupTransaction> currentGroupTransactionList;
+    private String userEmail = "alice@gmail.com";
+    private TimeAdapter myAdapter;
 
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
         currentGroupTransactionList = new ArrayList<>();
+        readFromDB();
     }
 
 
@@ -182,6 +190,53 @@ public class Model extends Observable {
         } else {
             return "David";
         }
+    }
+
+    public void readFromDB() {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+//      read data from database
+        db.collection("user_account_book_info")
+                .whereEqualTo("email", userEmail)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                setCurrentUserId(document.getData().get("userId").toString());
+                                setCurrentUsername(document.getData().get("username").toString());
+
+                                String accountBookId = document.getData().get("accountBookId").toString();
+                                String accountBookName = document.getData().get("accountBookName").toString();
+                                String startDate = document.getData().get("accountBookStartDate").toString();
+                                String endDate = document.getData().get("accountBookEndDate").toString();
+                                String defaultCurrency = document.getData().get("accountBookCurrency").toString();
+                                String type = document.getData().get("accountBookType").toString();
+
+                                if (type.equals("Group")) {
+                                    if (!hasGroupAccountBook(accountBookId)) {
+                                        GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
+                                        addGroupAccountBook(groupAccountBook);
+                                    }
+                                } else {
+                                    if (!hasIndividualAccountBook(accountBookId)) {
+                                        IndividualAccountBook individualAccountBook = new IndividualAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
+                                        addIndividualAccountBook(individualAccountBook);
+                                    }
+                                }
+                                Log.d("READ", document.getId() + " => " + document.getData());
+                            }
+
+                            setChanged();
+                            notifyObservers();
+
+                        } else {
+                            Log.w("READ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 
     public void addTransactionToDB(GroupTransaction groupTransaction) {
