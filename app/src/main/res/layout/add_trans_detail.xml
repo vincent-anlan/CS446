@@ -61,6 +61,28 @@
         </LinearLayout>
 
         <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        >
+        <TextView
+            android:id="@+id/payer"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="@string/payer"
+            android:textSize="25sp" />
+        <Spinner
+            android:id="@+id/payer_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="select payer"
+            android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -69,19 +91,17 @@
             android:layout_marginTop="10dp"
             >
             <TextView
-                android:id="@+id/payer"
+                android:id="@+id/currency"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
-                android:text="@string/payer"
+                android:text="Currency"
                 android:textSize="25sp" />
-
             <Spinner
-                android:id="@+id/payer_spinner"
+                android:id="@+id/currency_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="select payer"
+                android:hint="select currency"
                 android:layout_weight="1" />
-
         </LinearLayout>
 
         <LinearLayout

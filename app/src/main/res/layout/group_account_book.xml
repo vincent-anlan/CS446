@@ -342,12 +342,13 @@
                 <!--app:layout_constraintTop_toTopOf="parent"-->
                 <!--app:srcCompat="@drawable/circle" />-->
             <Button
-                android:id="@+id/floatingActionButton2"
+                android:id="@+id/addTransactionBtn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center|bottom"
                 android:clickable="true"
                 android:focusable="true"
+                android:onClick="addTransactionBtnClick"
                 android:gravity="center"
                 android:text="\u002B"
                 android:textSize="30dp"

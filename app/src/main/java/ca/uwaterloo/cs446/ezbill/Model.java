@@ -1,19 +1,6 @@
 package ca.uwaterloo.cs446.ezbill;
 
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.lang.reflect.Array;
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -29,11 +16,31 @@ public class Model extends Observable {
     ArrayList<GroupAccountBook> groupAccountBookList;
     ArrayList<IndividualAccountBook> individualAccountBookList;
     String currentUserId;
+    String setCurrentUsername;
+    String clickedAccountBookId;
+    ArrayList<GroupTransaction> currentGroupTransactionList;
 
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
+        currentGroupTransactionList = new ArrayList<GroupTransaction>();
     }
+
+
+    public ArrayList<GroupTransaction> getCurrentGroupTransactionList() {
+        return currentGroupTransactionList;
+    }
+
+    public void addToCurrentGroupTransactionList(GroupTransaction newTransaction) {
+        currentGroupTransactionList.add(newTransaction);
+        GroupAccountBook groupAccountBook = getGroupAccountBook(clickedAccountBookId);
+        groupAccountBook.setMyExpense(calculateMyExpense());
+        groupAccountBook.setMyExpense(calculateTotalExpense());
+
+        setChanged();
+        notifyObservers();
+    }
+
 
     public ArrayList<GroupAccountBook> getGroupAccountBookList() {
         return groupAccountBookList;
@@ -82,6 +89,22 @@ public class Model extends Observable {
         this.currentUserId = currentUserId;
     }
 
+    public String getCurrentUsername() {
+        return setCurrentUsername;
+    }
+
+    public void setCurrentUsername(String setCurrentUsername) {
+        this.setCurrentUsername = setCurrentUsername;
+    }
+
+    public String getClickedAccountBookId() {
+        return clickedAccountBookId;
+    }
+
+    public void setClickedAccountBookId(String clickedAccountBookId) {
+        this.clickedAccountBookId = clickedAccountBookId;
+    }
+
     public void initObservers() {
         setChanged();
         notifyObservers();
@@ -106,16 +129,6 @@ public class Model extends Observable {
 
     public int calculateTotalExpense() {
         return 0;
-    }
-
-    public void addTranscation(String id)
-    {
-        GroupAccountBook groupAccountBook = getGroupAccountBook(id);
-        groupAccountBook.setMyExpense(calculateMyExpense());
-        groupAccountBook.setMyExpense(calculateTotalExpense());
-
-        setChanged();
-        notifyObservers();
     }
 
 

@@ -5,14 +5,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -39,7 +34,6 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
     TextView numOfParticipants;
     LinearLayout linearLayout;
     LinearLayout.LayoutParams params;
-    String accountBookId;
 
 
     @Override
@@ -49,8 +43,6 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
 
         // Get the intent that started this activity
         Intent intent = getIntent();
-
-        accountBookId = intent.getStringExtra("accountBookId");
 
         model = Model.getInstance();
         model.addObserver(this);
@@ -70,7 +62,7 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        title.setText(model.getGroupAccountBook(accountBookId).getName());
+        title.setText(model.getGroupAccountBook(model.getClickedAccountBookId()).getName());
 
         params = new LinearLayout.LayoutParams(120, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, dpTopx(10), 0, dpTopx(10));
@@ -82,13 +74,18 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
 
     }
 
+    public void addTransactionBtnClick(View view) {
+        Intent transactionIntent = new Intent(GroupAccountBookActivity.this,GroupTransactionActivity.class);
+        startActivity(transactionIntent);
+    }
+
     public int dpTopx(int dp) {
         return (int) (10 * Resources.getSystem().getDisplayMetrics().density);
 
     }
 
     public void drawParticipantIcons() {
-        int numOfParticipants = model.getParticipantsById(accountBookId).size();
+        int numOfParticipants = model.getParticipantsById(model.getClickedAccountBookId()).size();
         for (int i = 1; i <= numOfParticipants; i++) {
             if (i > 4) {
                 break;
@@ -104,9 +101,9 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
 
     public void addMorePeople(View view) {
         Log.d("WRITE", "Add more people clicked!");
-        model.addParticipant(accountBookId);
+        model.addParticipant(model.getClickedAccountBookId());
 
-        int numOfParticipants = model.getParticipantsById(accountBookId).size();
+        int numOfParticipants = model.getParticipantsById(model.getClickedAccountBookId()).size();
         if (numOfParticipants > 4) {
             return;
         }
@@ -158,9 +155,9 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
 
     @Override
     public void update(Observable o, Object arg) {
-        numOfParticipants.setText(model.getParticipantsById(accountBookId).size() + " People");
-        myExpense.setText(String.valueOf(model.getGroupAccountBook(accountBookId).getMyExpense()));
-        totalExpense.setText(String.valueOf(model.getGroupAccountBook(accountBookId).getGroupExpense()));
+        numOfParticipants.setText(model.getParticipantsById(model.getClickedAccountBookId()).size() + " People");
+        myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
+        totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
     }
 
 }

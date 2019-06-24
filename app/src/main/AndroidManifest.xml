@@ -29,9 +29,9 @@
         </activity>
 
         <activity
-            android:name=".GroupTransaction"
+            android:name=".GroupTransactionActivity"
             android:label="@string/exbill"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".GroupAccountBookActivity"
             android:windowSoftInputMode="stateHidden">
         </activity>
     </application>
