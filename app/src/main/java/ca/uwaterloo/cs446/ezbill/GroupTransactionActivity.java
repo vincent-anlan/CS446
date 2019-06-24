@@ -211,6 +211,7 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
 
         //COLLECT sum
         allEds = new ArrayList<EditText>();
+        selectName = new ArrayList<>();
         collectSumParticipant = new ArrayList<>();
         sumSaveString = "";
 
@@ -319,32 +320,31 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
                     }
                     mSum.setText(Float.toString(totalExpense));
                     sumSaveString = Float.toString(totalExpense);
+                    select_participants = new ArrayList<>();
+                    for(int i=0; i < allEds.size(); i++){
+                        String item = allEds.get(i).getText().toString();
+                        float f = Float.parseFloat(item);
+                        String checkName = selectName.get(i);
+                        String checkId = "U";
+                        if(checkName.equals("Alice")){
+                            checkId = "U1";
+                        }else if(checkName.equals("Bob")){
+                            checkId = "U2";
+                        }else if(checkName.equals("Carol")){
+                            checkId = "U3";
+                        }else{
+                            checkId = "U4";
+                        }
+                        HashMap<Participant, Float> map = new HashMap<>();
+                        Participant p = new Participant(checkId, checkName);
+                        map.put(p, f);
+                        select_participants.add(map);
+                    }
                     onetimeUse = 1;
                 }else{
                 }
             }
         });
-
-        select_participants = new ArrayList<>();
-        for(int i=0; i < allEds.size(); i++){
-            String item = allEds.get(i).getText().toString();
-            float f = Float.parseFloat(item);
-            String checkName = selectName.get(i);
-            String checkId = "U";
-            if(checkName.equals("Alice")){
-                checkId = "U1";
-            }else if(checkName.equals("Bob")){
-                checkId = "U2";
-            }else if(checkName.equals("Carol")){
-                checkId = "U3";
-            }else{
-                checkId = "U4";
-            }
-            HashMap<Participant, Float> map = new HashMap<>();
-            Participant p = new Participant(checkId, checkName);
-            map.put(p, f);
-            select_participants.add(map);
-        }
     }
 
 

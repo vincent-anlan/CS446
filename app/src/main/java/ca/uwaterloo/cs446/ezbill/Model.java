@@ -263,6 +263,7 @@ public class Model extends Observable {
 //
         // Create a new user with a first and last name
         Map<String, Object> transaction = new HashMap<>();
+        transaction.put("accountBookId", clickedAccountBookId);
         transaction.put("id", groupTransaction.getUuid());
         transaction.put("category", groupTransaction.getCategory());
         transaction.put("type", groupTransaction.getType());
