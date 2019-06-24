@@ -1,9 +1,15 @@
 package ca.uwaterloo.cs446.ezbill;
 
-public class IndividualAccountBook extends AccountBook {
+import java.io.Serializable;
+
+public class IndividualAccountBook extends AccountBook implements Serializable {
 
     private int income;
     private int expense;
+
+    IndividualAccountBook(String id, String name, String startDate, String endDate, String defaultCurrency) {
+        super(id, name, startDate, endDate, defaultCurrency);
+    }
 
     public int getIncome() {
         return income;
