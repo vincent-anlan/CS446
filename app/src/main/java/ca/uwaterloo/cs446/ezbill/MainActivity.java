@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 model.setCurrentUserId(document.getData().get("userId").toString());
+                                model.setCurrentUsername(document.getData().get("username").toString());
 
                                 String accountBookId = document.getData().get("accountBookId").toString();
                                 String accountBookName = document.getData().get("accountBookName").toString();

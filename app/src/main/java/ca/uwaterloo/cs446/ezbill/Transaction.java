@@ -1,8 +1,24 @@
 package ca.uwaterloo.cs446.ezbill;
 
-import java.util.ArrayList;
+import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
+import android.view.MenuItem;
+import android.view.Menu;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.DatePicker;
 
-public class Transaction {
+import java.util.ArrayList;
+import java.util.Calendar;
+
+public class Transaction extends AppCompatActivity {
 
     private String category;
     private String type;

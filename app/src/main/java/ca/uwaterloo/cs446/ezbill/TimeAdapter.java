@@ -45,8 +45,8 @@ public class TimeAdapter extends RecyclerView.Adapter {
         @Override
         public void onClick(View view) {
             Intent groupIntent = new Intent(context,GroupAccountBookActivity.class);
-            groupIntent.putExtra("accountBookId", data.get(this.getAdapterPosition()).getId());
-            model.currentGroupABTransactions = new ArrayList<>();
+            model.currentGroupTransactionList = new ArrayList<>();
+            model.setClickedAccountBookId(data.get(this.getAdapterPosition()).getId());
             context.startActivity(groupIntent);
         }
     }

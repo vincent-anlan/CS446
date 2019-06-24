@@ -1,19 +1,6 @@
 package ca.uwaterloo.cs446.ezbill;
 
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.lang.reflect.Array;
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
@@ -30,13 +17,31 @@ public class Model extends Observable {
     ArrayList<GroupAccountBook> groupAccountBookList;
     ArrayList<IndividualAccountBook> individualAccountBookList;
     String currentUserId;
-    ArrayList<GroupTransaction> currentGroupABTransactions;
+    String setCurrentUsername;
+    String clickedAccountBookId;
+    ArrayList<GroupTransaction> currentGroupTransactionList;
 
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
-        currentGroupABTransactions = new ArrayList<>();
+        currentGroupTransactionList = new ArrayList<>();
     }
+
+
+    public ArrayList<GroupTransaction> getCurrentGroupTransactionList() {
+        return currentGroupTransactionList;
+    }
+
+    public void addToCurrentGroupTransactionList(GroupTransaction newTransaction) {
+        currentGroupTransactionList.add(newTransaction);
+        GroupAccountBook groupAccountBook = getGroupAccountBook(clickedAccountBookId);
+        groupAccountBook.setMyExpense(calculateMyExpense(clickedAccountBookId));
+        groupAccountBook.setMyExpense(calculateTotalExpense(clickedAccountBookId));
+
+        setChanged();
+        notifyObservers();
+    }
+
 
     public ArrayList<GroupAccountBook> getGroupAccountBookList() {
         return groupAccountBookList;
@@ -78,7 +83,7 @@ public class Model extends Observable {
     }
 
     public void addGroupTransaction(GroupTransaction groupTransaction) {
-        currentGroupABTransactions.add(groupTransaction);
+        currentGroupTransactionList.add(groupTransaction);
     }
 
     public String getCurrentUserId() {
@@ -87,6 +92,22 @@ public class Model extends Observable {
 
     public void setCurrentUserId(String currentUserId) {
         this.currentUserId = currentUserId;
+    }
+
+    public String getCurrentUsername() {
+        return setCurrentUsername;
+    }
+
+    public void setCurrentUsername(String setCurrentUsername) {
+        this.setCurrentUsername = setCurrentUsername;
+    }
+
+    public String getClickedAccountBookId() {
+        return clickedAccountBookId;
+    }
+
+    public void setClickedAccountBookId(String clickedAccountBookId) {
+        this.clickedAccountBookId = clickedAccountBookId;
     }
 
     public void initObservers() {
@@ -109,7 +130,7 @@ public class Model extends Observable {
 
     public float calculateMyExpense(String id) {
         float totalAmount = 0;
-        for (GroupTransaction groupTransaction : currentGroupABTransactions) {
+        for (GroupTransaction groupTransaction : currentGroupTransactionList) {
             ArrayList<HashMap<Participant, Float>> participants = groupTransaction.getParticipants();
             for (HashMap<Participant, Float> participant :  groupTransaction.getParticipants()) {
                 for (HashMap.Entry<Participant,Float> entry : participant.entrySet()) {
@@ -126,7 +147,7 @@ public class Model extends Observable {
 
     public float calculateTotalExpense(String id) {
         float totalAmount = 0;
-        for (GroupTransaction groupTransaction : currentGroupABTransactions) {
+        for (GroupTransaction groupTransaction : currentGroupTransactionList) {
             totalAmount += groupTransaction.getAmount();
         }
         return totalAmount;

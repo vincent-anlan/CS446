@@ -14,7 +14,7 @@ public class GroupAccountBook extends AccountBook implements Serializable {
     private float groupExpense;
     private ArrayList<Participant> participantList;
 
-    GroupAccountBook(String id, String name, String startDate, String endDate, String defaultCurrency) {
+    GroupAccountBook(String id, String name,  String startDate, String endDate, String defaultCurrency) {
             super(id, name, startDate, endDate, defaultCurrency);
             myExpense = 0;
             groupExpense = 0;
