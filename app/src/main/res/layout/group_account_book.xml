@@ -210,10 +210,10 @@
                     android:id="@+id/recentTransactionCategory1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-                <!--<TextView-->
-                    <!--android:id="@+id/recentTransactionDate1"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"/>-->
+                <TextView
+                    android:id="@+id/recentTransactionDate1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
@@ -267,10 +267,10 @@
                         android:id="@+id/recentTransactionCategory2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-                    <!--<TextView-->
-                        <!--android:id="@+id/recentTransactionDate2"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"/>-->
+                    <TextView
+                        android:id="@+id/recentTransactionDate2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -324,10 +324,10 @@
                     android:id="@+id/recentTransactionCategory3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-                <!--<TextView-->
-                    <!--android:id="@+id/recentTransactionDate3"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"/>-->
+                <TextView
+                    android:id="@+id/recentTransactionDate3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
