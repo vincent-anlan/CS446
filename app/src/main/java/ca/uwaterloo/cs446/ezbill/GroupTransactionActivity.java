@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.UUID;
 
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -170,22 +171,22 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
         select_participants = new ArrayList<>();
         HashMap<Participant, Float> map1 = new HashMap<>();
         Participant p1 = new Participant("U1", "Alice");
-        map1.put(p1, Float.valueOf("0"));
+        map1.put(p1, Float.valueOf("50"));
         select_participants.add(map1);
 
         HashMap<Participant, Float> map2 = new HashMap<>();
         Participant p2 = new Participant("U2", "Bob");
-        map2.put(p2, Float.valueOf("0"));
+        map2.put(p2, Float.valueOf("50"));
         select_participants.add(map2);
 
         HashMap<Participant, Float> map3 = new HashMap<>();
         Participant p3 = new Participant("U3", "Carol");
-        map3.put(p3, Float.valueOf("0"));
+        map3.put(p3, Float.valueOf("50"));
         select_participants.add(map3);
 
         HashMap<Participant, Float> map4 = new HashMap<>();
         Participant p4 = new Participant("U4", "David");
-        map4.put(p4, Float.valueOf("0"));
+        map4.put(p4, Float.valueOf("50"));
         select_participants.add(map4);
 
         pstring = new ArrayList<>();
@@ -335,12 +336,16 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
     public void saveButtonHandler(View v) {
         Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername());
         Participant payer = new Participant("U1", mSelectPayer.getSelectedItem().toString());
-        GroupTransaction newGroupTransaction = new GroupTransaction("", "", Float.valueOf("0"), "", "", "", transactionCreator, payer, select_participants);
+        String uuid = UUID.randomUUID().toString();
+        GroupTransaction newGroupTransaction = new GroupTransaction(uuid, "Food", "Expense", Float.valueOf("200"), "CAD", "None", "2019-7-1", transactionCreator, payer, select_participants);
         newGroupTransaction.setNote(mNoteedit.getText().toString());
         newGroupTransaction.setDate(mDisplayDate.getText().toString());
         model.addToCurrentGroupTransactionList(newGroupTransaction);
 
-        startActivity(new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class));
+        Intent intent = new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class);
+        intent.putExtra("transactionId", newGroupTransaction.getUuid());
+        startActivity(intent);
+//        startActivity(new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class));
     }
 
 

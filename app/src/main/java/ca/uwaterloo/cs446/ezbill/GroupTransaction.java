@@ -24,11 +24,10 @@ public class GroupTransaction extends Transaction {
 //    Model model;
     private Participant creator;
     private Participant payer;
-//    private ArrayList<Participant> participants;
     private ArrayList<HashMap<Participant, Float>> participants;
 
-    public GroupTransaction(String category, String type, Float amount, String currency, String note, String date, Participant creator, Participant payer, ArrayList<HashMap<Participant, Float>> participants) {
-        super(category, type, amount, currency, note, date);
+    public GroupTransaction(String uuid, String category, String type, Float amount, String currency, String note, String date, Participant creator, Participant payer, ArrayList<HashMap<Participant, Float>> participants) {
+        super(uuid, category, type, amount, currency, note, date);
         this.creator = creator;
         this.payer = payer;
         this.participants = participants;

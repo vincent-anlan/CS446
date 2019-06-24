@@ -1,10 +1,25 @@
 package ca.uwaterloo.cs446.ezbill;
 
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+
+import javax.annotation.Nonnull;
 
 public class Model extends Observable {
 
@@ -20,11 +35,14 @@ public class Model extends Observable {
     String setCurrentUsername;
     String clickedAccountBookId;
     ArrayList<GroupTransaction> currentGroupTransactionList;
+    private String userEmail = "alice@gmail.com";
+    private TimeAdapter myAdapter;
 
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
         currentGroupTransactionList = new ArrayList<>();
+        readFromDB();
     }
 
 
@@ -37,6 +55,7 @@ public class Model extends Observable {
         GroupAccountBook groupAccountBook = getGroupAccountBook(clickedAccountBookId);
         groupAccountBook.setMyExpense(calculateMyExpense(clickedAccountBookId));
         groupAccountBook.setMyExpense(calculateTotalExpense(clickedAccountBookId));
+        addTransactionToDB(newTransaction);
 
         setChanged();
         notifyObservers();
@@ -76,6 +95,15 @@ public class Model extends Observable {
     public boolean hasIndividualAccountBook(String id) {
         for (IndividualAccountBook individualAccountBook : individualAccountBookList) {
             if (individualAccountBook.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasGroupTransaction(String id) {
+        for (GroupTransaction groupTransaction : currentGroupTransactionList) {
+            if (groupTransaction.getUuid().equals(id)) {
                 return true;
             }
         }
@@ -131,7 +159,6 @@ public class Model extends Observable {
     public float calculateMyExpense(String id) {
         float totalAmount = 0;
         for (GroupTransaction groupTransaction : currentGroupTransactionList) {
-            ArrayList<HashMap<Participant, Float>> participants = groupTransaction.getParticipants();
             for (HashMap<Participant, Float> participant :  groupTransaction.getParticipants()) {
                 for (HashMap.Entry<Participant,Float> entry : participant.entrySet()) {
                     Participant key = entry.getKey();
@@ -153,16 +180,6 @@ public class Model extends Observable {
         return totalAmount;
     }
 
-    public void addTranscation(String id)
-    {
-        GroupAccountBook groupAccountBook = getGroupAccountBook(id);
-        groupAccountBook.setMyExpense(calculateMyExpense(id));
-        groupAccountBook.setMyExpense(calculateTotalExpense(id));
-
-        setChanged();
-        notifyObservers();
-    }
-
     public String getUsername(String id) {
         if (id == "U1") {
             return "Alice";
@@ -173,6 +190,93 @@ public class Model extends Observable {
         } else {
             return "David";
         }
+    }
+
+    public void readFromDB() {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+//      read data from database
+        db.collection("user_account_book_info")
+                .whereEqualTo("email", userEmail)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                setCurrentUserId(document.getData().get("userId").toString());
+                                setCurrentUsername(document.getData().get("username").toString());
+
+                                String accountBookId = document.getData().get("accountBookId").toString();
+                                String accountBookName = document.getData().get("accountBookName").toString();
+                                String startDate = document.getData().get("accountBookStartDate").toString();
+                                String endDate = document.getData().get("accountBookEndDate").toString();
+                                String defaultCurrency = document.getData().get("accountBookCurrency").toString();
+                                String type = document.getData().get("accountBookType").toString();
+
+                                if (type.equals("Group")) {
+                                    if (!hasGroupAccountBook(accountBookId)) {
+                                        GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
+                                        addGroupAccountBook(groupAccountBook);
+                                    }
+                                } else {
+                                    if (!hasIndividualAccountBook(accountBookId)) {
+                                        IndividualAccountBook individualAccountBook = new IndividualAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
+                                        addIndividualAccountBook(individualAccountBook);
+                                    }
+                                }
+                                Log.d("READ", document.getId() + " => " + document.getData());
+                            }
+
+                            setChanged();
+                            notifyObservers();
+
+                        } else {
+                            Log.w("READ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void addTransactionToDB(GroupTransaction groupTransaction) {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//
+        // Create a new user with a first and last name
+        Map<String, Object> transaction = new HashMap<>();
+        transaction.put("id", groupTransaction.getUuid());
+        transaction.put("category", groupTransaction.getCategory());
+        transaction.put("type", groupTransaction.getType());
+        transaction.put("amount", groupTransaction.getAmount().toString());
+        transaction.put("currency", groupTransaction.getCurrency());
+        transaction.put("note", groupTransaction.getNote());
+        transaction.put("date", groupTransaction.getDate());
+        transaction.put("creator", groupTransaction.getCreator().getId());
+        transaction.put("payer", groupTransaction.getPayer().getId());
+        Map<String, Object> participant = new HashMap<>();
+        for (HashMap<Participant, Float> data : groupTransaction.getParticipants()) {
+            for (HashMap.Entry<Participant,Float> entry : data.entrySet()) {
+                participant.put(entry.getKey().getId(), entry.getValue());
+            }
+        }
+        transaction.put("participant", participant);
+
+        // Add a new document with a generated ID
+        db.collection("transactions")
+                .add(transaction)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("WRITE", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@Nonnull Exception e) {
+                        Log.w("WRITE", "Error adding document", e);
+                    }
+                });
     }
 
 
