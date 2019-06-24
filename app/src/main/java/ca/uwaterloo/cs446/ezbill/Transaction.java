@@ -5,11 +5,20 @@ import java.util.ArrayList;
 public class Transaction {
 
     private String category;
-    private int type;
-    private int amount;
+    private String type;
+    private Float amount;
     private String currency;
     private String note;
     private String date;
+
+    public Transaction(String category, String type, Float amount, String currency, String note, String date) {
+        this.category = category;
+        this.type = type;
+        this.amount = amount;
+        this.currency = currency;
+        this.note = note;
+        this.date = date;
+    }
 
     public String getCategory() {
         return category;
@@ -19,19 +28,19 @@ public class Transaction {
         this.category = category;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public int getAmount() {
+    public Float getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(Float amount) {
         this.amount = amount;
     }
 

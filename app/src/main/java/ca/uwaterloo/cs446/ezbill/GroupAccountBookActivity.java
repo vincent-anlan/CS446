@@ -18,6 +18,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -69,6 +73,62 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // read data from database
+        db.collection("transactions")
+                .whereEqualTo("accountBookId", accountBookId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String transactionId = document.getData().get("id").toString();
+                                String category = document.getData().get("category").toString();
+                                float amount = Float.valueOf(document.getData().get("amount").toString());
+                                String creatorId = document.getData().get("creator").toString();
+                                String creatorName = model.getUsername(creatorId);
+                                Participant creator = new Participant(creatorId, creatorName);
+                                String date = document.getData().get("date").toString();
+                                String note = document.getData().get("note").toString();
+                                String payerId = document.getData().get("payer").toString();
+                                String payerName = model.getUsername(payerId);
+                                Participant payer = new Participant(payerId, payerName);
+                                String type = document.getData().get("type").toString();
+                                String currency = document.getData().get("currency").toString();
+                                String data = document.getData().get("participant").toString();
+                                data = data.substring(1,data.length()-2);
+                                ArrayList<HashMap<Participant, Float>> participants = new ArrayList<>();
+                                String[] pairs = data.split(",");
+                                for (int i=0;i<pairs.length;i++) {
+
+                                    HashMap<Participant, Float> map = new HashMap<>();
+                                    String pair = pairs[i];
+                                    String[] keyValue = pair.split("=");
+                                    Participant participant = new Participant(keyValue[0], model.getUsername(keyValue[0]));
+                                    map.put(participant, Float.valueOf(keyValue[1]));
+                                    participants.add(map);
+                                }
+
+                                GroupTransaction groupTransaction = new GroupTransaction(category, type, amount, currency, note, date, creator, payer, participants);
+                                model.addGroupTransaction(groupTransaction);
+
+                                Log.d("READ", document.getId() + " => " + document.getData());
+                            }
+                            model.getGroupAccountBook(accountBookId).setMyExpense(model.calculateMyExpense(accountBookId));
+                            model.getGroupAccountBook(accountBookId).setGroupExpense(model.calculateTotalExpense(accountBookId));
+                            myExpense.setText(String.valueOf(model.getGroupAccountBook(accountBookId).getMyExpense()));
+                            totalExpense.setText(String.valueOf(model.getGroupAccountBook(accountBookId).getGroupExpense()));
+                            // add to view (transaction)
+
+                        } else {
+                            Log.w("READ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
 
         title.setText(model.getGroupAccountBook(accountBookId).getName());
 

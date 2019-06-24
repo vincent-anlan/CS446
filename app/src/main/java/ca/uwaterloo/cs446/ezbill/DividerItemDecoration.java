@@ -31,8 +31,8 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         mPaint2.setColor(Color.BLACK);
         mPaint2.setTextSize(20);
 
-        interval_left = 200;
-        interval_top = 50;
+        interval_left = 100;
+        interval_top = 40;
         circle_radius = 10;
     }
 
@@ -55,7 +55,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
             View child = parent.getChildAt(i);
 
-            float center_x = child.getLeft() - (float) interval_left / 3;
+            float center_x = child.getLeft() - (float) interval_left;
             float center_y = child.getTop() - interval_top + (float) (interval_top + child.getHeight()) / 2;
             c.drawCircle(center_x, center_y, circle_radius, mPaint1);
 

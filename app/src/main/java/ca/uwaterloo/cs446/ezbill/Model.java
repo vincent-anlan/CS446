@@ -15,6 +15,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.lang.reflect.Array;
 import java.security.acl.Group;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -29,10 +30,12 @@ public class Model extends Observable {
     ArrayList<GroupAccountBook> groupAccountBookList;
     ArrayList<IndividualAccountBook> individualAccountBookList;
     String currentUserId;
+    ArrayList<GroupTransaction> currentGroupABTransactions;
 
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
+        currentGroupABTransactions = new ArrayList<>();
     }
 
     public ArrayList<GroupAccountBook> getGroupAccountBookList() {
@@ -74,6 +77,10 @@ public class Model extends Observable {
         return false;
     }
 
+    public void addGroupTransaction(GroupTransaction groupTransaction) {
+        currentGroupABTransactions.add(groupTransaction);
+    }
+
     public String getCurrentUserId() {
         return currentUserId;
     }
@@ -100,22 +107,51 @@ public class Model extends Observable {
         return groupAccountBook.getParticipantList();
     }
 
-    public int calculateMyExpense() {
-        return 0;
+    public float calculateMyExpense(String id) {
+        float totalAmount = 0;
+        for (GroupTransaction groupTransaction : currentGroupABTransactions) {
+            ArrayList<HashMap<Participant, Float>> participants = groupTransaction.getParticipants();
+            for (HashMap<Participant, Float> participant :  groupTransaction.getParticipants()) {
+                for (HashMap.Entry<Participant,Float> entry : participant.entrySet()) {
+                    Participant key = entry.getKey();
+                    Float value = entry.getValue();
+                    if (key.getId().equals(currentUserId)) {
+                        totalAmount += value;
+                    }
+                }
+            }
+        }
+        return totalAmount;
     }
 
-    public int calculateTotalExpense() {
-        return 0;
+    public float calculateTotalExpense(String id) {
+        float totalAmount = 0;
+        for (GroupTransaction groupTransaction : currentGroupABTransactions) {
+            totalAmount += groupTransaction.getAmount();
+        }
+        return totalAmount;
     }
 
     public void addTranscation(String id)
     {
         GroupAccountBook groupAccountBook = getGroupAccountBook(id);
-        groupAccountBook.setMyExpense(calculateMyExpense());
-        groupAccountBook.setMyExpense(calculateTotalExpense());
+        groupAccountBook.setMyExpense(calculateMyExpense(id));
+        groupAccountBook.setMyExpense(calculateTotalExpense(id));
 
         setChanged();
         notifyObservers();
+    }
+
+    public String getUsername(String id) {
+        if (id == "U1") {
+            return "Alice";
+        } else if (id == "U2") {
+            return "Bob";
+        } else if (id == "U3") {
+            return "Carol";
+        } else {
+            return "David";
+        }
     }
 
 

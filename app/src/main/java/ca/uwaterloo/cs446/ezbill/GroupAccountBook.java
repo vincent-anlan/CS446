@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class GroupAccountBook extends AccountBook implements Serializable {
 
-    private int myExpense;
-    private int groupExpense;
+    private float myExpense;
+    private float groupExpense;
     private ArrayList<Participant> participantList;
 
     GroupAccountBook(String id, String name, String startDate, String endDate, String defaultCurrency) {
@@ -23,19 +23,19 @@ public class GroupAccountBook extends AccountBook implements Serializable {
             participantList.add(participant);
     }
 
-    public int getMyExpense() {
+    public float getMyExpense() {
         return myExpense;
     }
 
-    public void setMyExpense(int myExpense) {
+    public void setMyExpense(float myExpense) {
         this.myExpense = myExpense;
     }
 
-    public int getGroupExpense() {
+    public float getGroupExpense() {
         return groupExpense;
     }
 
-    public void setGroupExpense(int groupExpense) {
+    public void setGroupExpense(float groupExpense) {
         this.groupExpense = groupExpense;
     }
 
