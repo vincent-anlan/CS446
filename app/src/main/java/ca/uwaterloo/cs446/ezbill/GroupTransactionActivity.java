@@ -46,6 +46,11 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
 
     private Spinner mSelectPayer;
     private Spinner mSelectCurrency;
+    private String currencySaveString;
+    private String payerSaveString;
+    private String payerIDSaveString;
+    private String sumSaveString;
+    private ArrayList<String> selectName;
     private ArrayList<HashMap<Participant, Float>> select_participants;
     private ArrayList<String> pstring;
     private ArrayList<String> currencystring;
@@ -140,7 +145,7 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
 
         //select currency
         mSelectCurrency = (Spinner) findViewById(R.id.currency_spinner);
-
+        currencySaveString = "CAD";
         currencystring = new ArrayList<>();
         currencystring.add("CAD");
         currencystring.add("USD");
@@ -157,6 +162,7 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selecvalue = parent.getItemAtPosition(position).toString();
                 Toast.makeText(GroupTransactionActivity.this, "Selected:" + selecvalue, Toast.LENGTH_SHORT).show();
+                currencySaveString = selecvalue;
             }
 
             @Override
@@ -168,33 +174,14 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
         //set payer
         mSelectPayer = (Spinner) findViewById(R.id.payer_spinner);
 
-        select_participants = new ArrayList<>();
-        HashMap<Participant, Float> map1 = new HashMap<>();
-        Participant p1 = new Participant("U1", "Alice");
-        map1.put(p1, Float.valueOf("50"));
-        select_participants.add(map1);
-
-        HashMap<Participant, Float> map2 = new HashMap<>();
-        Participant p2 = new Participant("U2", "Bob");
-        map2.put(p2, Float.valueOf("50"));
-        select_participants.add(map2);
-
-        HashMap<Participant, Float> map3 = new HashMap<>();
-        Participant p3 = new Participant("U3", "Carol");
-        map3.put(p3, Float.valueOf("50"));
-        select_participants.add(map3);
-
-        HashMap<Participant, Float> map4 = new HashMap<>();
-        Participant p4 = new Participant("U4", "David");
-        map4.put(p4, Float.valueOf("50"));
-        select_participants.add(map4);
-
         pstring = new ArrayList<>();
         pstring.add("Alice");
         pstring.add("Bob");
         pstring.add("Carol");
         pstring.add("David");
 
+        payerIDSaveString = "U";
+        payerSaveString = "";
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, pstring);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -204,18 +191,28 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selecvalue = parent.getItemAtPosition(position).toString();
                 Toast.makeText(GroupTransactionActivity.this, "Selected:" + selecvalue, Toast.LENGTH_SHORT).show();
+                payerSaveString = selecvalue;
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
+
+        if(payerSaveString.equals("Alice")){
+            payerIDSaveString = "U1";
+        }else if(payerSaveString.equals("Bob")){
+            payerIDSaveString = "U2";
+        }else if(payerSaveString.equals("Carol")){
+            payerIDSaveString = "U3";
+        }else{
+            payerIDSaveString = "U4";
+        }
 
 
         //COLLECT sum
         allEds = new ArrayList<EditText>();
         collectSumParticipant = new ArrayList<>();
+        sumSaveString = "";
 
         mSum = (Button) findViewById(R.id.totalAmount);
         onetimeUse = 0;
@@ -272,6 +269,7 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
                             btn.setTextSize(25);
                             btn.setLayoutParams(params);
                             btn.setGravity(Gravity.START);
+                            selectName.add(item);
 
                             EditText subExpense = new EditText(GroupTransactionActivity.this);
                             subExpense.setTextSize(25);
@@ -320,12 +318,33 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
                         totalExpense = totalExpense + f;
                     }
                     mSum.setText(Float.toString(totalExpense));
+                    sumSaveString = Float.toString(totalExpense);
                     onetimeUse = 1;
                 }else{
                 }
             }
         });
 
+        select_participants = new ArrayList<>();
+        for(int i=0; i < allEds.size(); i++){
+            String item = allEds.get(i).getText().toString();
+            float f = Float.parseFloat(item);
+            String checkName = selectName.get(i);
+            String checkId = "U";
+            if(checkName.equals("Alice")){
+                checkId = "U1";
+            }else if(checkName.equals("Bob")){
+                checkId = "U2";
+            }else if(checkName.equals("Carol")){
+                checkId = "U3";
+            }else{
+                checkId = "U4";
+            }
+            HashMap<Participant, Float> map = new HashMap<>();
+            Participant p = new Participant(checkId, checkName);
+            map.put(p, f);
+            select_participants.add(map);
+        }
     }
 
 
@@ -335,9 +354,9 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
 
     public void saveButtonHandler(View v) {
         Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername());
-        Participant payer = new Participant("U1", mSelectPayer.getSelectedItem().toString());
+        Participant payer = new Participant(payerIDSaveString, mSelectPayer.getSelectedItem().toString());
         String uuid = UUID.randomUUID().toString();
-        GroupTransaction newGroupTransaction = new GroupTransaction(uuid, "Food", "Expense", Float.valueOf("200"), "CAD", "None", "2019-7-1", transactionCreator, payer, select_participants);
+        GroupTransaction newGroupTransaction = new GroupTransaction(uuid, "Food", "Expense", Float.valueOf(sumSaveString), currencySaveString, "None", "04/07/1998", transactionCreator, payer, select_participants);
         newGroupTransaction.setNote(mNoteedit.getText().toString());
         newGroupTransaction.setDate(mDisplayDate.getText().toString());
         model.addToCurrentGroupTransactionList(newGroupTransaction);
