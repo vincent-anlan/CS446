@@ -60,6 +60,7 @@ public class Model extends Observable {
         groupAccountBook.setMyExpense(calculateMyExpense(clickedAccountBookId));
         groupAccountBook.setMyExpense(calculateTotalExpense(clickedAccountBookId));
         addTransactionToDB(newTransaction);
+        Collections.sort(currentGroupTransactionList);
 
         setChanged();
         notifyObservers();
@@ -118,6 +119,7 @@ public class Model extends Observable {
 
     public void addGroupTransaction(GroupTransaction groupTransaction) {
         currentGroupTransactionList.add(groupTransaction);
+        Collections.sort(currentGroupTransactionList);
     }
 
     public String getCurrentUserId() {
@@ -187,11 +189,11 @@ public class Model extends Observable {
     }
 
     public String getUsername(String id) {
-        if (id == "U1") {
+        if (id.equals("U1")) {
             return "Alice";
-        } else if (id == "U2") {
+        } else if (id.equals("U2")) {
             return "Bob";
-        } else if (id == "U3") {
+        } else if (id.equals("U3")) {
             return "Carol";
         } else {
             return "David";

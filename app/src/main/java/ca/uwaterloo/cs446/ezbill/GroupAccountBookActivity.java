@@ -189,20 +189,7 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
         int totalTransactionNum = model.currentGroupTransactionList.size();
         int numToDisplay = totalTransactionNum > 3 ? 3 : totalTransactionNum;
 
-        if (mostRecentTransactionId != null) {
-            for ( GroupTransaction transaction: model.currentGroupTransactionList) {
-                if (transaction.getUuid().equals(mostRecentTransactionId)) {
-                    transaction1.setVisibility(View.VISIBLE);
-                    transactionSeparator1.setVisibility(View.VISIBLE);
-                    transactionCategory1.setText(transaction.getCategory());
-//            transactionDate1.setText(transaction.getDate());
-                    transactionAmount1.setText(Float.toString(transaction.getAmount()));
-                    transactionPayer1.setText(transaction.getPayer().getName());
-                    break;
-                }
-
-            }
-        } else if (numToDisplay > 0) {
+        if (numToDisplay > 0) {
             GroupTransaction transaction = model.currentGroupTransactionList.get(0);
             transaction1.setVisibility(View.VISIBLE);
             transactionSeparator1.setVisibility(View.VISIBLE);

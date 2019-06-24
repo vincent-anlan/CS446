@@ -15,10 +15,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.DatePicker;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
-public class Transaction extends AppCompatActivity {
+public class Transaction extends AppCompatActivity implements Comparable<Transaction>{
 
     private String uuid;
     private String category;
@@ -92,5 +95,31 @@ public class Transaction extends AppCompatActivity {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public Date parseStringToDate(String date) throws Exception{
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        Date parsedDate = (Date) formatter.parse(date);
+        return parsedDate;
+    }
+
+    public String parseDateToString(Date date) {
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String formattedDate = formatter.format(date);
+        return formattedDate;
+    }
+
+    @Override
+    public int compareTo(Transaction transaction) {
+        Date d1 = new Date();
+        Date d2 = new Date();
+        try {
+            d1 = parseStringToDate(getDate());
+            d2 = parseStringToDate(transaction.getDate());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return d2.compareTo(d1);
     }
 }
