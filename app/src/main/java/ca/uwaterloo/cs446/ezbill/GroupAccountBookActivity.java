@@ -154,34 +154,25 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
             }
             addParticipantTextView(false, String.valueOf(i));
         }
-
         addParticipantTextView(true, "\u2022\u2022\u2022");
-
-
     }
 
 
     public void addMorePeople(View view) {
         Log.d("WRITE", "Add more people clicked!");
         model.addParticipant(model.getClickedAccountBookId());
-
         int numOfParticipants = model.getParticipantsById(model.getClickedAccountBookId()).size();
         if (numOfParticipants > 4) {
             return;
         }
-
         linearLayout.removeAllViews();
         drawParticipantIcons();
-
-
-
     }
 
     public void addParticipantTextView(boolean isClickable, String text) {
         Button btn = new Button(this);
         btn.setText(text);
         btn.setTextSize(20);
-//        tv.setPadding(0, 0, 10, 0);
         btn.setLayoutParams(params);
         btn.setTextColor(Color.parseColor("#000000"));
         btn.setGravity(Gravity.CENTER);
