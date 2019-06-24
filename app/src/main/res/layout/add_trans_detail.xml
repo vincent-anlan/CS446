@@ -111,13 +111,14 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             >
+
             <TextView
                 android:id="@+id/amount"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:text="@string/amount"
-                android:textSize="25sp"/>
-            <TextView
+                android:textSize="25sp" />
+            <Button
                 android:id="@+id/totalAmount"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -148,18 +149,14 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/listparticipant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             >
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/Text_view"
-                android:textSize="25sp"/>
+
         </LinearLayout>
 
     </LinearLayout>
