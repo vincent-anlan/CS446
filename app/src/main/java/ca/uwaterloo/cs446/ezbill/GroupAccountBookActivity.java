@@ -81,34 +81,37 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String transactionId = document.getData().get("id").toString();
-                                String category = document.getData().get("category").toString();
-                                float amount = Float.valueOf(document.getData().get("amount").toString());
-                                String creatorId = document.getData().get("creator").toString();
-                                String creatorName = model.getUsername(creatorId);
-                                Participant creator = new Participant(creatorId, creatorName);
-                                String date = document.getData().get("date").toString();
-                                String note = document.getData().get("note").toString();
-                                String payerId = document.getData().get("payer").toString();
-                                String payerName = model.getUsername(payerId);
-                                Participant payer = new Participant(payerId, payerName);
-                                String type = document.getData().get("type").toString();
-                                String currency = document.getData().get("currency").toString();
-                                String data = document.getData().get("participant").toString();
-                                data = data.substring(1,data.length()-2);
-                                ArrayList<HashMap<Participant, Float>> participants = new ArrayList<>();
-                                String[] pairs = data.split(",");
-                                for (int i=0;i<pairs.length;i++) {
 
-                                    HashMap<Participant, Float> map = new HashMap<>();
-                                    String pair = pairs[i];
-                                    String[] keyValue = pair.split("=");
-                                    Participant participant = new Participant(keyValue[0], model.getUsername(keyValue[0]));
-                                    map.put(participant, Float.valueOf(keyValue[1]));
-                                    participants.add(map);
+                                if (!model.hasGroupTransaction(transactionId)) {
+                                    String category = document.getData().get("category").toString();
+                                    float amount = Float.valueOf(document.getData().get("amount").toString());
+                                    String creatorId = document.getData().get("creator").toString();
+                                    String creatorName = model.getUsername(creatorId);
+                                    Participant creator = new Participant(creatorId, creatorName);
+                                    String date = document.getData().get("date").toString();
+                                    String note = document.getData().get("note").toString();
+                                    String payerId = document.getData().get("payer").toString();
+                                    String payerName = model.getUsername(payerId);
+                                    Participant payer = new Participant(payerId, payerName);
+                                    String type = document.getData().get("type").toString();
+                                    String currency = document.getData().get("currency").toString();
+                                    String data = document.getData().get("participant").toString();
+                                    data = data.substring(1,data.length()-2);
+                                    ArrayList<HashMap<Participant, Float>> participants = new ArrayList<>();
+                                    String[] pairs = data.split(",");
+                                    for (int i=0;i<pairs.length;i++) {
+
+                                        HashMap<Participant, Float> map = new HashMap<>();
+                                        String pair = pairs[i];
+                                        String[] keyValue = pair.split("=");
+                                        Participant participant = new Participant(keyValue[0], model.getUsername(keyValue[0]));
+                                        map.put(participant, Float.valueOf(keyValue[1]));
+                                        participants.add(map);
+                                    }
+
+                                    GroupTransaction groupTransaction = new GroupTransaction(transactionId, category, type, amount, currency, note, date, creator, payer, participants);
+                                    model.addGroupTransaction(groupTransaction);
                                 }
-
-                                GroupTransaction groupTransaction = new GroupTransaction(category, type, amount, currency, note, date, creator, payer, participants);
-                                model.addGroupTransaction(groupTransaction);
 
                                 Log.d("READ", document.getId() + " => " + document.getData());
                             }
