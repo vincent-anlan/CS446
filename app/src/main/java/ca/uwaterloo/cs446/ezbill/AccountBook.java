@@ -5,8 +5,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class AccountBook implements Serializable {
+public class AccountBook implements Serializable, Comparable<AccountBook> {
 
     private String id;
     private String name;
@@ -60,5 +63,31 @@ public class AccountBook implements Serializable {
 
     public void setDefaultCurrency(String defaultCurrency) {
         this.defaultCurrency = defaultCurrency;
+    }
+
+    public Date parseStringToDate(String date) throws Exception{
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        Date parsedDate = (Date) formatter.parse(date);
+        return parsedDate;
+    }
+
+    public String parseDateToString(Date date) {
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String formattedDate = formatter.format(date);
+        return formattedDate;
+    }
+
+    @Override
+    public int compareTo(AccountBook accountBook) {
+        Date d1 = new Date();
+        Date d2 = new Date();
+        try {
+            d1 = parseStringToDate(getEndDate());
+            d2 = parseStringToDate(accountBook.getEndDate());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return d2.compareTo(d1);
     }
 }

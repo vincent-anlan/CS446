@@ -198,7 +198,7 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
         Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername());
         Participant payer = new Participant("U1", mSelectPayer.getSelectedItem().toString());
         String uuid = UUID.randomUUID().toString();
-        GroupTransaction newGroupTransaction = new GroupTransaction(uuid, "Food", "Expense", Float.valueOf("200"), "CAD", "None", "2019-7-1", transactionCreator, payer, select_participants);
+        GroupTransaction newGroupTransaction = new GroupTransaction(uuid, "Food", "Expense", Float.valueOf("200"), "CAD", "None", "2019-07-01", transactionCreator, payer, select_participants);
         newGroupTransaction.setNote(mNoteedit.getText().toString());
         newGroupTransaction.setDate(mDisplayDate.getText().toString());
         model.addToCurrentGroupTransactionList(newGroupTransaction);

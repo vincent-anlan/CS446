@@ -13,7 +13,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -77,10 +81,12 @@ public class Model extends Observable {
 
     public void addGroupAccountBook(GroupAccountBook groupAccountBook) {
         groupAccountBookList.add(groupAccountBook);
+        Collections.sort(groupAccountBookList);
     }
 
     public void addIndividualAccountBook(IndividualAccountBook individualAccountBook) {
         individualAccountBookList.add(individualAccountBook);
+        Collections.sort(individualAccountBookList);
     }
 
     public boolean hasGroupAccountBook(String id) {
@@ -190,6 +196,18 @@ public class Model extends Observable {
         } else {
             return "David";
         }
+    }
+
+    public Date parseStringToDate(String date) throws Exception{
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        Date parsedDate = (Date) formatter.parse(date);
+        return parsedDate;
+    }
+
+    public String parseDateToString(Date date) {
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String formattedDate = formatter.format(date);
+        return formattedDate;
     }
 
     public void readFromDB() {

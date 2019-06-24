@@ -78,8 +78,8 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             float text_x = child.getLeft() - (float) interval_left * 9 / 10;
             float text_y = upLine_bottom_y;
 
-            String year = dates.get(index).substring(0, 4);
-            String date = dates.get(index).substring(5);
+            String year = dates.get(index).substring(6);
+            String date = dates.get(index).substring(0,5);
             mPaint2.setTextSize(48f);
             c.drawText(date, text_x, text_y, mPaint2);
             text_y += 45;

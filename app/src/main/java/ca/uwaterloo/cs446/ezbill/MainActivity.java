@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
     Model model;
     private TextView mTextMessage;
     private ArrayList<String> dates;
-    private ArrayList<String> data;
     private TimeAdapter myAdapter;
     private RecyclerView Rv;
     private Context context;
@@ -79,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
         // Init data for timeline
         dates = new ArrayList<>();
-        data = new ArrayList<>();
 
         // Init RecyclerView for timeline
         Rv = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -89,8 +87,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
 
         for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
-            dates.add("2017-04-03");
-//                                    dates.add(groupAccountBook.getEndDate());
+            dates.add(groupAccountBook.getEndDate());
         }
         dividerItemDecoration.setDates(dates);
         Rv.addItemDecoration(dividerItemDecoration);
@@ -111,8 +108,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     public void update(Observable o, Object arg) {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
         for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
-            dates.add("2017-04-03");
-//                                    dates.add(groupAccountBook.getEndDate());
+            dates.add(groupAccountBook.getEndDate());
         }
         dividerItemDecoration.setDates(dates);
         Rv.addItemDecoration(dividerItemDecoration);
