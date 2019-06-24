@@ -100,6 +100,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             >
 
             <LinearLayout
@@ -114,8 +116,7 @@
                     android:id="@+id/myExpense"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="50"/>
+                    android:gravity="center"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -135,8 +136,7 @@
                     android:id="@+id/totalExpense"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="100"/>
+                    android:gravity="center"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -188,6 +188,8 @@
 
         <!--Transaction-->
         <LinearLayout
+            android:id="@+id/recentTransaction1"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -205,13 +207,13 @@
                 android:layout_gravity="center"
                 >
                 <TextView
+                    android:id="@+id/recentTransactionCategory1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Transportation"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Today 00:30"/>
+                    android:layout_height="wrap_content"/>
+                <!--<TextView-->
+                    <!--android:id="@+id/recentTransactionDate1"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"/>-->
             </LinearLayout>
 
             <LinearLayout
@@ -224,25 +226,27 @@
                 android:layout_marginRight="30dp"
                 >
                 <TextView
+                    android:id="@+id/recentTransactionAmount1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="100"/>
+                    android:layout_height="wrap_content"/>
                 <TextView
+                    android:id="@+id/recentTransactionPayer1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Paid by Sylvia"/>
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
 
-
-
         <View
+            android:id="@+id/recentTransactionSeparator1"
+            android:visibility="gone"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="#c0c0c0"/>
 
 
         <LinearLayout
+                android:id="@+id/recentTransaction2"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -260,13 +264,13 @@
                     android:layout_gravity="center"
                     >
                     <TextView
+                        android:id="@+id/recentTransactionCategory2"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Food"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Today 00:30"/>
+                        android:layout_height="wrap_content"/>
+                    <!--<TextView-->
+                        <!--android:id="@+id/recentTransactionDate2"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"/>-->
                 </LinearLayout>
 
                 <LinearLayout
@@ -279,18 +283,77 @@
                     android:layout_marginRight="30dp"
                     >
                     <TextView
+                        android:id="@+id/recentTransactionAmount2"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="50"/>
+                        android:layout_height="wrap_content"/>
                     <TextView
+                        android:id="@+id/recentTransactionPayer2"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Paid by Eve"/>
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
 
         </LinearLayout>
 
         <View
+            android:id="@+id/recentTransactionSeparator2"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0"/>
+
+        <LinearLayout
+            android:id="@+id/recentTransaction3"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginLeft="30dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:layout_gravity="center"
+                >
+                <TextView
+                    android:id="@+id/recentTransactionCategory3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <!--<TextView-->
+                    <!--android:id="@+id/recentTransactionDate3"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"/>-->
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:layout_gravity="center"
+                android:layout_marginRight="30dp"
+                >
+                <TextView
+                    android:id="@+id/recentTransactionAmount3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/recentTransactionPayer3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/recentTransactionSeparator3"
+            android:visibility="gone"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="#c0c0c0"/>
@@ -310,16 +373,17 @@
             android:textStyle="bold"/>
 
         <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c0c0c0" />
+
+        <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:layout_gravity="bottom"
             android:background="#EDEEE8" />
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#c0c0c0" />
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"

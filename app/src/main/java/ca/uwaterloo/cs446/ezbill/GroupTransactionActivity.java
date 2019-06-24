@@ -203,7 +203,10 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
         newGroupTransaction.setDate(mDisplayDate.getText().toString());
         model.addToCurrentGroupTransactionList(newGroupTransaction);
 
-        startActivity(new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class));
+        Intent intent = new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class);
+        intent.putExtra("transactionId", newGroupTransaction.getUuid());
+        startActivity(intent);
+//        startActivity(new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class));
     }
 
 
