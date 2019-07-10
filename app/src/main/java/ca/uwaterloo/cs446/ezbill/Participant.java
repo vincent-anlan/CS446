@@ -1,15 +1,24 @@
 package ca.uwaterloo.cs446.ezbill;
 
-public class Participant {
+import java.io.Serializable;
 
-    private int id;
+public class Participant implements Serializable {
+
+    private String id;
     private String name;
 
-    public int getId() {
+    Participant() {}
+
+    public Participant(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

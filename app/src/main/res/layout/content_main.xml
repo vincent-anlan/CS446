@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Text"
-        android:textSize="10sp"
+        android:textSize="20sp"
         android:background="@drawable/border"
         android:id="@+id/Itemtext"
         android:gravity="center"
