@@ -119,7 +119,7 @@ public class Signup extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     FirebaseUser user = auth.getCurrentUser();
                     status.setText(user.getEmail());
-                    detail.setText(user.getUid());
+                    detail.setText("register success");
                     findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
                     findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
                     //do something;
@@ -133,7 +133,26 @@ public class Signup extends AppCompatActivity {
     }
 
     private void signin(String eml, String pw){
-
+        if(!checkinput()){
+            return;
+        }
+        auth.signInWithEmailAndPassword(eml,pw).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    FirebaseUser user = auth.getCurrentUser();
+                    status.setText(user.getEmail());
+                    detail.setText("Login success");
+                    findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
+                    findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
+                    //do something;
+                } else {
+                    Toast.makeText(Signup.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                    //do something;
+                }
+            }
+        });
     }
 
     private void signout(){
