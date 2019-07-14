@@ -20,4 +20,5 @@
     <string name="Text_view">TextView</string>
     <string name="exbill">EzBill</string>
     <string name="new_expense_toolbar">New Expense</string>
+    <string name="category">Category</string>
 </resources>
