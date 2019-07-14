@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,12 +32,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-public class MainActivity extends AppCompatActivity implements Observer {
+public class MainActivity extends AppCompatActivity{
 
     Model model;
     private TextView mTextMessage;
     private ArrayList<String> dates;
-    private ArrayList<String> data;
     private TimeAdapter myAdapter;
     private RecyclerView Rv;
     private Context context;
@@ -47,10 +48,14 @@ public class MainActivity extends AppCompatActivity implements Observer {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_my_account_book:
-                    mTextMessage.setText(R.string.title_my_account_book);
+//                    mTextMessage.setText(R.string.title_my_account_book);
+                    Fragment groupAccountBook = new GroupAccountBookFragment();
+                    loadFragment(groupAccountBook);
                     return true;
                 case R.id.navigation_group_account_book:
-                    mTextMessage.setText(R.string.title_group_account_book);
+//                    mTextMessage.setText(R.string.title_group_account_book);
+                    Fragment groupAccountBookFragement = new GroupAccountBookFragment();
+                    loadFragment(groupAccountBookFragement);
                     return true;
             }
             return false;
@@ -65,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
         mTextMessage = findViewById(R.id.message);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        model = Model.getInstance();
-        model.addObserver(this);
+//        model = Model.getInstance();
+//        model.addObserver(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
@@ -75,49 +80,56 @@ public class MainActivity extends AppCompatActivity implements Observer {
         title.setText("EzBill");
         this.context = this;
 
+        loadFragment(new GroupAccountBookFragment());
 
 
-        // Init data for timeline
-        dates = new ArrayList<>();
-        data = new ArrayList<>();
 
-        // Init RecyclerView for timeline
-        Rv = (RecyclerView) findViewById(R.id.my_recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        Rv.setLayoutManager(layoutManager);
-        Rv.setHasFixedSize(true);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
-
-        for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
-            dates.add("2017-04-03");
-//                                    dates.add(groupAccountBook.getEndDate());
-        }
-        dividerItemDecoration.setDates(dates);
-        Rv.addItemDecoration(dividerItemDecoration);
-        myAdapter = new TimeAdapter(context, model.getGroupAccountBookList());
-        Rv.setAdapter(myAdapter);
+//        // Init data for timeline
+//        dates = new ArrayList<>();
+//
+//        // Init RecyclerView for timeline
+//        Rv = (RecyclerView) findViewById(R.id.my_recycler_view);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+//        Rv.setLayoutManager(layoutManager);
+//        Rv.setHasFixedSize(true);
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
+//
+//        for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
+//            dates.add(groupAccountBook.getEndDate());
+//        }
+//        dividerItemDecoration.setDates(dates);
+//        Rv.addItemDecoration(dividerItemDecoration);
+//        myAdapter = new TimeAdapter(context, model.getGroupAccountBookList());
+//        Rv.setAdapter(myAdapter);
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//
+//        // Remove observer when activity is destroyed.
+//        model.deleteObserver(this);
+//    }
+//
+//    @Override
+//    public void update(Observable o, Object arg) {
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
+//        for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
+//            dates.add(groupAccountBook.getEndDate());
+//        }
+//        dividerItemDecoration.setDates(dates);
+//        Rv.addItemDecoration(dividerItemDecoration);
+//        myAdapter = new TimeAdapter(context, model.getGroupAccountBookList());
+//        Rv.setAdapter(myAdapter);
+//    }
 
-        // Remove observer when activity is destroyed.
-        model.deleteObserver(this);
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
-        for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
-            dates.add("2017-04-03");
-//                                    dates.add(groupAccountBook.getEndDate());
-        }
-        dividerItemDecoration.setDates(dates);
-        Rv.addItemDecoration(dividerItemDecoration);
-        myAdapter = new TimeAdapter(context, model.getGroupAccountBookList());
-        Rv.setAdapter(myAdapter);
+    private void loadFragment(Fragment fragment) {
+        // load fragment
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 }

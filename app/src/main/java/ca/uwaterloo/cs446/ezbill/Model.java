@@ -13,7 +13,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -56,6 +60,7 @@ public class Model extends Observable {
         groupAccountBook.setMyExpense(calculateMyExpense(clickedAccountBookId));
         groupAccountBook.setMyExpense(calculateTotalExpense(clickedAccountBookId));
         addTransactionToDB(newTransaction);
+        Collections.sort(currentGroupTransactionList);
 
         setChanged();
         notifyObservers();
@@ -77,10 +82,12 @@ public class Model extends Observable {
 
     public void addGroupAccountBook(GroupAccountBook groupAccountBook) {
         groupAccountBookList.add(groupAccountBook);
+        Collections.sort(groupAccountBookList);
     }
 
     public void addIndividualAccountBook(IndividualAccountBook individualAccountBook) {
         individualAccountBookList.add(individualAccountBook);
+        Collections.sort(individualAccountBookList);
     }
 
     public boolean hasGroupAccountBook(String id) {
@@ -112,6 +119,7 @@ public class Model extends Observable {
 
     public void addGroupTransaction(GroupTransaction groupTransaction) {
         currentGroupTransactionList.add(groupTransaction);
+        Collections.sort(currentGroupTransactionList);
     }
 
     public String getCurrentUserId() {
@@ -181,15 +189,27 @@ public class Model extends Observable {
     }
 
     public String getUsername(String id) {
-        if (id == "U1") {
+        if (id.equals("U1")) {
             return "Alice";
-        } else if (id == "U2") {
+        } else if (id.equals("U2")) {
             return "Bob";
-        } else if (id == "U3") {
+        } else if (id.equals("U3")) {
             return "Carol";
         } else {
             return "David";
         }
+    }
+
+    public Date parseStringToDate(String date) throws Exception{
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        Date parsedDate = (Date) formatter.parse(date);
+        return parsedDate;
+    }
+
+    public String parseDateToString(Date date) {
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String formattedDate = formatter.format(date);
+        return formattedDate;
     }
 
     public void readFromDB() {
@@ -245,6 +265,7 @@ public class Model extends Observable {
 //
         // Create a new user with a first and last name
         Map<String, Object> transaction = new HashMap<>();
+        transaction.put("accountBookId", clickedAccountBookId);
         transaction.put("id", groupTransaction.getUuid());
         transaction.put("category", groupTransaction.getCategory());
         transaction.put("type", groupTransaction.getType());

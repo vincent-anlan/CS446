@@ -44,21 +44,21 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
     LinearLayout transaction1;
     View transactionSeparator1;
     TextView transactionCategory1;
-    //    TextView transactionDate1;
+        TextView transactionDate1;
     TextView transactionAmount1;
     TextView transactionPayer1;
 
     LinearLayout transaction2;
     View transactionSeparator2;
     TextView transactionCategory2;
-    //    TextView transactionDate2;
+        TextView transactionDate2;
     TextView transactionAmount2;
     TextView transactionPayer2;
 
     LinearLayout transaction3;
     View transactionSeparator3;
     TextView transactionCategory3;
-    //    TextView transactionDate3;
+        TextView transactionDate3;
     TextView transactionAmount3;
     TextView transactionPayer3;
 
@@ -86,21 +86,21 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
         transaction1 = (LinearLayout) findViewById(R.id.recentTransaction1);
         transactionSeparator1 = (View) findViewById(R.id.recentTransactionSeparator1);
         transactionCategory1 = (TextView) findViewById(R.id.recentTransactionCategory1);
-//        transactionDate1 = (TextView) findViewById(R.id.recentTransactionDate1);
+        transactionDate1 = (TextView) findViewById(R.id.recentTransactionDate1);
         transactionAmount1 = (TextView) findViewById(R.id.recentTransactionAmount1);
         transactionPayer1 = (TextView) findViewById(R.id.recentTransactionPayer1);
 
         transaction2 = (LinearLayout) findViewById(R.id.recentTransaction2);
         transactionSeparator2 = (View) findViewById(R.id.recentTransactionSeparator2);
         transactionCategory2 = (TextView) findViewById(R.id.recentTransactionCategory2);
-//        transactionDate2 = (TextView) findViewById(R.id.recentTransactionDate2);
+        transactionDate2 = (TextView) findViewById(R.id.recentTransactionDate2);
         transactionAmount2 = (TextView) findViewById(R.id.recentTransactionAmount2);
         transactionPayer2 = (TextView) findViewById(R.id.recentTransactionPayer2);
 
         transaction3 = (LinearLayout) findViewById(R.id.recentTransaction3);
         transactionSeparator3 = (View) findViewById(R.id.recentTransactionSeparator3);
         transactionCategory3 = (TextView) findViewById(R.id.recentTransactionCategory3);
-//        transactionDate3 = (TextView) findViewById(R.id.recentTransactionDate3);
+        transactionDate3 = (TextView) findViewById(R.id.recentTransactionDate3);
         transactionAmount3 = (TextView) findViewById(R.id.recentTransactionAmount3);
         transactionPayer3 = (TextView) findViewById(R.id.recentTransactionPayer3);
 
@@ -189,25 +189,12 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
         int totalTransactionNum = model.currentGroupTransactionList.size();
         int numToDisplay = totalTransactionNum > 3 ? 3 : totalTransactionNum;
 
-        if (mostRecentTransactionId != null) {
-            for ( GroupTransaction transaction: model.currentGroupTransactionList) {
-                if (transaction.getUuid().equals(mostRecentTransactionId)) {
-                    transaction1.setVisibility(View.VISIBLE);
-                    transactionSeparator1.setVisibility(View.VISIBLE);
-                    transactionCategory1.setText(transaction.getCategory());
-//            transactionDate1.setText(transaction.getDate());
-                    transactionAmount1.setText(Float.toString(transaction.getAmount()));
-                    transactionPayer1.setText(transaction.getPayer().getName());
-                    break;
-                }
-
-            }
-        } else if (numToDisplay > 0) {
+        if (numToDisplay > 0) {
             GroupTransaction transaction = model.currentGroupTransactionList.get(0);
             transaction1.setVisibility(View.VISIBLE);
             transactionSeparator1.setVisibility(View.VISIBLE);
             transactionCategory1.setText(transaction.getCategory());
-//            transactionDate1.setText(transaction.getDate());
+            transactionDate1.setText(transaction.getDate());
             transactionAmount1.setText(Float.toString(transaction.getAmount()));
             transactionPayer1.setText(transaction.getPayer().getName());
         } else {
@@ -223,7 +210,7 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
             transaction2.setVisibility(View.VISIBLE);
             transactionSeparator2.setVisibility(View.VISIBLE);
             transactionCategory2.setText(transaction.getCategory());
-//            transactionDate2.setText(transaction.getDate());
+            transactionDate2.setText(transaction.getDate());
             transactionAmount2.setText(Float.toString(transaction.getAmount()));
             transactionPayer2.setText(transaction.getPayer().getName());
         } else {
@@ -236,7 +223,7 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
             transaction3.setVisibility(View.VISIBLE);
             transactionSeparator3.setVisibility(View.VISIBLE);
             transactionCategory3.setText(transaction.getCategory());
-//            transactionDate3.setText(transaction.getDate());
+            transactionDate3.setText(transaction.getDate());
             transactionAmount3.setText(Float.toString(transaction.getAmount()));
             transactionPayer3.setText(transaction.getPayer().getName());
         }
@@ -254,9 +241,22 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
     }
 
     public void drawParticipantIcons() {
+//        String[] particiantNames = {"A", "B", "C", "D"};
+//        int numOfParticipants = model.getParticipantsById(model.getClickedAccountBookId()).size();
+//        for (int i = 0; i < numOfParticipants; i++) {
+//            if (i >= 4) {
+//                break;
+//            }
+//            addParticipantTextView(false, particiantNames[i]);
+//        }
+//        addParticipantTextView(true, "\u2022\u2022\u2022");
+
         String[] particiantNames = {"A", "B", "C", "D"};
-        int numOfParticipants = model.getParticipantsById(model.getClickedAccountBookId()).size();
-        for (int i = 0; i < numOfParticipants; i++) {
+        int num = model.getParticipantsById(model.getClickedAccountBookId()).size();
+        if (model.clickedAccountBookId.equals("AB1")) {
+            num = 4;
+        }
+        for (int i = 0; i < num; i++) {
             if (i >= 4) {
                 break;
             }
@@ -317,7 +317,11 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
 
     @Override
     public void update(Observable o, Object arg) {
-        numOfParticipants.setText(model.getParticipantsById(model.getClickedAccountBookId()).size() + " People");
+        int num = model.getParticipantsById(model.getClickedAccountBookId()).size();
+        if (model.clickedAccountBookId.equals("AB1")) {
+            num = 4;
+        }
+        numOfParticipants.setText(num + " People");
         myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
         totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
     }

@@ -40,7 +40,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
-public class GroupTransactionActivity extends AppCompatActivity implements Observer{
+public class GroupTransactionActivity extends AppCompatActivity{
 
     Model model;
 
@@ -211,7 +211,7 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
 
         //COLLECT sum
         allEds = new ArrayList<EditText>();
-        selectName = new ArrayList<String>();
+        selectName = new ArrayList<>();
         collectSumParticipant = new ArrayList<>();
         sumSaveString = "";
 
