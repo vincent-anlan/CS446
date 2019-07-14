@@ -18,14 +18,16 @@ public class TimeAdapter extends RecyclerView.Adapter {
 
     private Context context;
     private LayoutInflater inflater;
-    private ArrayList<GroupAccountBook> data;
+    private ArrayList<AccountBook> data;
+    private String type;
     Model model;
 
 
-    public TimeAdapter(Context context, ArrayList<GroupAccountBook> data) {
+    public TimeAdapter(Context context, ArrayList<AccountBook> data, String type) {
         inflater = LayoutInflater.from(context);
         this.data = data;
         this.context = context;
+        this.type = type;
         model = Model.getInstance();
     }
 
@@ -46,10 +48,16 @@ public class TimeAdapter extends RecyclerView.Adapter {
         public void onClick(View view) {
             int position = this.getAdapterPosition();
             if (position > 0) {
-                Intent groupIntent = new Intent(context,GroupAccountBookActivity.class);
-                model.currentGroupTransactionList = new ArrayList<>();
+                Intent intent;
+                if (type.equals("Group")) {
+                    intent = new Intent(context,GroupAccountBookActivity.class);
+                    model.currentGroupTransactionList = new ArrayList<>();
+                } else {
+                    intent = new Intent(context,GroupAccountBookActivity.class);
+                    model.currentGroupTransactionList = new ArrayList<>();
+                }
                 model.setClickedAccountBookId(data.get(position - 1).getId());
-                context.startActivity(groupIntent);
+                context.startActivity(intent);
             }
         }
     }
@@ -71,7 +79,7 @@ public class TimeAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return model.getGroupAccountBookList().size() + 1;
+        return data.size() + 1;
     }
 
 }

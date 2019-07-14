@@ -71,6 +71,10 @@ public class Model extends Observable {
         return groupAccountBookList;
     }
 
+    public ArrayList<IndividualAccountBook> getIndividualAccountBookList() {
+        return  individualAccountBookList;
+    }
+
     public GroupAccountBook getGroupAccountBook(String id) {
         for (GroupAccountBook groupAccountBook : groupAccountBookList) {
             if (groupAccountBook.getId().equals(id)) {
