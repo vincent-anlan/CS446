@@ -44,10 +44,13 @@ public class TimeAdapter extends RecyclerView.Adapter {
 
         @Override
         public void onClick(View view) {
-            Intent groupIntent = new Intent(context,GroupAccountBookActivity.class);
-            model.currentGroupTransactionList = new ArrayList<>();
-            model.setClickedAccountBookId(data.get(this.getAdapterPosition()).getId());
-            context.startActivity(groupIntent);
+            int position = this.getAdapterPosition();
+            if (position > 0) {
+                Intent groupIntent = new Intent(context,GroupAccountBookActivity.class);
+                model.currentGroupTransactionList = new ArrayList<>();
+                model.setClickedAccountBookId(data.get(position - 1).getId());
+                context.startActivity(groupIntent);
+            }
         }
     }
 
@@ -59,12 +62,16 @@ public class TimeAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-        viewHolder.text.setText(data.get(position).getName());
+        if (position == 0) {
+            viewHolder.text.setText("+ New Account Book");
+        } else {
+            viewHolder.text.setText(data.get(position - 1).getName());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return model.getGroupAccountBookList().size();
+        return model.getGroupAccountBookList().size() + 1;
     }
 
 }
