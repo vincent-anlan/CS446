@@ -25,7 +25,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
 
-public class TransactionActivityTemplate extends AppCompatActivity implements Observer {
+public class TransactionUpsertActivityTemplate extends AppCompatActivity implements Observer {
 
     Model model;
 

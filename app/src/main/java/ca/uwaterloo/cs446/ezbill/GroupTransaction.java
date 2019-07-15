@@ -2,19 +2,11 @@ package ca.uwaterloo.cs446.ezbill;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,11 +64,11 @@ public class GroupTransaction extends Transaction {
     private EditText mNoteedit;
 
     public void cancelButtonHandler(View v) {
-        startActivity(new Intent(GroupTransaction.this, GroupAccountBookActivity.class));
+        startActivity(new Intent(GroupTransaction.this, GroupAccountBookDetailsActivity.class));
     }
 
     public void saveButtonHandler(View v) {
-        startActivity(new Intent(GroupTransaction.this, GroupAccountBookActivity.class));
+        startActivity(new Intent(GroupTransaction.this, GroupAccountBookDetailsActivity.class));
     }
 
 }

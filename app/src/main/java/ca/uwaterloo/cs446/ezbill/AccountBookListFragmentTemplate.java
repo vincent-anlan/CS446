@@ -15,13 +15,13 @@ import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
-public abstract class AccountBookFragment extends Fragment implements Observer {
+public abstract class AccountBookListFragmentTemplate extends Fragment implements Observer {
 
     Model model;
     private ArrayList<String> dates;
     private RecyclerView Rv;
 
-    public AccountBookFragment() {}
+    public AccountBookListFragmentTemplate() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState){

@@ -2,14 +2,12 @@ package ca.uwaterloo.cs446.ezbill;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
@@ -27,20 +25,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.UUID;
 
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-
-public class GroupTransactionActivity extends TransactionActivityTemplate {
+public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTemplate {
 
     Model model;
 
@@ -107,7 +98,7 @@ public class GroupTransactionActivity extends TransactionActivityTemplate {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selecvalue = parent.getItemAtPosition(position).toString();
-                Toast.makeText(GroupTransactionActivity.this, "Selected:" + selecvalue, Toast.LENGTH_SHORT).show();
+                Toast.makeText(GroupTransactionUpsertActivity.this, "Selected:" + selecvalue, Toast.LENGTH_SHORT).show();
                 payerSaveString = selecvalue;
             }
             @Override
@@ -154,7 +145,7 @@ public class GroupTransactionActivity extends TransactionActivityTemplate {
         mParticipant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(GroupTransactionActivity.this);
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(GroupTransactionUpsertActivity.this);
                 mBuilder.setTitle("Select Participants For Current Transaction");
                 mBuilder.setMultiChoiceItems(listPart, checkedPart, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
@@ -182,21 +173,21 @@ public class GroupTransactionActivity extends TransactionActivityTemplate {
                             String item = collect.get(i);
                             collectSumParticipant.add(item);
 
-                            TextView btn = new TextView(GroupTransactionActivity.this);
+                            TextView btn = new TextView(GroupTransactionUpsertActivity.this);
                             btn.setText(item);
                             btn.setTextSize(25);
                             btn.setLayoutParams(params);
                             btn.setGravity(Gravity.START);
                             selectName.add(item);
 
-                            EditText subExpense = new EditText(GroupTransactionActivity.this);
+                            EditText subExpense = new EditText(GroupTransactionUpsertActivity.this);
                             subExpense.setTextSize(25);
                             subExpense.setLayoutParams(params);
                             subExpense.setGravity(Gravity.CENTER);
                             subExpense.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
                             allEds.add(subExpense);
 
-                            LinearLayout linearLayout_h = new LinearLayout(GroupTransactionActivity.this);
+                            LinearLayout linearLayout_h = new LinearLayout(GroupTransactionUpsertActivity.this);
                             linearLayout_h.setOrientation(LinearLayout.HORIZONTAL);
                             linearLayout_h.setGravity(Gravity.START);
                             linearLayout_h.addView(btn);
@@ -293,7 +284,7 @@ public class GroupTransactionActivity extends TransactionActivityTemplate {
                 int month = cal.get(Calendar.MONTH);
                 int day = cal.get(Calendar.DAY_OF_MONTH);
                 DatePickerDialog dialog = new DatePickerDialog(
-                        GroupTransactionActivity.this,
+                        GroupTransactionUpsertActivity.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         mDateSetListener,
                         year, month, day);
@@ -335,7 +326,7 @@ public class GroupTransactionActivity extends TransactionActivityTemplate {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selecvalue = parent.getItemAtPosition(position).toString();
-                Toast.makeText(GroupTransactionActivity.this, "Selected:" + selecvalue, Toast.LENGTH_SHORT).show();
+                Toast.makeText(GroupTransactionUpsertActivity.this, "Selected:" + selecvalue, Toast.LENGTH_SHORT).show();
                 currencySaveString = selecvalue;
             }
             @Override
@@ -354,7 +345,7 @@ public class GroupTransactionActivity extends TransactionActivityTemplate {
     }
 
     public void cancelButtonHandler(View v) {
-        startActivity(new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class));
+        startActivity(new Intent(GroupTransactionUpsertActivity.this, GroupAccountBookDetailsActivity.class));
     }
 
     public void saveButtonHandler(View v) {
@@ -368,7 +359,7 @@ public class GroupTransactionActivity extends TransactionActivityTemplate {
         newGroupTransaction.setDate(mDisplayDate.getText().toString());
         model.addToCurrentGroupTransactionList(newGroupTransaction);
 
-        Intent intent = new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class);
+        Intent intent = new Intent(GroupTransactionUpsertActivity.this, GroupAccountBookDetailsActivity.class);
         intent.putExtra("transactionId", newGroupTransaction.getUuid());
         startActivity(intent);
     }

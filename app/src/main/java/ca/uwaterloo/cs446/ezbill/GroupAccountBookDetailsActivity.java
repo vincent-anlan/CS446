@@ -1,6 +1,5 @@
 package ca.uwaterloo.cs446.ezbill;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -30,7 +27,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import javax.annotation.Nonnull;
 
-public class GroupAccountBookActivity extends AppCompatActivity implements Observer {
+public class GroupAccountBookDetailsActivity extends AppCompatActivity implements Observer {
 
     Model model;
     Button calculateBtn;
@@ -231,7 +228,7 @@ public class GroupAccountBookActivity extends AppCompatActivity implements Obser
 
 
     public void addTransactionBtnClick(View view) {
-        Intent transactionIntent = new Intent(GroupAccountBookActivity.this, GroupTransactionActivity.class);
+        Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
         startActivity(transactionIntent);
     }
 

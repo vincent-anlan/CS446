@@ -1,19 +1,13 @@
 package ca.uwaterloo.cs446.ezbill;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 
@@ -29,12 +23,12 @@ public class MainActivity extends AppCompatActivity{
             switch (item.getItemId()) {
                 case R.id.navigation_my_account_book:
                     model.setMainPageGroupViewOnSelect(false);
-                    Fragment individualAccountBookFragment = new IndividualAccountBookFragment();
+                    Fragment individualAccountBookFragment = new IndividualAccountBookListFragment();
                     loadFragment(individualAccountBookFragment);
                     return true;
                 case R.id.navigation_group_account_book:
                     model.setMainPageGroupViewOnSelect(true);
-                    Fragment groupAccountBookFragement = new GroupAccountBookFragment();
+                    Fragment groupAccountBookFragement = new GroupAccountBookListFragment();
                     loadFragment(groupAccountBookFragement);
                     return true;
             }
@@ -60,10 +54,10 @@ public class MainActivity extends AppCompatActivity{
 
         if (model.mainPageGroupViewOnSelect) {
             navView.setSelectedItemId(R.id.navigation_group_account_book);
-            loadFragment(new GroupAccountBookFragment());
+            loadFragment(new GroupAccountBookListFragment());
         } else {
             navView.setSelectedItemId(R.id.navigation_my_account_book);
-            loadFragment(new IndividualAccountBookFragment());
+            loadFragment(new IndividualAccountBookListFragment());
         }
 
 
