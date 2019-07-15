@@ -34,6 +34,13 @@
             android:parentActivityName=".GroupAccountBookActivity"
             android:windowSoftInputMode="stateHidden">
         </activity>
+
+        <!--<activity-->
+            <!--android:name=".TransactionActivityTemplate"-->
+            <!--android:label="template"-->
+            <!--android:windowSoftInputMode="stateHidden">-->
+        <!--</activity>-->
+
     </application>
 
 </manifest>

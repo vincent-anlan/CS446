@@ -9,7 +9,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AccountBook implements Serializable {
 public class AccountBook implements Serializable, Comparable<AccountBook> {
 
     private String id;

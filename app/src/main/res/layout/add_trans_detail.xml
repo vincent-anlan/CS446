@@ -103,6 +103,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/cateshow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -184,29 +185,6 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/payer"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:text="@string/payer"
-                android:textSize="25sp" />
-
-            <Spinner
-                android:id="@+id/payer_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="select payer" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
                 android:id="@+id/currency"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
@@ -226,6 +204,58 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
+            android:id="@+id/individual"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/individual_amount"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:text="@string/amount"
+                android:textSize="25sp" />
+
+            <EditText
+                android:id="@+id/editIndividual"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="@string/enter_amount"
+                android:inputType="numberDecimal"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:id="@+id/payerlayout"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/payer"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:text="@string/payer"
+                android:textSize="25sp" />
+
+            <Spinner
+                android:id="@+id/payer_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="select payer" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:id="@+id/autosumlayout"
             android:orientation="horizontal">
 
             <TextView
@@ -249,6 +279,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
+            android:id="@+id/partilayout"
             android:orientation="horizontal">
 
             <TextView

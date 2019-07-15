@@ -76,9 +76,6 @@ public class GroupTransaction extends Transaction {
     }
 
     public void saveButtonHandler(View v) {
-        this.setNote(mNoteedit.getText().toString());
-        this.setDate(mDisplayDate.getText().toString());
-
         startActivity(new Intent(GroupTransaction.this, GroupAccountBookActivity.class));
     }
 
