@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/recent_bills"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:text="Bills"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <include layout="@layout/line_separator" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/transactionHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/viewAllBills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:onClick="viewAllBillsClicked"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="View All Bills"
+                android:textStyle="bold" />
+
+            <include layout="@layout/line_separator" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:layout_gravity="center"
+
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/addTransactionBtn"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center|bottom"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="addTransactionBtnClick"
+                    android:gravity="center"
+                    android:text="\u002B"
+                    android:textSize="30dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/circle"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/circle" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</LinearLayout>
+
+
+
