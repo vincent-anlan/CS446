@@ -84,10 +84,10 @@ public class AccountBookUpsertActivity extends AppCompatActivity {
         String date = formatter.format(new Date());
         if (model.isMainPageGroupViewOnSelect()) {
             GroupAccountBook accountBook = new GroupAccountBook(uuid, name, date, date, currencySaveString);
-            model.addGroupAccountBook(accountBook);
+            model.addToCurrentGroupAccountBookList(accountBook, model.userEmail, model.getCurrentUserId(), model.getCurrentUsername());
         } else {
             IndividualAccountBook accountBook = new IndividualAccountBook(uuid, name, date, date, currencySaveString);
-            model.addIndividualAccountBook(accountBook);
+            model.addToCurrentIndividualAccountBookList(accountBook, model.userEmail, model.getCurrentUserId(), model.getCurrentUsername());
         }
         Intent intent = new Intent(AccountBookUpsertActivity.this, MainActivity.class);
         startActivity(intent);
