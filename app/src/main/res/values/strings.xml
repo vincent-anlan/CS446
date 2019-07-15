@@ -20,6 +20,11 @@
     <string name="Text_view">TextView</string>
     <string name="exbill">EzBill</string>
     <string name="new_expense_toolbar">New Expense</string>
+<<<<<<< HEAD
     <string name="category">Category</string>
     <string name="enter_amount">Enter Amount</string>
+=======
+    <string name="name">Name</string>
+    <string name="enter_name">Enter Name</string>
+>>>>>>> Xueyao_Yu
 </resources>

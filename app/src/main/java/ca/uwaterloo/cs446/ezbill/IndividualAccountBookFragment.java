@@ -13,25 +13,25 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-public class GroupAccountBookFragment extends AccountBookFragment {
+public class IndividualAccountBookFragment extends AccountBookFragment {
 
-    public GroupAccountBookFragment() {}
+    public IndividualAccountBookFragment() {}
 
     @Override
     public void addDates(Model model, ArrayList<String> dates) {
-        for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
-            dates.add(groupAccountBook.getEndDate());
+        for (IndividualAccountBook individualAccountBook : model.getIndividualAccountBookList()) {
+            dates.add(individualAccountBook.getEndDate());
         }
     }
 
     @Override
     public void setMyAdapter(Model model, RecyclerView Rv) {
         ArrayList<AccountBook> accountBooks = new ArrayList<>();
-        for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
-            AccountBook accountBook = groupAccountBook;
+        for (IndividualAccountBook individualAccountBook : model.getIndividualAccountBookList()) {
+            AccountBook accountBook = individualAccountBook;
             accountBooks.add(accountBook);
         }
-        TimeAdapter myAdapter = new TimeAdapter(getActivity(), accountBooks, "Group");
+        TimeAdapter myAdapter = new TimeAdapter(getActivity(), accountBooks, "Individual");
         Rv.setAdapter(myAdapter);
     }
 }
