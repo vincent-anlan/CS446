@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity{
 
+    Model model;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -26,10 +28,12 @@ public class MainActivity extends AppCompatActivity{
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_my_account_book:
+                    model.setMainPageGroupViewOnSelect(false);
                     Fragment individualAccountBookFragment = new IndividualAccountBookFragment();
                     loadFragment(individualAccountBookFragment);
                     return true;
                 case R.id.navigation_group_account_book:
+                    model.setMainPageGroupViewOnSelect(true);
                     Fragment groupAccountBookFragement = new GroupAccountBookFragment();
                     loadFragment(groupAccountBookFragement);
                     return true;
@@ -42,6 +46,9 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        model = Model.getInstance();
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -51,7 +58,14 @@ public class MainActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         title.setText("EzBill");
 
-        loadFragment(new GroupAccountBookFragment());
+        if (model.mainPageGroupViewOnSelect) {
+            navView.setSelectedItemId(R.id.navigation_group_account_book);
+            loadFragment(new GroupAccountBookFragment());
+        } else {
+            navView.setSelectedItemId(R.id.navigation_my_account_book);
+            loadFragment(new IndividualAccountBookFragment());
+        }
+
 
     }
 

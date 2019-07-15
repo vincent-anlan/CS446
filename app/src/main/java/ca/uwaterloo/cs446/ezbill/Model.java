@@ -33,6 +33,8 @@ public class Model extends Observable {
     }
 //    private ArrayList<Participant> participantList;
 
+    boolean mainPageGroupViewOnSelect;
+
     ArrayList<GroupAccountBook> groupAccountBookList;
     ArrayList<IndividualAccountBook> individualAccountBookList;
     String currentUserId;
@@ -40,12 +42,12 @@ public class Model extends Observable {
     String clickedAccountBookId;
     ArrayList<GroupTransaction> currentGroupTransactionList;
     private String userEmail = "alice@gmail.com";
-    private TimeAdapter myAdapter;
 
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
         currentGroupTransactionList = new ArrayList<>();
+        mainPageGroupViewOnSelect = true;
         readFromDB();
     }
 
@@ -214,6 +216,14 @@ public class Model extends Observable {
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         String formattedDate = formatter.format(date);
         return formattedDate;
+    }
+
+    public boolean isMainPageGroupViewOnSelect() {
+        return mainPageGroupViewOnSelect;
+    }
+
+    public void setMainPageGroupViewOnSelect(boolean mainPageGroupViewOnSelect) {
+        this.mainPageGroupViewOnSelect = mainPageGroupViewOnSelect;
     }
 
     public void readFromDB() {

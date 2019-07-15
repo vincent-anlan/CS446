@@ -23,6 +23,13 @@
         </activity>
 
         <activity
+            android:name=".AccountBookUpsertActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity
             android:name=".GroupAccountBookActivity"
             android:label="@string/app_name"
             android:parentActivityName=".MainActivity">

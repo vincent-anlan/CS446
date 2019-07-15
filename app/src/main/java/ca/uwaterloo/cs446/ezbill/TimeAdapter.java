@@ -47,8 +47,8 @@ public class TimeAdapter extends RecyclerView.Adapter {
         @Override
         public void onClick(View view) {
             int position = this.getAdapterPosition();
+            Intent intent;
             if (position > 0) {
-                Intent intent;
                 if (type.equals("Group")) {
                     intent = new Intent(context,GroupAccountBookActivity.class);
                     model.currentGroupTransactionList = new ArrayList<>();
@@ -57,6 +57,9 @@ public class TimeAdapter extends RecyclerView.Adapter {
                     model.currentGroupTransactionList = new ArrayList<>();
                 }
                 model.setClickedAccountBookId(data.get(position - 1).getId());
+                context.startActivity(intent);
+            } else {
+                intent = new Intent(context,AccountBookUpsertActivity.class);
                 context.startActivity(intent);
             }
         }

@@ -8,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -33,7 +36,9 @@ public abstract class AccountBookFragment extends Fragment implements Observer {
         View view = inflater.inflate(R.layout.account_book_fragment, container, false);
         // Init data for timeline
         dates = new ArrayList<>();
-        dates.add("07/13/2019");
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String date = formatter.format(new Date());
+        dates.add(date);
 
         // Init RecyclerView for timeline
         Rv = (RecyclerView) view.findViewById(R.id.my_recycler_view);
