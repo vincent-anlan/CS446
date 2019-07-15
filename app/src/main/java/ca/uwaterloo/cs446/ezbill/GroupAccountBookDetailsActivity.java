@@ -321,6 +321,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         numOfParticipants.setText(num + " People");
         myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
         totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
+        displayTransactions();
     }
 
 }

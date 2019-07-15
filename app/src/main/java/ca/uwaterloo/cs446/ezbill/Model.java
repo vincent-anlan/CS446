@@ -291,6 +291,66 @@ public class Model extends Observable {
                 });
     }
 
+    public void readTransactionsFromDB() {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // read data from database
+        db.collection("transactions")
+                .whereEqualTo("accountBookId", getClickedAccountBookId())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String transactionId = document.getData().get("id").toString();
+
+                                if (!hasGroupTransaction(transactionId)) {
+                                    String category = document.getData().get("category").toString();
+                                    float amount = Float.valueOf(document.getData().get("amount").toString());
+                                    String creatorId = document.getData().get("creator").toString();
+                                    String creatorName = getUsername(creatorId);
+                                    Participant creator = new Participant(creatorId, creatorName);
+                                    String date = document.getData().get("date").toString();
+                                    String note = document.getData().get("note").toString();
+                                    String payerId = document.getData().get("payer").toString();
+                                    String payerName = getUsername(payerId);
+                                    Participant payer = new Participant(payerId, payerName);
+                                    String type = document.getData().get("type").toString();
+                                    String currency = document.getData().get("currency").toString();
+                                    String data = document.getData().get("participant").toString();
+                                    data = data.substring(1,data.length()-2);
+                                    ArrayList<HashMap<Participant, Float>> participants = new ArrayList<>();
+                                    String[] pairs = data.split(",");
+                                    for (int i=0;i<pairs.length;i++) {
+
+                                        HashMap<Participant, Float> map = new HashMap<>();
+                                        String pair = pairs[i];
+                                        String[] keyValue = pair.split("=");
+                                        Participant participant = new Participant(keyValue[0], getUsername(keyValue[0]));
+                                        map.put(participant, Float.valueOf(keyValue[1]));
+                                        participants.add(map);
+                                    }
+
+                                    GroupTransaction groupTransaction = new GroupTransaction(transactionId, category, type, amount, currency, note, date, creator, payer, participants);
+                                    addGroupTransaction(groupTransaction);
+                                }
+
+                                Log.d("READ", document.getId() + " => " + document.getData());
+                            }
+                            getGroupAccountBook(getClickedAccountBookId()).setMyExpense(calculateMyExpense(getClickedAccountBookId()));
+                            getGroupAccountBook(getClickedAccountBookId()).setGroupExpense(calculateTotalExpense(getClickedAccountBookId()));
+
+                            setChanged();
+                            notifyObservers();
+                        } else {
+                            Log.w("READ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
     public void addTransactionToDB(GroupTransaction groupTransaction) {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
