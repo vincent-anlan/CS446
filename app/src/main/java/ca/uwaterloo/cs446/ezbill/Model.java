@@ -42,15 +42,28 @@ public class Model extends Observable {
     String clickedAccountBookId;
     ArrayList<GroupTransaction> currentGroupTransactionList;
     String userEmail = "alice@gmail.com";
+    boolean viewAllBillClicked;
 
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
         currentGroupTransactionList = new ArrayList<>();
         mainPageGroupViewOnSelect = true;
+        viewAllBillClicked = false;
         readFromDB();
     }
 
+
+    public boolean getViewAllBillClicked() {
+        return viewAllBillClicked;
+    }
+
+    public void setViewAllBillClicked(boolean isClicked) {
+        viewAllBillClicked = isClicked;
+        setChanged();
+        notifyObservers();
+
+    }
 
     public ArrayList<GroupTransaction> getCurrentGroupTransactionList() {
         return currentGroupTransactionList;

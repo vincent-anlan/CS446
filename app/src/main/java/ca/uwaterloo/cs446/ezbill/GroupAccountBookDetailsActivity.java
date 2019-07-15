@@ -1,5 +1,6 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,41 +36,23 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     //    TextView addMorePeopleBtn;
     TextView myExpense;
     TextView totalExpense;
+    TextView viewAllBills;
     TextView numOfParticipants;
-    LinearLayout participantsLinearLayout;
-    LinearLayout.LayoutParams params;
+    LinearLayout participantsLayout;
+    LinearLayout.LayoutParams participantParams;
 
-    LinearLayout transaction1;
-    View transactionSeparator1;
-    TextView transactionCategory1;
-        TextView transactionDate1;
-    TextView transactionAmount1;
-    TextView transactionPayer1;
-
-    LinearLayout transaction2;
-    View transactionSeparator2;
-    TextView transactionCategory2;
-        TextView transactionDate2;
-    TextView transactionAmount2;
-    TextView transactionPayer2;
-
-    LinearLayout transaction3;
-    View transactionSeparator3;
-    TextView transactionCategory3;
-        TextView transactionDate3;
-    TextView transactionAmount3;
-    TextView transactionPayer3;
-
-    String mostRecentTransactionId;
+    LinearLayout transactionHistoryLayout;
+    LinearLayout.LayoutParams transactionElementParams;
+    LinearLayout.LayoutParams params_h;
+    View lineSeparator;
+    LayoutInflater inflater;
+    int numToDisplay;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.group_account_book);
-
-        // Get the intent that started this activity
-        mostRecentTransactionId = getIntent().getStringExtra("transactionId");
+        setContentView(R.layout.group_account_book_details);
 
         model = Model.getInstance();
         model.addObserver(this);
@@ -77,30 +61,11 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 //        addMorePeopleBtn = (TextView) findViewById(R.id.addMorePeopleBtn);
         myExpense = (TextView) findViewById(R.id.myExpense);
         totalExpense = (TextView) findViewById(R.id.totalExpense);
+        viewAllBills = (TextView) findViewById(R.id.viewAllBills);
+
         numOfParticipants = (TextView) findViewById(R.id.num_of_participants);
-        participantsLinearLayout = (LinearLayout) findViewById(R.id.participantIcons);
 
-        transaction1 = (LinearLayout) findViewById(R.id.recentTransaction1);
-        transactionSeparator1 = (View) findViewById(R.id.recentTransactionSeparator1);
-        transactionCategory1 = (TextView) findViewById(R.id.recentTransactionCategory1);
-        transactionDate1 = (TextView) findViewById(R.id.recentTransactionDate1);
-        transactionAmount1 = (TextView) findViewById(R.id.recentTransactionAmount1);
-        transactionPayer1 = (TextView) findViewById(R.id.recentTransactionPayer1);
-
-        transaction2 = (LinearLayout) findViewById(R.id.recentTransaction2);
-        transactionSeparator2 = (View) findViewById(R.id.recentTransactionSeparator2);
-        transactionCategory2 = (TextView) findViewById(R.id.recentTransactionCategory2);
-        transactionDate2 = (TextView) findViewById(R.id.recentTransactionDate2);
-        transactionAmount2 = (TextView) findViewById(R.id.recentTransactionAmount2);
-        transactionPayer2 = (TextView) findViewById(R.id.recentTransactionPayer2);
-
-        transaction3 = (LinearLayout) findViewById(R.id.recentTransaction3);
-        transactionSeparator3 = (View) findViewById(R.id.recentTransactionSeparator3);
-        transactionCategory3 = (TextView) findViewById(R.id.recentTransactionCategory3);
-        transactionDate3 = (TextView) findViewById(R.id.recentTransactionDate3);
-        transactionAmount3 = (TextView) findViewById(R.id.recentTransactionAmount3);
-        transactionPayer3 = (TextView) findViewById(R.id.recentTransactionPayer3);
-
+        inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
@@ -138,10 +103,10 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
                                     String type = document.getData().get("type").toString();
                                     String currency = document.getData().get("currency").toString();
                                     String data = document.getData().get("participant").toString();
-                                    data = data.substring(1,data.length()-2);
+                                    data = data.substring(1, data.length() - 2);
                                     ArrayList<HashMap<Participant, Float>> participants = new ArrayList<>();
                                     String[] pairs = data.split(",");
-                                    for (int i=0;i<pairs.length;i++) {
+                                    for (int i = 0; i < pairs.length; i++) {
 
                                         HashMap<Participant, Float> map = new HashMap<>();
                                         String pair = pairs[i];
@@ -172,58 +137,82 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
         title.setText(model.getGroupAccountBook(model.getClickedAccountBookId()).getName());
 
-        params = new LinearLayout.LayoutParams(120, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, dpTopx(10), 0, dpTopx(10));
-        participantsLinearLayout.removeAllViews();
-
+        participantsLayout = (LinearLayout) findViewById(R.id.participantIcons);
+        participantParams = new LinearLayout.LayoutParams(120, LinearLayout.LayoutParams.WRAP_CONTENT);
+        participantParams.setMargins(0, dpTopx(10), 0, dpTopx(10));
+        participantsLayout.removeAllViews();
         drawParticipantIcons();
+
 
         model.initObservers();
 
     }
 
+    public TextView createTextView(String text, LinearLayout.LayoutParams params, int gravity) {
+        TextView textView = new TextView(this);
+        textView.setText(text);
+//            category.setTextSize(25);
+        textView.setLayoutParams(params);
+        switch (gravity) {
+            case 1:
+                textView.setGravity(Gravity.START);
+                return textView;
+            case 2:
+                textView.setGravity(Gravity.CENTER);
+                return textView;
+            case 3:
+                textView.setGravity(Gravity.END);
+                return textView;
+        }
+        return textView;
+    }
+
     public void displayTransactions() {
+        transactionHistoryLayout = (LinearLayout) findViewById(R.id.transactionHistory);
+        transactionHistoryLayout.setOrientation(LinearLayout.VERTICAL);
+        transactionElementParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+        transactionElementParams.setMargins(dpTopx(30), 0, dpTopx(30), 0);
+        params_h = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        transactionHistoryLayout.setLayoutParams(params_h);
+        transactionHistoryLayout.removeAllViews();
+
         int totalTransactionNum = model.currentGroupTransactionList.size();
-        int numToDisplay = totalTransactionNum > 3 ? 3 : totalTransactionNum;
-
-        if (numToDisplay > 0) {
-            GroupTransaction transaction = model.currentGroupTransactionList.get(0);
-            transaction1.setVisibility(View.VISIBLE);
-            transactionSeparator1.setVisibility(View.VISIBLE);
-            transactionCategory1.setText(transaction.getCategory());
-            transactionDate1.setText(transaction.getDate());
-            transactionAmount1.setText(Float.toString(transaction.getAmount()));
-            transactionPayer1.setText(transaction.getPayer().getName());
+        if (model.getViewAllBillClicked()) {
+            numToDisplay = totalTransactionNum;
         } else {
-            transaction2.setVisibility(View.GONE);
-            transactionSeparator2.setVisibility(View.GONE);
-            transaction3.setVisibility(View.GONE);
-            transactionSeparator3.setVisibility(View.GONE);
+            numToDisplay = totalTransactionNum > 3 ? 3 : totalTransactionNum;
         }
 
+        for (int i = 0; i < numToDisplay; ++i) {
+            GroupTransaction transaction = model.currentGroupTransactionList.get(i);
 
-        if (numToDisplay > 1) {
-            GroupTransaction transaction = model.currentGroupTransactionList.get(1);
-            transaction2.setVisibility(View.VISIBLE);
-            transactionSeparator2.setVisibility(View.VISIBLE);
-            transactionCategory2.setText(transaction.getCategory());
-            transactionDate2.setText(transaction.getDate());
-            transactionAmount2.setText(Float.toString(transaction.getAmount()));
-            transactionPayer2.setText(transaction.getPayer().getName());
-        } else {
-            transaction3.setVisibility(View.GONE);
-            transactionSeparator3.setVisibility(View.GONE);
-        }
 
-        if (numToDisplay > 2) {
-            GroupTransaction transaction = model.currentGroupTransactionList.get(2);
-            transaction3.setVisibility(View.VISIBLE);
-            transactionSeparator3.setVisibility(View.VISIBLE);
-            transactionCategory3.setText(transaction.getCategory());
-            transactionDate3.setText(transaction.getDate());
-            transactionAmount3.setText(Float.toString(transaction.getAmount()));
-            transactionPayer3.setText(transaction.getPayer().getName());
+            TextView category = createTextView(transaction.getCategory(), transactionElementParams, 1);
+            TextView amount = createTextView(Float.toString(transaction.getAmount()), transactionElementParams, 3);
+            TextView date = createTextView(transaction.getDate(), transactionElementParams, 1);
+            TextView payer = createTextView(transaction.getPayer().getName(), transactionElementParams, 3);
+
+
+            LinearLayout linearLayout_h1 = new LinearLayout(this);
+            linearLayout_h1.setOrientation(LinearLayout.HORIZONTAL);
+//            linearLayout_h.setGravity(Gravity.START);
+            linearLayout_h1.addView(category);
+            linearLayout_h1.addView(amount);
+            transactionHistoryLayout.addView(linearLayout_h1);
+
+            LinearLayout linearLayout_h2 = new LinearLayout(this);
+            linearLayout_h2.setOrientation(LinearLayout.HORIZONTAL);
+            linearLayout_h2.addView(date);
+            linearLayout_h2.addView(payer);
+            transactionHistoryLayout.addView(linearLayout_h2);
+
+            lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, transactionHistoryLayout, false);
+            transactionHistoryLayout.addView(lineSeparator);
         }
+    }
+
+    public void viewAllBillsClicked(View view) {
+        model.setViewAllBillClicked(!model.getViewAllBillClicked());
     }
 
 
@@ -271,7 +260,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
             return;
         }
 
-        participantsLinearLayout.removeAllViews();
+        participantsLayout.removeAllViews();
         drawParticipantIcons();
     }
 
@@ -279,7 +268,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         Button btn = new Button(this);
         btn.setText(text);
         btn.setTextSize(20);
-        btn.setLayoutParams(params);
+        btn.setLayoutParams(participantParams);
         btn.setTextColor(Color.parseColor("#000000"));
         btn.setGravity(Gravity.CENTER);
         btn.setBackgroundResource(R.drawable.circle);
@@ -295,8 +284,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
                 }
             });
         }
-        participantsLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        participantsLinearLayout.addView(btn);
+        participantsLayout.setOrientation(LinearLayout.HORIZONTAL);
+        participantsLayout.addView(btn);
     }
 
 
@@ -322,6 +311,11 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
         totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
         displayTransactions();
+        if (model.getViewAllBillClicked()) {
+            viewAllBills.setText("Hide");
+        } else {
+            viewAllBills.setText("View All Bills");
+        }
     }
 
 }
