@@ -9,14 +9,17 @@ public class GroupAccountBookListFragment extends AccountBookListFragmentTemplat
     public GroupAccountBookListFragment() {}
 
     @Override
-    public void addDates(Model model, ArrayList<String> dates) {
+    public void addDateToView(Model model, ArrayList<String> dates, RecyclerView Rv) {
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
         for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
             dates.add(groupAccountBook.getEndDate());
         }
+        dividerItemDecoration.setDates(dates);
+        Rv.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
-    public void setMyAdapter(Model model, RecyclerView Rv) {
+    public void addAccountBookInfoToView(Model model, RecyclerView Rv) {
         ArrayList<AccountBook> accountBooks = new ArrayList<>();
         for (GroupAccountBook groupAccountBook : model.getGroupAccountBookList()) {
             AccountBook accountBook = groupAccountBook;
