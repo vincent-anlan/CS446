@@ -49,7 +49,7 @@ public class TimeAdapter extends RecyclerView.Adapter {
                     intent = new Intent(context, GroupAccountBookDetailsActivity.class);
                     model.currentGroupTransactionList = new ArrayList<>();
                 } else {
-                    intent = new Intent(context, GroupAccountBookDetailsActivity.class);
+                    intent = new Intent(context, IndividualAccountBookDetailsActivity.class);
                     model.currentGroupTransactionList = new ArrayList<>();
                 }
                 model.setClickedAccountBookId(data.get(position - 1).getId());
