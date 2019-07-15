@@ -40,7 +40,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
-public class GroupTransactionActivity extends AppCompatActivity implements Observer{
+public class GroupTransactionActivity extends TransactionActivityTemplate {
 
     Model model;
 
@@ -60,12 +60,12 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
 
     private TextView mDisplayDate;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
+
     private static final String TAG = "Transaction";
 
     private EditText mNoteedit;
 
     private Button mParticipant;
-//    private TextView mPartSelected;
     private String[] listPart;
     private boolean[] checkedPart;
     private ArrayList<Integer> mUserPart = new ArrayList<>();
@@ -84,93 +84,10 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_trans);
-
-        model = Model.getInstance();
-        model.addObserver(this);
-
-        //set up toolbar
-        mytoolbar_new_Expense = (Toolbar) findViewById(R.id.group_toolbar_add_new_expense);
-        setSupportActionBar(mytoolbar_new_Expense);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-//        mytoolbar_new_Expense.setNavigationIcon(R.drawable.cancel);
-//        mytoolbar_new_Expense.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(getApplicationContext(), GroupAccountBook.class));
-//            }
-//        });
-        //set note
-        mNoteedit = (EditText) findViewById(R.id.editNote);
-
-        //select date
-        mDisplayDate = (TextView) findViewById(R.id.selectDate);
-        mDisplayDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog dialog = new DatePickerDialog(
-                        GroupTransactionActivity.this,
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        mDateSetListener,
-                        year, month, day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-            }
-        });
-        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
-                Log.d(TAG, "onDateSet: mm/dd/yyyy: " + month + "/" + day + "/" + year);
-                String date = month + "/" + day + "/" + year;
-                if(month < 10){
-                    date = "0" + month + "/" + day + "/" + year;
-                    if(day < 10){
-                        date = "0" + month + "/" + "0" + day + "/" + year;
-                    }else{ }
-                }else{ }
-                mDisplayDate.setText(date);
-            }
-        };
-
-        //select currency
-        mSelectCurrency = (Spinner) findViewById(R.id.currency_spinner);
-        currencySaveString = "CAD";
-        currencystring = new ArrayList<>();
-        currencystring.add("CAD");
-        currencystring.add("USD");
-        currencystring.add("RMB");
-        currencystring.add("JPY");
-        currencystring.add("EURO");
-
-        ArrayAdapter<String> adapter_curr = new ArrayAdapter<>(this, R.layout.spinner_item, currencystring);
-        adapter_curr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        mSelectCurrency.setAdapter(adapter_curr);
-        mSelectCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selecvalue = parent.getItemAtPosition(position).toString();
-                Toast.makeText(GroupTransactionActivity.this, "Selected:" + selecvalue, Toast.LENGTH_SHORT).show();
-                currencySaveString = selecvalue;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
+    protected void handle_new_group_transaction(){
+//        LinearLayout layone = (LinearLayout) findViewById(R.id.cateshow);// change id here
+//        layone.setVisibility(View.GONE);
+//
         //set payer
         mSelectPayer = (Spinner) findViewById(R.id.payer_spinner);
 
@@ -347,6 +264,94 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
         });
     }
 
+    @Override
+    protected void handle_new_individual_transaction(){
+        LinearLayout layone = (LinearLayout) findViewById(R.id.individual);
+        layone.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void initial_transaction_page(){
+        //set up toolbar
+        mytoolbar_new_Expense = (Toolbar) findViewById(R.id.group_toolbar_add_new_expense);
+        setSupportActionBar(mytoolbar_new_Expense);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        //set note
+        mNoteedit = (EditText) findViewById(R.id.editNote);
+
+        //select date
+        mDisplayDate = (TextView) findViewById(R.id.selectDate);
+        mDisplayDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog dialog = new DatePickerDialog(
+                        GroupTransactionActivity.this,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        mDateSetListener,
+                        year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month = month + 1;
+                Log.d(TAG, "onDateSet: mm/dd/yyyy: " + month + "/" + day + "/" + year);
+                String date = month + "/" + day + "/" + year;
+                if(month < 10){
+                    date = "0" + month + "/" + day + "/" + year;
+                    if(day < 10){
+                        date = "0" + month + "/" + "0" + day + "/" + year;
+                    }else{ }
+                }else{ }
+                mDisplayDate.setText(date);
+            }
+        };
+
+        //select currency
+        mSelectCurrency = (Spinner) findViewById(R.id.currency_spinner);
+        currencySaveString = "CAD";
+        currencystring = new ArrayList<>();
+        currencystring.add("CAD");
+        currencystring.add("USD");
+        currencystring.add("RMB");
+        currencystring.add("JPY");
+        currencystring.add("EURO");
+
+        ArrayAdapter<String> adapter_curr = new ArrayAdapter<>(this, R.layout.spinner_item, currencystring);
+        adapter_curr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mSelectCurrency.setAdapter(adapter_curr);
+        mSelectCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selecvalue = parent.getItemAtPosition(position).toString();
+                Toast.makeText(GroupTransactionActivity.this, "Selected:" + selecvalue, Toast.LENGTH_SHORT).show();
+                currencySaveString = selecvalue;
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.add_trans);
+        model = Model.getInstance();
+        model.addObserver(this);
+        startActivityInitProcess();
+    }
 
     public void cancelButtonHandler(View v) {
         startActivity(new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class));
@@ -356,7 +361,9 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
         Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername());
         Participant payer = new Participant(payerIDSaveString, mSelectPayer.getSelectedItem().toString());
         String uuid = UUID.randomUUID().toString();
+
         GroupTransaction newGroupTransaction = new GroupTransaction(uuid, "Food", "Expense", Float.valueOf(sumSaveString), currencySaveString, "None", "04/07/1998", transactionCreator, payer, select_participants);
+
         newGroupTransaction.setNote(mNoteedit.getText().toString());
         newGroupTransaction.setDate(mDisplayDate.getText().toString());
         model.addToCurrentGroupTransactionList(newGroupTransaction);
@@ -364,21 +371,16 @@ public class GroupTransactionActivity extends AppCompatActivity implements Obser
         Intent intent = new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class);
         intent.putExtra("transactionId", newGroupTransaction.getUuid());
         startActivity(intent);
-//        startActivity(new Intent(GroupTransactionActivity.this, GroupAccountBookActivity.class));
     }
-
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         // Remove observer when activity is destroyed.
         model.deleteObserver(this);
     }
 
     @Override
     public void update(Observable o, Object arg) {
-
     }
 }
