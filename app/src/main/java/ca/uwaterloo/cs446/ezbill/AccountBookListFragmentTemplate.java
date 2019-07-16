@@ -34,30 +34,29 @@ public abstract class AccountBookListFragmentTemplate extends Fragment implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.account_book_fragment, container, false);
-        // Init data for timeline
-        dates = new ArrayList<>();
-        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        String date = formatter.format(new Date());
-        dates.add(date);
 
         // Init RecyclerView for timeline
         Rv = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         Rv.setLayoutManager(layoutManager);
         Rv.setHasFixedSize(true);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
 
-        addDates(model, dates);
-        dividerItemDecoration.setDates(dates);
-        Rv.addItemDecoration(dividerItemDecoration);
-        setMyAdapter(model, Rv);
+        // Init data for timeline
+        dates = new ArrayList<>();
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        String date = formatter.format(new Date());
+        dates.add(date);
+
+        addDateToView(model, dates, Rv);
+
+        addAccountBookInfoToView(model, Rv);
 
         return view;
     }
 
-    public abstract void addDates(Model model, ArrayList<String> dates);
+    public abstract void addDateToView(Model model, ArrayList<String> dates, RecyclerView Rv);
 
-    public abstract void setMyAdapter(Model model, RecyclerView Rv);
+    public abstract void addAccountBookInfoToView(Model model, RecyclerView Rv);
 
     @Override
     public void onDestroy() {
@@ -70,9 +69,9 @@ public abstract class AccountBookListFragmentTemplate extends Fragment implement
     @Override
     public void update(Observable o, Object arg) {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
-        addDates(model, dates);
+        addDateToView(model, dates, Rv);
         dividerItemDecoration.setDates(dates);
         Rv.addItemDecoration(dividerItemDecoration);
-        setMyAdapter(model, Rv);
+        addAccountBookInfoToView(model, Rv);
     }
 }

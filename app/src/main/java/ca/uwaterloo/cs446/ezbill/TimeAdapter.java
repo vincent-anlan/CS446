@@ -47,11 +47,10 @@ public class TimeAdapter extends RecyclerView.Adapter {
             if (position > 0) {
                 if (type.equals("Group")) {
                     intent = new Intent(context, GroupAccountBookDetailsActivity.class);
-                    model.currentGroupTransactionList = new ArrayList<>();
                 } else {
                     intent = new Intent(context, IndividualAccountBookDetailsActivity.class);
-                    model.currentGroupTransactionList = new ArrayList<>();
                 }
+                model.currentTransactionList = new ArrayList<>();
                 model.setClickedAccountBookId(data.get(position - 1).getId());
                 context.startActivity(intent);
             } else {

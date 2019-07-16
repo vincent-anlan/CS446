@@ -57,6 +57,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         model = Model.getInstance();
         model.addObserver(this);
 
+        model.readTransactionsFromDB("Group");
+
         calculateBtn = (Button) findViewById(R.id.calculateBtn);
 //        addMorePeopleBtn = (TextView) findViewById(R.id.addMorePeopleBtn);
         myExpense = (TextView) findViewById(R.id.myExpense);
@@ -75,65 +77,11 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        // Access a Cloud Firestore instance from your Activity
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
+        totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
 
-        // read data from database
-        db.collection("transactions")
-                .whereEqualTo("accountBookId", model.getClickedAccountBookId())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String transactionId = document.getData().get("id").toString();
-
-                                if (!model.hasGroupTransaction(transactionId)) {
-                                    String category = document.getData().get("category").toString();
-                                    float amount = Float.valueOf(document.getData().get("amount").toString());
-                                    String creatorId = document.getData().get("creator").toString();
-                                    String creatorName = model.getUsername(creatorId);
-                                    Participant creator = new Participant(creatorId, creatorName);
-                                    String date = document.getData().get("date").toString();
-                                    String note = document.getData().get("note").toString();
-                                    String payerId = document.getData().get("payer").toString();
-                                    String payerName = model.getUsername(payerId);
-                                    Participant payer = new Participant(payerId, payerName);
-                                    String type = document.getData().get("type").toString();
-                                    String currency = document.getData().get("currency").toString();
-                                    String data = document.getData().get("participant").toString();
-                                    data = data.substring(1, data.length() - 2);
-                                    ArrayList<HashMap<Participant, Float>> participants = new ArrayList<>();
-                                    String[] pairs = data.split(",");
-                                    for (int i = 0; i < pairs.length; i++) {
-
-                                        HashMap<Participant, Float> map = new HashMap<>();
-                                        String pair = pairs[i];
-                                        String[] keyValue = pair.split("=");
-                                        Participant participant = new Participant(keyValue[0], model.getUsername(keyValue[0]));
-                                        map.put(participant, Float.valueOf(keyValue[1]));
-                                        participants.add(map);
-                                    }
-
-                                    GroupTransaction groupTransaction = new GroupTransaction(transactionId, category, type, amount, currency, note, date, creator, payer, participants);
-                                    model.addGroupTransaction(groupTransaction);
-                                }
-
-                                Log.d("READ", document.getId() + " => " + document.getData());
-                            }
-                            model.getGroupAccountBook(model.getClickedAccountBookId()).setMyExpense(model.calculateMyExpense(model.getClickedAccountBookId()));
-                            model.getGroupAccountBook(model.getClickedAccountBookId()).setGroupExpense(model.calculateTotalExpense(model.getClickedAccountBookId()));
-                            myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
-                            totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
-
-                            // add to view (transaction)
-                            displayTransactions();
-                        } else {
-                            Log.w("READ", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+        // add to view (transaction)
+        displayTransactions();
 
         model.setViewAllBillClicked(false);
         title.setText(model.getGroupAccountBook(model.getClickedAccountBookId()).getName());
@@ -176,7 +124,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         transactionHistoryLayout.setLayoutParams(params_h);
         transactionHistoryLayout.removeAllViews();
 
-        int totalTransactionNum = model.currentGroupTransactionList.size();
+        int totalTransactionNum = model.currentTransactionList.size();
         if (model.getViewAllBillClicked()) {
             numToDisplay = totalTransactionNum;
         } else {
@@ -184,7 +132,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         }
 
         for (int i = 0; i < numToDisplay; ++i) {
-            GroupTransaction transaction = model.currentGroupTransactionList.get(i);
+            GroupTransaction transaction = (GroupTransaction) model.currentTransactionList.get(i);
 
 
             TextView category = createTextView(transaction.getCategory(), transactionElementParams, 1);
