@@ -4,26 +4,26 @@ import java.io.Serializable;
 
 public class IndividualAccountBook extends AccountBook implements Serializable {
 
-    private int income;
-    private int expense;
+    private float income;
+    private float expense;
 
     IndividualAccountBook(String id, String name, String startDate, String endDate, String defaultCurrency) {
         super(id, name, startDate, endDate, defaultCurrency);
     }
 
-    public int getIncome() {
+    public float getIncome() {
         return income;
     }
 
-    public void setIncome(int income) {
+    public void setIncome(float income) {
         this.income = income;
     }
 
-    public int getExpense() {
+    public float getExpense() {
         return expense;
     }
 
-    public void setExpense(int expense) {
+    public void setExpense(float expense) {
         this.expense = expense;
     }
 }

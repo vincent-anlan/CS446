@@ -18,9 +18,7 @@ public class GroupAccountBook extends AccountBook implements Serializable {
             super(id, name, startDate, endDate, defaultCurrency);
             myExpense = 0;
             groupExpense = 0;
-            Participant participant = new Participant();
-            participantList = new ArrayList<Participant>();
-            participantList.add(participant);
+            participantList = new ArrayList<>();
     }
 
     public float getMyExpense() {

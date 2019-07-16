@@ -31,7 +31,6 @@ public class Model extends Observable {
     static Model getInstance() {
         return modelInstance;
     }
-//    private ArrayList<Participant> participantList;
 
     boolean mainPageGroupViewOnSelect;
 
@@ -40,30 +39,48 @@ public class Model extends Observable {
     String currentUserId;
     String currentUsername;
     String clickedAccountBookId;
-    ArrayList<GroupTransaction> currentGroupTransactionList;
+    ArrayList<Transaction> currentTransactionList;
     String userEmail = "alice@gmail.com";
+    boolean viewAllBillClicked;
 
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
-        currentGroupTransactionList = new ArrayList<>();
+        currentTransactionList = new ArrayList<>();
         mainPageGroupViewOnSelect = true;
-        readFromDB();
+        viewAllBillClicked = false;
+        readAccountBooksFromDB();
     }
 
 
-    public ArrayList<GroupTransaction> getCurrentGroupTransactionList() {
-        return currentGroupTransactionList;
+    public boolean getViewAllBillClicked() {
+        return viewAllBillClicked;
     }
 
-    public void addToCurrentGroupTransactionList(GroupTransaction newTransaction) {
-        currentGroupTransactionList.add(newTransaction);
-        GroupAccountBook groupAccountBook = getGroupAccountBook(clickedAccountBookId);
-        groupAccountBook.setMyExpense(calculateMyExpense(clickedAccountBookId));
-        groupAccountBook.setMyExpense(calculateTotalExpense(clickedAccountBookId));
-        addTransactionToDB(newTransaction);
-        Collections.sort(currentGroupTransactionList);
+    public void setViewAllBillClicked(boolean isClicked) {
+        viewAllBillClicked = isClicked;
+        setChanged();
+        notifyObservers();
 
+    }
+
+    public ArrayList<Transaction> getCurrentTransactionList() {
+        return currentTransactionList;
+    }
+
+    public void addToCurrentTransactionList(Transaction newTransaction, boolean isGroup) {
+        currentTransactionList.add(newTransaction);
+        addTransactionToDB(newTransaction, isGroup);
+        Collections.sort(currentTransactionList);
+
+        if (isGroup) {
+            GroupAccountBook groupAccountBook = getGroupAccountBook(clickedAccountBookId);
+            groupAccountBook.setMyExpense(calculateMyExpense(clickedAccountBookId));
+            groupAccountBook.setGroupExpense(calculateTotalExpense(clickedAccountBookId));
+        } else {
+            IndividualAccountBook individualAccountBook = getIndividualAccountBook(clickedAccountBookId);
+            individualAccountBook.setExpense(calculateTotalExpense(clickedAccountBookId));
+        }
         setChanged();
         notifyObservers();
     }
@@ -104,6 +121,15 @@ public class Model extends Observable {
         return null;
     }
 
+    public IndividualAccountBook getIndividualAccountBook(String id) {
+        for (IndividualAccountBook individualAccountBook : individualAccountBookList) {
+            if (individualAccountBook.getId().equals(id)) {
+                return individualAccountBook;
+            }
+        }
+        return null;
+    }
+
     public void addGroupAccountBook(GroupAccountBook groupAccountBook) {
         groupAccountBookList.add(groupAccountBook);
         Collections.sort(groupAccountBookList);
@@ -132,18 +158,18 @@ public class Model extends Observable {
         return false;
     }
 
-    public boolean hasGroupTransaction(String id) {
-        for (GroupTransaction groupTransaction : currentGroupTransactionList) {
-            if (groupTransaction.getUuid().equals(id)) {
+    public boolean hasTransaction(String id) {
+        for (Transaction transaction : currentTransactionList) {
+            if (transaction.getUuid().equals(id)) {
                 return true;
             }
         }
         return false;
     }
 
-    public void addGroupTransaction(GroupTransaction groupTransaction) {
-        currentGroupTransactionList.add(groupTransaction);
-        Collections.sort(currentGroupTransactionList);
+    public void addTransaction(Transaction transaction) {
+        currentTransactionList.add(transaction);
+        Collections.sort(currentTransactionList);
     }
 
     public String getCurrentUserId() {
@@ -175,9 +201,19 @@ public class Model extends Observable {
         notifyObservers();
     }
 
-    public void addParticipant(String id) {
+    public boolean hasParticipant(String id, String userId) {
+        ArrayList<Participant> participants = getGroupAccountBook(id).getParticipantList();
+        for (Participant participant : participants) {
+            if (participant.getId().equals(userId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addParticipant(String id, Participant participant) {
         GroupAccountBook groupAccountBook = getGroupAccountBook(id);
-        groupAccountBook.addParticipant(new Participant());
+        groupAccountBook.addParticipant(participant);
         setChanged();
         notifyObservers();
 
@@ -190,14 +226,13 @@ public class Model extends Observable {
 
     public float calculateMyExpense(String id) {
         float totalAmount = 0;
-        for (GroupTransaction groupTransaction : currentGroupTransactionList) {
-            for (HashMap<Participant, Float> participant :  groupTransaction.getParticipants()) {
-                for (HashMap.Entry<Participant,Float> entry : participant.entrySet()) {
-                    Participant key = entry.getKey();
-                    Float value = entry.getValue();
-                    if (key.getId().equals(currentUserId)) {
-                        totalAmount += value;
-                    }
+        for (Transaction transaction : currentTransactionList) {
+            HashMap<Participant, Float> participants =  ((GroupTransaction) transaction).getParticipants();
+            for (HashMap.Entry<Participant,Float> entry : participants.entrySet()) {
+                Participant key = entry.getKey();
+                Float value = entry.getValue();
+                if (key.getId().equals(currentUserId)) {
+                    totalAmount += value;
                 }
             }
         }
@@ -206,8 +241,8 @@ public class Model extends Observable {
 
     public float calculateTotalExpense(String id) {
         float totalAmount = 0;
-        for (GroupTransaction groupTransaction : currentGroupTransactionList) {
-            totalAmount += groupTransaction.getAmount();
+        for (Transaction transaction : currentTransactionList) {
+            totalAmount += transaction.getAmount();
         }
         return totalAmount;
     }
@@ -244,7 +279,7 @@ public class Model extends Observable {
         this.mainPageGroupViewOnSelect = mainPageGroupViewOnSelect;
     }
 
-    public void readFromDB() {
+    public void readAccountBooksFromDB() {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -257,8 +292,10 @@ public class Model extends Observable {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                setCurrentUserId(document.getData().get("userId").toString());
-                                setCurrentUsername(document.getData().get("username").toString());
+                                String userId = document.getData().get("userId").toString();
+                                setCurrentUserId(userId);
+                                String username = document.getData().get("username").toString();
+                                setCurrentUsername(username);
 
                                 String accountBookId = document.getData().get("accountBookId").toString();
                                 String accountBookName = document.getData().get("accountBookName").toString();
@@ -291,29 +328,136 @@ public class Model extends Observable {
                 });
     }
 
-    public void addTransactionToDB(GroupTransaction groupTransaction) {
+    public void readTransactionsFromDB(final boolean isGroup) {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // read data from database
+        db.collection("transactions")
+                .whereEqualTo("accountBookId", getClickedAccountBookId())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String transactionId = document.getData().get("id").toString();
+
+                                if (!hasTransaction(transactionId)) {
+                                    String category = document.getData().get("category").toString();
+                                    float amount = Float.valueOf(document.getData().get("amount").toString());
+                                    String date = document.getData().get("date").toString();
+                                    String note = document.getData().get("note").toString();
+                                    String type = document.getData().get("type").toString();
+                                    String currency = document.getData().get("currency").toString();
+
+                                    Transaction transaction;
+                                    if (!isGroup) {
+                                        transaction = new IndividualTransaction(transactionId, category, type, amount, currency, note, date);
+                                    } else {
+                                        String creatorId = document.getData().get("creator").toString();
+                                        String creatorName = getUsername(creatorId);
+                                        Participant creator = new Participant(creatorId, creatorName);
+
+                                        String payerId = document.getData().get("payer").toString();
+                                        String payerName = getUsername(payerId);
+                                        Participant payer = new Participant(payerId, payerName);
+
+                                        String data = document.getData().get("participant").toString();
+                                        data = data.substring(1,data.length()-2);
+
+                                        HashMap<Participant, Float> participants = new HashMap<>();
+                                        String[] pairs = data.split(",");
+                                        for (int i=0;i<pairs.length;i++) {
+                                            String pair = pairs[i];
+                                            String[] keyValue = pair.split("=");
+                                            Participant participant = new Participant(keyValue[0], getUsername(keyValue[0]));
+                                            participants.put(participant, Float.valueOf(keyValue[1]));
+                                        }
+
+                                        transaction = new GroupTransaction(transactionId, category, type, amount, currency, note, date, creator, payer, participants);
+                                    }
+                                    addTransaction(transaction);
+                                }
+
+                                Log.d("READ", document.getId() + " => " + document.getData());
+                            }
+                            if (isGroup) {
+                                getGroupAccountBook(getClickedAccountBookId()).setMyExpense(calculateMyExpense(getClickedAccountBookId()));
+                                getGroupAccountBook(getClickedAccountBookId()).setGroupExpense(calculateTotalExpense(getClickedAccountBookId()));
+                            } else {
+                                getIndividualAccountBook(getClickedAccountBookId()).setExpense(calculateTotalExpense(getClickedAccountBookId()));
+                            }
+
+                            setChanged();
+                            notifyObservers();
+                        } else {
+                            Log.w("READ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void readParticipantsFromDB() {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // read data from database
+        db.collection("user_account_book_info")
+                .whereEqualTo("accountBookId", getClickedAccountBookId())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                GroupAccountBook groupAccountBook = getGroupAccountBook(getClickedAccountBookId());
+
+                                String userId = document.getData().get("userId").toString();
+                                String username = document.getData().get("username").toString();
+
+                                if (!hasParticipant(getClickedAccountBookId(), userId)) {
+                                    Participant participant = new Participant(userId, username);
+                                    groupAccountBook.addParticipant(participant);
+                                }
+
+                                Log.d("READ", document.getId() + " => " + document.getData());
+                            }
+
+                            setChanged();
+                            notifyObservers();
+                        } else {
+                            Log.w("READ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void addTransactionToDB(Transaction newTransaction, boolean isGroup) {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 //
         // Create a new user with a first and last name
         Map<String, Object> transaction = new HashMap<>();
         transaction.put("accountBookId", clickedAccountBookId);
-        transaction.put("id", groupTransaction.getUuid());
-        transaction.put("category", groupTransaction.getCategory());
-        transaction.put("type", groupTransaction.getType());
-        transaction.put("amount", groupTransaction.getAmount().toString());
-        transaction.put("currency", groupTransaction.getCurrency());
-        transaction.put("note", groupTransaction.getNote());
-        transaction.put("date", groupTransaction.getDate());
-        transaction.put("creator", groupTransaction.getCreator().getId());
-        transaction.put("payer", groupTransaction.getPayer().getId());
-        Map<String, Object> participant = new HashMap<>();
-        for (HashMap<Participant, Float> data : groupTransaction.getParticipants()) {
+        transaction.put("id", newTransaction.getUuid());
+        transaction.put("category", newTransaction.getCategory());
+        transaction.put("type", newTransaction.getType());
+        transaction.put("amount", newTransaction.getAmount().toString());
+        transaction.put("currency", newTransaction.getCurrency());
+        transaction.put("note", newTransaction.getNote());
+        transaction.put("date", newTransaction.getDate());
+
+        if (isGroup) {
+            transaction.put("creator", ((GroupTransaction) newTransaction).getCreator().getId());
+            transaction.put("payer", ((GroupTransaction) newTransaction).getPayer().getId());
+            Map<String, Object> participant = new HashMap<>();
+            HashMap<Participant, Float> data = ((GroupTransaction) newTransaction).getParticipants();
             for (HashMap.Entry<Participant,Float> entry : data.entrySet()) {
                 participant.put(entry.getKey().getId(), entry.getValue());
             }
+            transaction.put("participant", participant);
         }
-        transaction.put("participant", participant);
 
         // Add a new document with a generated ID
         db.collection("transactions")
