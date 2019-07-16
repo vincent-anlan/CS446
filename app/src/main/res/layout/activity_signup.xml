@@ -30,25 +30,9 @@
             android:theme="@style/ThemeOverlay.MyTitleText" />
 
         <TextView
-            android:id="@+id/status"
-            style="@style/ThemeOverlay.MyTextDetail"
-            android:text="@string/signed_out" />
-
-        <TextView
             android:id="@+id/detail"
             style="@style/ThemeOverlay.MyTextDetail"
             tools:text="User test" />
-
-    </LinearLayout>
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_weight="1"
-        android:background="@color/cardview_light_background"
-        android:gravity="center_vertical">
-
         <LinearLayout
             android:id="@+id/emailPasswordFields"
             android:layout_width="match_parent"
@@ -74,6 +58,10 @@
                 android:inputType="textPassword" />
         </LinearLayout>
 
+        <!--leave a space -->
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="200dp"/>
         <LinearLayout
             android:id="@+id/emailPasswordButtons"
             android:layout_width="match_parent"
@@ -84,15 +72,6 @@
             android:paddingRight="16dp">
 
             <Button
-                android:id="@+id/emailSignInButton"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/sign_in"
-                android:theme="@style/ThemeOverlay.MyDarkButton" />
-
-            <Button
                 android:id="@+id/emailCreateAccountButton"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
@@ -101,6 +80,20 @@
                 android:text="@string/create_account"
                 android:theme="@style/ThemeOverlay.MyDarkButton" />
         </LinearLayout>
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_weight="1"
+        android:background="@color/cardview_light_background"
+        android:gravity="center_vertical">
+
+
+
+
 
         <LinearLayout
             android:id="@+id/signedInButtons"

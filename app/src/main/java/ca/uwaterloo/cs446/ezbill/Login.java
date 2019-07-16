@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.TimeUnit;
+import android.content.Intent;
+
 
 public class Login extends AppCompatActivity {
     //define var
@@ -101,6 +103,7 @@ public class Login extends AppCompatActivity {
 
     //create account:
     private void creatacc(String eml, String pw){
+        /*
         if(!checkinput()){
             return;
         }
@@ -121,6 +124,8 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
+        */
+        startActivity(new Intent(Login.this, Signup.class));
     }
 
     private void signin(String eml, String pw){
@@ -137,6 +142,7 @@ public class Login extends AppCompatActivity {
                     findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
                     findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
                     //do something;
+                    startActivity(new Intent(Login.this, MainActivity.class));
                 } else {
                     Toast.makeText(Login.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();

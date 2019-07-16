@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.app.ProgressDialog;
 import java.util.concurrent.TimeUnit;
+import android.content.Intent;
+
 
 
 //import androidx.annotation.NonNull;
@@ -27,7 +29,7 @@ public class Signup extends AppCompatActivity {
 
     //define var
     private FirebaseAuth auth;
-    private TextView status;
+    //private TextView status;
     private TextView detail;
     private EditText email;
     private EditText password;
@@ -41,7 +43,7 @@ public class Signup extends AppCompatActivity {
 
         //init
         auth = FirebaseAuth.getInstance();
-        status = findViewById(R.id.status);
+        //status = findViewById(R.id.status);
         detail = findViewById(R.id.detail);
         email = findViewById(R.id.fieldEmail);
         password = findViewById(R.id.fieldPassword);
@@ -49,14 +51,7 @@ public class Signup extends AppCompatActivity {
 
 
         // add listener
-        findViewById(R.id.emailSignInButton).setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View paramView) {
-                signin(email.getText().toString(), password.getText().toString());
-
-                loading("Logging in your account, please wait.");
-            }
-        });
         findViewById(R.id.emailCreateAccountButton).setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View paramView) {
@@ -118,11 +113,12 @@ public class Signup extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     FirebaseUser user = auth.getCurrentUser();
-                    status.setText(user.getEmail());
+                    //status.setText(user.getEmail());
                     detail.setText("register success");
                     findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
                     findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
                     //do something;
+                    startActivity(new Intent(Signup.this, Login.class));
                 } else {
                     Toast.makeText(Signup.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();
@@ -141,7 +137,7 @@ public class Signup extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     FirebaseUser user = auth.getCurrentUser();
-                    status.setText(user.getEmail());
+                    //status.setText(user.getEmail());
                     detail.setText("Login success");
                     findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
                     findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
