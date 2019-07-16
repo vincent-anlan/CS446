@@ -357,7 +357,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
 
         newGroupTransaction.setNote(mNoteedit.getText().toString());
         newGroupTransaction.setDate(mDisplayDate.getText().toString());
-        model.addToCurrentTransactionList(newGroupTransaction, "Group");
+        model.addToCurrentTransactionList(newGroupTransaction, true);
 
         Intent intent = new Intent(GroupTransactionUpsertActivity.this, GroupAccountBookDetailsActivity.class);
         intent.putExtra("transactionId", newGroupTransaction.getUuid());
