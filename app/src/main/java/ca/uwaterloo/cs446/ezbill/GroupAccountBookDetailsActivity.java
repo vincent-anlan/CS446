@@ -57,7 +57,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         model = Model.getInstance();
         model.addObserver(this);
 
-        model.readTransactionsFromDB();
+        model.readTransactionsFromDB("Group");
 
         calculateBtn = (Button) findViewById(R.id.calculateBtn);
 //        addMorePeopleBtn = (TextView) findViewById(R.id.addMorePeopleBtn);
@@ -124,7 +124,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         transactionHistoryLayout.setLayoutParams(params_h);
         transactionHistoryLayout.removeAllViews();
 
-        int totalTransactionNum = model.currentGroupTransactionList.size();
+        int totalTransactionNum = model.currentTransactionList.size();
         if (model.getViewAllBillClicked()) {
             numToDisplay = totalTransactionNum;
         } else {
@@ -132,7 +132,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         }
 
         for (int i = 0; i < numToDisplay; ++i) {
-            GroupTransaction transaction = model.currentGroupTransactionList.get(i);
+            GroupTransaction transaction = (GroupTransaction) model.currentTransactionList.get(i);
 
 
             TextView category = createTextView(transaction.getCategory(), transactionElementParams, 1);
