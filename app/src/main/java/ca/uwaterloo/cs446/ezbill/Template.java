@@ -20,7 +20,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Template extends AppCompatActivity {
+public abstract class Template extends AppCompatActivity {
 
     Model model;
 
@@ -30,6 +30,10 @@ public class Template extends AppCompatActivity {
     private Spinner mSelectCurrency;
     private String currencySaveString;
 
+    private void addSecondView() {
+        View newView = getLayoutInflater().inflate(R.layout.individual_account_book_details, transactionHistoryLayout, false);
+        transactionHistoryLayout.addView(newView);
+    }
 
     private static final String TAG = "Transaction";
 
@@ -37,13 +41,14 @@ public class Template extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_trans);
+
         model = Model.getInstance();
 
         startActivityInitProcess();
     }
 
     public void startActivityInitProcess(){
-        initial_transaction_page();
+        initialTransactionPage();
     }
 
     public void addToolbar() {
@@ -56,16 +61,16 @@ public class Template extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
-    public EditText getNote() {
-        return mNoteedit;
+    public String getNote() {
+        return mNoteedit.getText().toString();
     }
 
     public void setNoteedit() {
         mNoteedit = findViewById(R.id.editNote);
     }
 
-    public TextView getDate() {
-        return mDisplayDate;
+    public String getDate() {
+        return mDisplayDate.getText().toString();
     }
 
     public void setDateSelector() {
@@ -136,7 +141,7 @@ public class Template extends AppCompatActivity {
         });
     }
 
-    protected void initial_transaction_page(){
+    protected void initialTransactionPage(){
         //set up toolbar
         addToolbar();
 
@@ -148,9 +153,12 @@ public class Template extends AppCompatActivity {
 
         //select currency
         setSelectCurrency();
+
+        //initial view
+        initView();
     }
 
-    public void cancelButtonHandler(View v) {
-        startActivity(new Intent(Template.this, GroupAccountBookDetailsActivity.class));
-    }
+    public abstract void initView();
+    public abstract void cancelButtonHandler(View v);
+    public abstract void saveButtonHandler(View v);
 }

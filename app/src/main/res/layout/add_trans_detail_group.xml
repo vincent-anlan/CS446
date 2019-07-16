@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="25dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginRight="25dp"
+    android:layout_marginBottom="15dp"
+    android:id="@+id/addtransGroup"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/payerlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/payer"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="@string/payer"
+            android:textSize="25sp" />
+
+        <Spinner
+            android:id="@+id/payer_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="select payer" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/autosumlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="@string/amount"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/totalAmount"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="@string/auto_sum"
+            android:textSize="25sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/partilayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/participant"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="@string/participant"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/selectParticipant"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/select_participant" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/listparticipant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+</LinearLayout>

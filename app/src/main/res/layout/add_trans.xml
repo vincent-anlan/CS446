@@ -20,7 +20,7 @@
         android:clipToPadding="false"
         android:paddingTop="10dp">
 
-        <include layout="@layout/add_trans_detail" />
+        <include layout="@layout/add_trans_detail_template" />
 
     </ScrollView>
 </LinearLayout>
