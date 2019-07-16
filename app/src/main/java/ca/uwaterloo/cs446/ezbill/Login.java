@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.TimeUnit;
+import android.content.Intent;
+
 
 public class Login extends AppCompatActivity {
     //define var
@@ -37,7 +39,7 @@ public class Login extends AppCompatActivity {
         detail = findViewById(R.id.detail);
         email = findViewById(R.id.fieldEmail);
         password = findViewById(R.id.fieldPassword);
-        dialog =  new ProgressDialog(this);
+        dialog =  new ProgressDialog(this,R.style.AppTheme);
 
 
         // add listener
@@ -52,7 +54,7 @@ public class Login extends AppCompatActivity {
         findViewById(R.id.emailCreateAccountButton).setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View paramView) {
-                creatacc(email.getText().toString(), password.getText().toString());
+                creatacc();
                 loading("Creating your account, please wait.");
 
             }
@@ -100,27 +102,9 @@ public class Login extends AppCompatActivity {
     }
 
     //create account:
-    private void creatacc(String eml, String pw){
-        if(!checkinput()){
-            return;
-        }
-        auth.createUserWithEmailAndPassword(eml,pw).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    FirebaseUser user = auth.getCurrentUser();
-                    status.setText(user.getEmail());
-                    detail.setText("register success");
-                    findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
-                    findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
-                    //do something;
-                } else {
-                    Toast.makeText(Login.this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show();
-                    //do something;
-                }
-            }
-        });
+    private void creatacc(){
+        Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+        startActivity(intent);
     }
 
     private void signin(String eml, String pw){
