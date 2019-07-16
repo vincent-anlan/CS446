@@ -31,7 +31,6 @@ public class Model extends Observable {
     static Model getInstance() {
         return modelInstance;
     }
-//    private ArrayList<Participant> participantList;
 
     boolean mainPageGroupViewOnSelect;
 
@@ -202,9 +201,19 @@ public class Model extends Observable {
         notifyObservers();
     }
 
-    public void addParticipant(String id) {
+    public boolean hasParticipant(String id, String userId) {
+        ArrayList<Participant> participants = getGroupAccountBook(id).getParticipantList();
+        for (Participant participant : participants) {
+            if (participant.getId().equals(userId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addParticipant(String id, Participant participant) {
         GroupAccountBook groupAccountBook = getGroupAccountBook(id);
-        groupAccountBook.addParticipant(new Participant());
+        groupAccountBook.addParticipant(participant);
         setChanged();
         notifyObservers();
 
@@ -218,13 +227,12 @@ public class Model extends Observable {
     public float calculateMyExpense(String id) {
         float totalAmount = 0;
         for (Transaction transaction : currentTransactionList) {
-            for (HashMap<Participant, Float> participant :  ((GroupTransaction) transaction).getParticipants()) {
-                for (HashMap.Entry<Participant,Float> entry : participant.entrySet()) {
-                    Participant key = entry.getKey();
-                    Float value = entry.getValue();
-                    if (key.getId().equals(currentUserId)) {
-                        totalAmount += value;
-                    }
+            HashMap<Participant, Float> participants =  ((GroupTransaction) transaction).getParticipants();
+            for (HashMap.Entry<Participant,Float> entry : participants.entrySet()) {
+                Participant key = entry.getKey();
+                Float value = entry.getValue();
+                if (key.getId().equals(currentUserId)) {
+                    totalAmount += value;
                 }
             }
         }
@@ -284,8 +292,10 @@ public class Model extends Observable {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                setCurrentUserId(document.getData().get("userId").toString());
-                                setCurrentUsername(document.getData().get("username").toString());
+                                String userId = document.getData().get("userId").toString();
+                                setCurrentUserId(userId);
+                                String username = document.getData().get("username").toString();
+                                setCurrentUsername(username);
 
                                 String accountBookId = document.getData().get("accountBookId").toString();
                                 String accountBookName = document.getData().get("accountBookName").toString();
@@ -355,15 +365,14 @@ public class Model extends Observable {
 
                                         String data = document.getData().get("participant").toString();
                                         data = data.substring(1,data.length()-2);
-                                        ArrayList<HashMap<Participant, Float>> participants = new ArrayList<>();
+
+                                        HashMap<Participant, Float> participants = new HashMap<>();
                                         String[] pairs = data.split(",");
                                         for (int i=0;i<pairs.length;i++) {
-                                            HashMap<Participant, Float> map = new HashMap<>();
                                             String pair = pairs[i];
                                             String[] keyValue = pair.split("=");
                                             Participant participant = new Participant(keyValue[0], getUsername(keyValue[0]));
-                                            map.put(participant, Float.valueOf(keyValue[1]));
-                                            participants.add(map);
+                                            participants.put(participant, Float.valueOf(keyValue[1]));
                                         }
 
                                         transaction = new GroupTransaction(transactionId, category, type, amount, currency, note, date, creator, payer, participants);
@@ -378,6 +387,41 @@ public class Model extends Observable {
                                 getGroupAccountBook(getClickedAccountBookId()).setGroupExpense(calculateTotalExpense(getClickedAccountBookId()));
                             } else {
                                 getIndividualAccountBook(getClickedAccountBookId()).setExpense(calculateTotalExpense(getClickedAccountBookId()));
+                            }
+
+                            setChanged();
+                            notifyObservers();
+                        } else {
+                            Log.w("READ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void readParticipantsFromDB() {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // read data from database
+        db.collection("user_account_book_info")
+                .whereEqualTo("accountBookId", getClickedAccountBookId())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                GroupAccountBook groupAccountBook = getGroupAccountBook(getClickedAccountBookId());
+
+                                String userId = document.getData().get("userId").toString();
+                                String username = document.getData().get("username").toString();
+
+                                if (!hasParticipant(getClickedAccountBookId(), userId)) {
+                                    Participant participant = new Participant(userId, username);
+                                    groupAccountBook.addParticipant(participant);
+                                }
+
+                                Log.d("READ", document.getId() + " => " + document.getData());
                             }
 
                             setChanged();
@@ -408,10 +452,9 @@ public class Model extends Observable {
             transaction.put("creator", ((GroupTransaction) newTransaction).getCreator().getId());
             transaction.put("payer", ((GroupTransaction) newTransaction).getPayer().getId());
             Map<String, Object> participant = new HashMap<>();
-            for (HashMap<Participant, Float> data : ((GroupTransaction) newTransaction).getParticipants()) {
-                for (HashMap.Entry<Participant,Float> entry : data.entrySet()) {
-                    participant.put(entry.getKey().getId(), entry.getValue());
-                }
+            HashMap<Participant, Float> data = ((GroupTransaction) newTransaction).getParticipants();
+            for (HashMap.Entry<Participant,Float> entry : data.entrySet()) {
+                participant.put(entry.getKey().getId(), entry.getValue());
             }
             transaction.put("participant", participant);
         }

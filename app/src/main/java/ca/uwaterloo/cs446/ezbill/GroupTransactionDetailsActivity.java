@@ -10,6 +10,9 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 public class GroupTransactionDetailsActivity extends AppCompatActivity {
 
     Model model;
@@ -72,7 +75,9 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity {
         linearLayout_v.setOrientation(LinearLayout.VERTICAL);
         params_v = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         linearLayout_v.setLayoutParams(params_v);
-        params_tv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,1);
+        params_tv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,1);
+        params_tv.setMargins( 0, 0, dpTopx(5), 0);
+        params_tv.gravity = Gravity.CENTER_VERTICAL;
         params_h = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params_h.setMargins( dpTopx(50), 0, dpTopx(50), 0);
     }
@@ -88,8 +93,6 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity {
         textview_value.setText(amount);
         textview_value.setTextSize(20);
         textview_value.setLayoutParams(params_tv);
-//        textview_value.setGravity(Gravity.START);
-
 
         LinearLayout linearLayout_h = new LinearLayout(this);
         linearLayout_h.setOrientation(LinearLayout.HORIZONTAL);
@@ -101,12 +104,11 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity {
 
     public void displayParticipants() {
         setupTransactionLayout();
-//        for (HashMap<Participant, Float> participant : currTransaction.getParticipants()) {
-//
-//        }
 
-        addParticipantToLayout("Name 1", "Amount 1");
-        addParticipantToLayout("Name 2", "Amount 2");
+        HashMap<Participant, Float> participants =   currTransaction.getParticipants();
+        for (HashMap.Entry<Participant,Float> entry : participants.entrySet()) {
+            addParticipantToLayout(entry.getKey().getName(), Float.toString(entry.getValue()));
+        }
 
 
     }
