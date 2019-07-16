@@ -12,7 +12,7 @@
     <string name="b">B</string>
     <string name="c">C</string>
     <string name="d">D</string>
-    <string name="MORE">...</string>
+    <string name="MORE">\u002B</string>
     <string name="amount">Amount</string>
     <string name="auto_sum">Auto Sum</string>
     <string name="participant">Participant</string>
@@ -24,4 +24,11 @@
     <string name="enter_amount">Enter Amount</string>
     <string name="name">Name</string>
     <string name="enter_name">Enter Name</string>
+    <string name="my_expense">My Expense</string>
+    <string name="total_expense">Total Expense</string>
+    <string name="expense">Expense</string>
+    <string name="calculate">Calculate</string>
+    <string name="bills">Bills</string>
+    <string name="view_all_bills">View All Bills</string>
+    <string name="income">Income</string>
 </resources>

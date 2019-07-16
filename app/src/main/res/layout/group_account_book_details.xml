@@ -10,36 +10,40 @@
         android:id="@+id/group_toolbar"
         layout="@layout/toolbar" />
 
-    <Space
+    <!--<Space-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp" />-->
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="520dp"
+        android:clipToPadding="false">
 
-    <include layout="@layout/line_separator" />
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-        <!--Participants-->
-        <include layout="@layout/participants_fragment" />
-        <include layout="@layout/line_separator" />
-
-        <!--Total expense-->
-        <include layout="@layout/expense" />
-        <include layout="@layout/line_separator" />
-
-        <!--Transaction-->
-        <include layout="@layout/transaction_history_fragement" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
 
-        <!--<View-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="1dp"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:background="#EDEEE8" />-->
+            <include layout="@layout/line_separator" />
+            <!--Participants-->
+            <include layout="@layout/participants_fragment" />
+            <include layout="@layout/line_separator" />
+
+            <!--Total expense-->
+            <include layout="@layout/group_expense_fragment" />
+            <include layout="@layout/line_separator" />
+
+            <!--Transaction-->
+            <include layout="@layout/transaction_history_fragement" />
 
 
-    </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!--Add Transaction Btn-->
+    <include layout="@layout/add_transaction_btn" />
+
+
 </LinearLayout>

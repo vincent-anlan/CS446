@@ -10,36 +10,30 @@
         android:id="@+id/group_toolbar"
         layout="@layout/toolbar" />
 
-    <Space
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="520dp"
+        android:clipToPadding="false">
 
-    <include layout="@layout/line_separator" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <include layout="@layout/line_separator" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-        <!--&lt;!&ndash;Participants&ndash;&gt;-->
-        <!--<include layout="@layout/participants_fragment" />-->
-        <!--<include layout="@layout/line_separator" />-->
+            <!--Income & Expense-->
+            <include layout="@layout/individual_expense_fragment" />
+            <include layout="@layout/line_separator" />
 
-        <!--&lt;!&ndash;Total expense&ndash;&gt;-->
-        <!--<include layout="@layout/expense" />-->
-        <!--<include layout="@layout/line_separator" />-->
+            <!--Transaction-->
+            <include layout="@layout/transaction_history_fragement" />
 
-        <!--Transaction-->
-        <include layout="@layout/transaction_history_fragement" />
+        </LinearLayout>
 
+    </ScrollView>
 
-        <!--<View-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_gravity="bottom"-->
-        <!--android:background="#EDEEE8" />-->
+    <!--Add Transaction Btn-->
+    <include layout="@layout/add_transaction_btn" />
 
-
-    </LinearLayout>
 </LinearLayout>

@@ -135,8 +135,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
                     }
                 });
 
+        model.setViewAllBillClicked(false);
         title.setText(model.getGroupAccountBook(model.getClickedAccountBookId()).getName());
-
         participantsLayout = (LinearLayout) findViewById(R.id.participantIcons);
         participantParams = new LinearLayout.LayoutParams(120, LinearLayout.LayoutParams.WRAP_CONTENT);
         participantParams.setMargins(0, dpTopx(10), 0, dpTopx(10));
