@@ -69,12 +69,12 @@ public class Model extends Observable {
         return currentTransactionList;
     }
 
-    public void addToCurrentTransactionList(Transaction newTransaction, String type) {
+    public void addToCurrentTransactionList(Transaction newTransaction, boolean isGroup) {
         currentTransactionList.add(newTransaction);
-        addTransactionToDB(newTransaction, type);
+        addTransactionToDB(newTransaction, isGroup);
         Collections.sort(currentTransactionList);
 
-        if (type.equals("Group")) {
+        if (isGroup) {
             GroupAccountBook groupAccountBook = getGroupAccountBook(clickedAccountBookId);
             groupAccountBook.setMyExpense(calculateMyExpense(clickedAccountBookId));
             groupAccountBook.setGroupExpense(calculateTotalExpense(clickedAccountBookId));
@@ -318,7 +318,7 @@ public class Model extends Observable {
                 });
     }
 
-    public void readTransactionsFromDB(final String type) {
+    public void readTransactionsFromDB(final boolean isGroup) {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -342,7 +342,7 @@ public class Model extends Observable {
                                     String currency = document.getData().get("currency").toString();
 
                                     Transaction transaction;
-                                    if (type.equals("Individual")) {
+                                    if (!isGroup) {
                                         transaction = new IndividualTransaction(transactionId, category, type, amount, currency, note, date);
                                     } else {
                                         String creatorId = document.getData().get("creator").toString();
@@ -373,7 +373,7 @@ public class Model extends Observable {
 
                                 Log.d("READ", document.getId() + " => " + document.getData());
                             }
-                            if (type.equals("Group")) {
+                            if (isGroup) {
                                 getGroupAccountBook(getClickedAccountBookId()).setMyExpense(calculateMyExpense(getClickedAccountBookId()));
                                 getGroupAccountBook(getClickedAccountBookId()).setGroupExpense(calculateTotalExpense(getClickedAccountBookId()));
                             } else {
@@ -389,7 +389,7 @@ public class Model extends Observable {
                 });
     }
 
-    public void addTransactionToDB(Transaction newTransaction, String type) {
+    public void addTransactionToDB(Transaction newTransaction, boolean isGroup) {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 //
@@ -404,7 +404,7 @@ public class Model extends Observable {
         transaction.put("note", newTransaction.getNote());
         transaction.put("date", newTransaction.getDate());
 
-        if (type.equals("Group")) {
+        if (isGroup) {
             transaction.put("creator", ((GroupTransaction) newTransaction).getCreator().getId());
             transaction.put("payer", ((GroupTransaction) newTransaction).getPayer().getId());
             Map<String, Object> participant = new HashMap<>();

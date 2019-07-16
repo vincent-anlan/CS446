@@ -21,7 +21,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         model = Model.getInstance();
         model.addObserver(this);
 
-        model.readTransactionsFromDB("Individual");
+        model.readTransactionsFromDB(false);
 
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
