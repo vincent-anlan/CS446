@@ -181,19 +181,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     }
 
     public void drawParticipantIcons() {
-//        String[] particiantNames = {"A", "B", "C", "D"};
-//        int numOfParticipants = model.getParticipantsById(model.getClickedAccountBookId()).size();
-//        for (int i = 0; i < numOfParticipants; i++) {
-//            if (i >= 4) {
-//                break;
-//            }
-//            addParticipantTextView(false, particiantNames[i]);
-//        }
-//        addParticipantTextView(true, "\u2022\u2022\u2022");
-
         setupParticipantLayout();
 
-        String[] particiantNames = {"A", "B", "C", "D"};
         ArrayList<Participant> participants = model.getParticipantsById(model.getClickedAccountBookId());
         int num = participants.size();
         for (int i = 0; i < num; i++) {
