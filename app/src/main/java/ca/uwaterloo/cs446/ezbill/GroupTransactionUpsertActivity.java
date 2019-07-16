@@ -42,10 +42,13 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
     private String payerIDSaveString;
     private String sumSaveString;
     private ArrayList<String> selectName;
+    private ArrayList<String> selectId;
     private HashMap<Participant, Float> select_participants;
     private ArrayList<String> pstring;
     private ArrayList<String> currencystring;
     private Button mSum;
+
+    ArrayList<Participant> participants;
 
     private Toolbar mytoolbar_new_Expense;
 
@@ -83,13 +86,10 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         mSelectPayer = (Spinner) findViewById(R.id.payer_spinner);
 
         pstring = new ArrayList<>();
-        pstring.add("Alice");
-        pstring.add("Bob");
-        pstring.add("Carol");
-        pstring.add("David");
-
-        payerIDSaveString = "U";
-        payerSaveString = "";
+        participants = model.getGroupAccountBook(model.getClickedAccountBookId()).getParticipantList();
+        for (Participant participant : participants) {
+            pstring.add(participant.getName());
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, pstring);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -97,29 +97,21 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         mSelectPayer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selecvalue = parent.getItemAtPosition(position).toString();
-                Toast.makeText(GroupTransactionUpsertActivity.this, "Selected:" + selecvalue, Toast.LENGTH_SHORT).show();
-                payerSaveString = selecvalue;
+                String selectedvalue = parent.getItemAtPosition(position).toString();
+                Toast.makeText(GroupTransactionUpsertActivity.this, "Selected:" + selectedvalue, Toast.LENGTH_SHORT).show();
+                payerSaveString = selectedvalue;
+                payerIDSaveString = participants.get(position).getId();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
-        if(payerSaveString.equals("Alice")){
-            payerIDSaveString = "U1";
-        }else if(payerSaveString.equals("Bob")){
-            payerIDSaveString = "U2";
-        }else if(payerSaveString.equals("Carol")){
-            payerIDSaveString = "U3";
-        }else{
-            payerIDSaveString = "U4";
-        }
-
 
         //COLLECT sum
         allEds = new ArrayList<EditText>();
         selectName = new ArrayList<>();
+        selectId = new ArrayList<>();
         collectSumParticipant = new ArrayList<>();
         sumSaveString = "";
 
@@ -132,11 +124,10 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         linearLayout_v.setOrientation(LinearLayout.VERTICAL);
         mParticipant = (Button) findViewById(R.id.selectParticipant);
 
-        listPart = new String[4];
-        listPart[0] = "Alice";
-        listPart[1] = "Bob";
-        listPart[2] = "Carol";
-        listPart[3] = "David";
+        listPart = new String[participants.size()];
+        for (int i = 0; i < participants.size(); i++) {
+            listPart[i] = participants.get(i).getName();
+        }
         checkedPart = new boolean[listPart.length];
         params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
         params.setMargins(0, dpTopx(10), dpTopx(1000), dpTopx(10));
@@ -167,6 +158,9 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                         ArrayList<String> collect = new ArrayList<>();
                         for (int i = 0; i < mUserPart.size(); i++) {
                             String item = listPart[mUserPart.get(i)];
+                            String id = participants.get(mUserPart.get(i)).getId();
+                            selectName.add(item);
+                            selectId.add(id);
                             collect.add(item);
                         }
                         for (int i = 0; i < collect.size(); i++) {
@@ -178,7 +172,6 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                             btn.setTextSize(25);
                             btn.setLayoutParams(params);
                             btn.setGravity(Gravity.START);
-                            selectName.add(item);
 
                             EditText subExpense = new EditText(GroupTransactionUpsertActivity.this);
                             subExpense.setTextSize(25);
@@ -233,16 +226,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                         String item = allEds.get(i).getText().toString();
                         float f = Float.parseFloat(item);
                         String checkName = selectName.get(i);
-                        String checkId = "U";
-                        if(checkName.equals("Alice")){
-                            checkId = "U1";
-                        }else if(checkName.equals("Bob")){
-                            checkId = "U2";
-                        }else if(checkName.equals("Carol")){
-                            checkId = "U3";
-                        }else{
-                            checkId = "U4";
-                        }
+                        String checkId = selectId.get(i);
                         Participant p = new Participant(checkId, checkName);
                         select_participants.put(p, f);
                     }
@@ -323,9 +307,9 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         mSelectCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selecvalue = parent.getItemAtPosition(position).toString();
-                Toast.makeText(GroupTransactionUpsertActivity.this, "Selected:" + selecvalue, Toast.LENGTH_SHORT).show();
-                currencySaveString = selecvalue;
+                String selectedvalue = parent.getItemAtPosition(position).toString();
+                Toast.makeText(GroupTransactionUpsertActivity.this, "Selected:" + selectedvalue, Toast.LENGTH_SHORT).show();
+                currencySaveString = selectedvalue;
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {

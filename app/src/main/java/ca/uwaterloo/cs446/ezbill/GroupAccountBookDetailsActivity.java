@@ -64,6 +64,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         numOfParticipants = (TextView) findViewById(R.id.num_of_participants);
 
         model.readTransactionsFromDB(true);
+        model.readParticipantsFromDB();
         model.setViewAllBillClicked(false);
 
         // set up toolbar
@@ -180,15 +181,13 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         setupParticipantLayout();
 
         String[] particiantNames = {"A", "B", "C", "D"};
-        int num = model.getParticipantsById(model.getClickedAccountBookId()).size();
-        if (model.clickedAccountBookId.equals("AB1")) {
-            num = 4;
-        }
+        ArrayList<Participant> participants = model.getParticipantsById(model.getClickedAccountBookId());
+        int num = participants.size();
         for (int i = 0; i < num; i++) {
             if (i >= 4) {
                 break;
             }
-            addParticipantTextView(false, particiantNames[i]);
+            addParticipantTextView(false, participants.get(i).getName());
         }
         addParticipantTextView(true, "\u2022\u2022\u2022");
     }
@@ -196,7 +195,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
     public void addMorePeople(View view) {
         Log.d("WRITE", "Add more people clicked!");
-        model.addParticipant(model.getClickedAccountBookId());
+        Participant participant = new Participant(model.currentUserId, model.currentUsername);
+        model.addParticipant(model.getClickedAccountBookId(), participant);
         int numOfParticipants = model.getParticipantsById(model.getClickedAccountBookId()).size();
         if (numOfParticipants > 4) {
             return;
@@ -246,12 +246,10 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     @Override
     public void update(Observable o, Object arg) {
         int num = model.getParticipantsById(model.getClickedAccountBookId()).size();
-        if (model.clickedAccountBookId.equals("AB1")) {
-            num = 4;
-        }
         numOfParticipants.setText(num + " People");
         myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
         totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
+        drawParticipantIcons();
         displayTransactions();
         if (model.getViewAllBillClicked()) {
             viewAllBills.setText("Hide");
