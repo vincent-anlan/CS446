@@ -25,7 +25,7 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
 
-public class TransactionUpsertActivityTemplate extends AppCompatActivity implements Observer {
+public class TransactionUpsertActivityTemplate extends AppCompatActivity {
 
     Model model;
 
@@ -45,7 +45,7 @@ public class TransactionUpsertActivityTemplate extends AppCompatActivity impleme
         handle_new_individual_transaction();
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-    }
+//    @Override
+//    public void update(Observable o, Object arg) {
+//    }
 }

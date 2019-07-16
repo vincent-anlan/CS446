@@ -340,7 +340,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_trans);
         model = Model.getInstance();
-        model.addObserver(this);
+//        model.addObserver(this);
         startActivityInitProcess();
     }
 
@@ -364,14 +364,14 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         startActivity(intent);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Remove observer when activity is destroyed.
-        model.deleteObserver(this);
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        // Remove observer when activity is destroyed.
+//        model.deleteObserver(this);
+//    }
+//
+//    @Override
+//    public void update(Observable o, Object arg) {
+//    }
 }
