@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +31,6 @@ public abstract class Template extends AppCompatActivity {
     private Spinner mSelectCurrency;
     private String currencySaveString;
 
-    private void addSecondView() {
-        View newView = getLayoutInflater().inflate(R.layout.individual_account_book_details, transactionHistoryLayout, false);
-        transactionHistoryLayout.addView(newView);
-    }
 
     private static final String TAG = "Transaction";
 

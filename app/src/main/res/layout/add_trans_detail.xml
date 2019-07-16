@@ -214,16 +214,16 @@
                 android:text="@string/amount"
                 android:textSize="25sp" />
 
-            <EditText
-                android:id="@+id/editIndividual"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="@string/enter_amount"
-                android:inputType="numberDecimal"
-                android:textSize="25sp" />
+            <!--<EditText-->
+                <!--android:id="@+id/editIndividual"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:ems="10"-->
+                <!--android:gravity="center"-->
+                <!--android:hint="@string/enter_amount"-->
+                <!--android:inputType="numberDecimal"-->
+                <!--android:textSize="25sp" />-->
         </LinearLayout>
 
         <LinearLayout

@@ -135,7 +135,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     }
 
     public void addTransactionBtnClick(View view) {
-        Intent transactionIntent = new Intent(this, IndividualTransactionUpsertActivity.class);
+        Intent transactionIntent = new Intent(this, IndividualUpsert.class);
         startActivity(transactionIntent);
     }
 

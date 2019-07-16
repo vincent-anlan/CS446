@@ -69,6 +69,13 @@
             android:windowSoftInputMode="stateHidden">
         </activity>
 
+        <activity
+            android:name=".IndividualUpsert"
+            android:label="@string/exbill"
+            android:parentActivityName=".IndividualTransactionDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
         <!--<activity-->
             <!--android:name=".TransactionUpsertActivityTemplate"-->
             <!--android:label="template"-->

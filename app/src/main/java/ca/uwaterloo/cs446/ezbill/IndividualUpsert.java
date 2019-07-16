@@ -3,6 +3,7 @@ package ca.uwaterloo.cs446.ezbill;
 import android.content.Intent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import java.util.UUID;
 
@@ -13,8 +14,10 @@ public class IndividualUpsert extends Template {
     @Override
     public void initView(){
         mAmountedit = (EditText) findViewById(R.id.editIndividual);
+        LinearLayout transLayout = (LinearLayout) findViewById(R.id.addtransTemplate);
 
-
+        View newView = getLayoutInflater().inflate(R.layout.add_trans_detail_individual, transLayout, false);
+        transLayout.addView(newView);
     }
 
     @Override
@@ -35,7 +38,6 @@ public class IndividualUpsert extends Template {
 
 
         Intent intent = new Intent(this, IndividualAccountBookDetailsActivity.class);
-        intent.putExtra("transactionId", newIndividualTransaction.getUuid());
         startActivity(intent);
     }
 }
