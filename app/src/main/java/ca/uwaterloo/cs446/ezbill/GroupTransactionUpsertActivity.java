@@ -42,7 +42,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
     private String payerIDSaveString;
     private String sumSaveString;
     private ArrayList<String> selectName;
-    private ArrayList<HashMap<Participant, Float>> select_participants;
+    private HashMap<Participant, Float> select_participants;
     private ArrayList<String> pstring;
     private ArrayList<String> currencystring;
     private Button mSum;
@@ -228,7 +228,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                     }
                     mSum.setText(Float.toString(totalExpense));
                     sumSaveString = Float.toString(totalExpense);
-                    select_participants = new ArrayList<>();
+                    select_participants = new HashMap<>();
                     for(int i=0; i < allEds.size(); i++){
                         String item = allEds.get(i).getText().toString();
                         float f = Float.parseFloat(item);
@@ -243,10 +243,8 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                         }else{
                             checkId = "U4";
                         }
-                        HashMap<Participant, Float> map = new HashMap<>();
                         Participant p = new Participant(checkId, checkName);
-                        map.put(p, f);
-                        select_participants.add(map);
+                        select_participants.put(p, f);
                     }
                     onetimeUse = 1;
                 }else{

@@ -218,13 +218,12 @@ public class Model extends Observable {
     public float calculateMyExpense(String id) {
         float totalAmount = 0;
         for (Transaction transaction : currentTransactionList) {
-            for (HashMap<Participant, Float> participant :  ((GroupTransaction) transaction).getParticipants()) {
-                for (HashMap.Entry<Participant,Float> entry : participant.entrySet()) {
-                    Participant key = entry.getKey();
-                    Float value = entry.getValue();
-                    if (key.getId().equals(currentUserId)) {
-                        totalAmount += value;
-                    }
+            HashMap<Participant, Float> participants =  ((GroupTransaction) transaction).getParticipants();
+            for (HashMap.Entry<Participant,Float> entry : participants.entrySet()) {
+                Participant key = entry.getKey();
+                Float value = entry.getValue();
+                if (key.getId().equals(currentUserId)) {
+                    totalAmount += value;
                 }
             }
         }
@@ -355,15 +354,14 @@ public class Model extends Observable {
 
                                         String data = document.getData().get("participant").toString();
                                         data = data.substring(1,data.length()-2);
-                                        ArrayList<HashMap<Participant, Float>> participants = new ArrayList<>();
+
+                                        HashMap<Participant, Float> participants = new HashMap<>();
                                         String[] pairs = data.split(",");
                                         for (int i=0;i<pairs.length;i++) {
-                                            HashMap<Participant, Float> map = new HashMap<>();
                                             String pair = pairs[i];
                                             String[] keyValue = pair.split("=");
                                             Participant participant = new Participant(keyValue[0], getUsername(keyValue[0]));
-                                            map.put(participant, Float.valueOf(keyValue[1]));
-                                            participants.add(map);
+                                            participants.put(participant, Float.valueOf(keyValue[1]));
                                         }
 
                                         transaction = new GroupTransaction(transactionId, category, type, amount, currency, note, date, creator, payer, participants);
@@ -408,10 +406,9 @@ public class Model extends Observable {
             transaction.put("creator", ((GroupTransaction) newTransaction).getCreator().getId());
             transaction.put("payer", ((GroupTransaction) newTransaction).getPayer().getId());
             Map<String, Object> participant = new HashMap<>();
-            for (HashMap<Participant, Float> data : ((GroupTransaction) newTransaction).getParticipants()) {
-                for (HashMap.Entry<Participant,Float> entry : data.entrySet()) {
-                    participant.put(entry.getKey().getId(), entry.getValue());
-                }
+            HashMap<Participant, Float> data = ((GroupTransaction) newTransaction).getParticipants();
+            for (HashMap.Entry<Participant,Float> entry : data.entrySet()) {
+                participant.put(entry.getKey().getId(), entry.getValue());
             }
             transaction.put("participant", participant);
         }

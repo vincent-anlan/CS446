@@ -16,9 +16,9 @@ public class GroupTransaction extends Transaction {
 //    Model model;
     private Participant creator;
     private Participant payer;
-    private ArrayList<HashMap<Participant, Float>> participants;
+    private HashMap<Participant, Float> participants;
 
-    public GroupTransaction(String uuid, String category, String type, Float amount, String currency, String note, String date, Participant creator, Participant payer, ArrayList<HashMap<Participant, Float>> participants) {
+    public GroupTransaction(String uuid, String category, String type, Float amount, String currency, String note, String date, Participant creator, Participant payer, HashMap<Participant, Float> participants) {
         super(uuid, category, type, amount, currency, note, date);
         this.creator = creator;
         this.payer = payer;
@@ -40,11 +40,11 @@ public class GroupTransaction extends Transaction {
         this.payer = payer;
     }
 
-    public ArrayList<HashMap<Participant, Float>> getParticipants() {
+    public HashMap<Participant, Float> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(ArrayList<HashMap<Participant, Float>> participants) {
+    public void setParticipants(HashMap<Participant, Float> participants) {
         this.participants = participants;
     }
 
