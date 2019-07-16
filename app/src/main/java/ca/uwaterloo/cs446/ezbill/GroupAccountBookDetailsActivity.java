@@ -57,7 +57,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         model = Model.getInstance();
         model.addObserver(this);
 
-        model.readTransactionsFromDB("Group");
+        model.readTransactionsFromDB(true);
 
         calculateBtn = (Button) findViewById(R.id.calculateBtn);
 //        addMorePeopleBtn = (TextView) findViewById(R.id.addMorePeopleBtn);
