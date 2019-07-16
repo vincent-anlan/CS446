@@ -31,4 +31,6 @@
     <string name="bills">Bills</string>
     <string name="view_all_bills">View All Bills</string>
     <string name="income">Income</string>
+    <string name="type">Type</string>
+    <string name="creator">Creator</string>
 </resources>

@@ -63,9 +63,6 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         viewAllBills = (TextView) findViewById(R.id.viewAllBills);
         numOfParticipants = (TextView) findViewById(R.id.num_of_participants);
 
-        model.readTransactionsFromDB(true);
-        model.setViewAllBillClicked(false);
-
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
@@ -74,9 +71,13 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        model.readTransactionsFromDB(true);
+        model.setViewAllBillClicked(false);
+
         drawParticipantIcons();
         displayTransactions();
 
+        title.setText(model.getGroupAccountBook(model.getClickedAccountBookId()).getName());
         myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
         totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
 
@@ -120,7 +121,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         participantsLayout.removeAllViews();
     }
 
-    public void addRowToLayout(String text1, String text2){
+    public void addRowToLayout(String text1, String text2, int index){
         TextView tv1 = createTextView(text1, transactionElementParams, 1);
         TextView tv2 = createTextView(text2, transactionElementParams, 3);
         LinearLayout row_layout = new LinearLayout(this);
@@ -128,6 +129,17 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 //            linearLayout_h.setGravity(Gravity.START);
         row_layout.addView(tv1);
         row_layout.addView(tv2);
+        row_layout.setId(index);
+        row_layout.setFocusable(true);
+        row_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int index = view.getId();
+                Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionDetailsActivity.class);
+                transactionIntent.putExtra("transactionIndex", index);
+                startActivity(transactionIntent);
+            }
+        });
         transactionHistoryLayout.addView(row_layout);
     }
 
@@ -144,8 +156,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
         for (int i = 0; i < numToDisplay; ++i) {
             GroupTransaction transaction = (GroupTransaction) model.currentTransactionList.get(i);
-            addRowToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()));
-            addRowToLayout(transaction.getDate(), transaction.getPayer().getName());
+            addRowToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()), i);
+            addRowToLayout(transaction.getDate(), transaction.getPayer().getName(), i);
             lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, transactionHistoryLayout, false);
             transactionHistoryLayout.addView(lineSeparator);
         }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,10 +16,9 @@ import java.util.Observer;
 public class IndividualAccountBookDetailsActivity extends AppCompatActivity implements Observer {
 
     Model model;
-    LinearLayout transactionHistoryLayout;
-    LinearLayout.LayoutParams transactionElementParams;
-    LinearLayout.LayoutParams params_h;
-    LayoutInflater inflater;
+    LinearLayout column_layout;
+    LinearLayout.LayoutParams column_params;
+    LinearLayout.LayoutParams row_params;
     View lineSeparator;
     TextView viewAllBills;
     TextView income;
@@ -38,18 +36,18 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         income = (TextView) findViewById(R.id.income);
         expense = (TextView) findViewById(R.id.expense);
 
-        model.readTransactionsFromDB(false);
-
         // set up toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.individual_toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        model.readTransactionsFromDB(false);
         displayTransactions();
         model.setViewAllBillClicked(false);
+        title.setText(model.getIndividualAccountBook(model.getClickedAccountBookId()).getName());
         income.setText(String.valueOf(model.getIndividualAccountBook(model.getClickedAccountBookId()).getIncome()));
         expense.setText(String.valueOf(model.getIndividualAccountBook(model.getClickedAccountBookId()).getExpense()));
 
@@ -77,24 +75,34 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     }
 
     public void setupTransactionLayout() {
-        transactionHistoryLayout = (LinearLayout) findViewById(R.id.transactionHistory);
-        transactionHistoryLayout.setOrientation(LinearLayout.VERTICAL);
-        transactionElementParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
-        transactionElementParams.setMargins(dpTopx(30), 0, dpTopx(30), 0);
-        params_h = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        transactionHistoryLayout.setLayoutParams(params_h);
-        transactionHistoryLayout.removeAllViews();
+        column_layout = (LinearLayout) findViewById(R.id.transactionHistory);
+        column_layout.setOrientation(LinearLayout.VERTICAL);
+        column_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+        column_params.setMargins(dpTopx(30), 0, dpTopx(30), 0);
+        row_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        column_layout.setLayoutParams(row_params);
+        column_layout.removeAllViews();
     }
 
-    public void addRowToLayout(String text1, String text2){
-        TextView tv1 = createTextView(text1, transactionElementParams, 1);
-        TextView tv2 = createTextView(text2, transactionElementParams, 3);
+    public void addColumnToLayout(String text1, String text2, int index) {
+        TextView tv1 = createTextView(text1, column_params, 1);
+        TextView tv2 = createTextView(text2, column_params, 3);
         LinearLayout row_layout = new LinearLayout(this);
         row_layout.setOrientation(LinearLayout.HORIZONTAL);
-//            linearLayout_h.setGravity(Gravity.START);
         row_layout.addView(tv1);
         row_layout.addView(tv2);
-        transactionHistoryLayout.addView(row_layout);
+        row_layout.setId(index);
+        row_layout.setFocusable(true);
+        row_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int index = view.getId();
+                Intent transactionIntent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionDetailsActivity.class);
+                transactionIntent.putExtra("transactionIndex", model.getCurrentTransactionList().get(index).getUuid());
+                startActivity(transactionIntent);
+            }
+        });
+        column_layout.addView(row_layout);
     }
 
     public void displayTransactions() {
@@ -104,17 +112,18 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         if (model.getViewAllBillClicked()) {
             numToDisplay = totalTransactionNum;
         } else {
-            numToDisplay = totalTransactionNum > 1 ? 1 : totalTransactionNum;
+            numToDisplay = totalTransactionNum > 3 ? 3 : totalTransactionNum;
         }
 
         for (int i = 0; i < numToDisplay; ++i) {
             IndividualTransaction transaction = (IndividualTransaction) model.currentTransactionList.get(i);
-            addRowToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()));
-            addRowToLayout(transaction.getDate(), transaction.getCurrency());
-            lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, transactionHistoryLayout, false);
-            transactionHistoryLayout.addView(lineSeparator);
+            addColumnToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()), i);
+            addColumnToLayout(transaction.getDate(), transaction.getCurrency(), i);
+            lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, column_layout, false);
+            column_layout.addView(lineSeparator);
         }
     }
+
 
     public void viewAllBillsClicked(View view) {
         model.setViewAllBillClicked(!model.getViewAllBillClicked());

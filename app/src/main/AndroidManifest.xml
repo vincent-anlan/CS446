@@ -55,6 +55,20 @@
             android:windowSoftInputMode="stateHidden">
         </activity>
 
+        <activity
+            android:name=".IndividualTransactionDetailsActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".IndividualAccountBookDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity
+            android:name=".GroupTransactionDetailsActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".GroupAccountBookDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
         <!--<activity-->
             <!--android:name=".TransactionUpsertActivityTemplate"-->
             <!--android:label="template"-->

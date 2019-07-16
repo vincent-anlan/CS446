@@ -360,7 +360,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         model.addToCurrentTransactionList(newGroupTransaction, true);
 
         Intent intent = new Intent(GroupTransactionUpsertActivity.this, GroupAccountBookDetailsActivity.class);
-        intent.putExtra("transactionId", newGroupTransaction.getUuid());
+//        intent.putExtra("transactionId", newGroupTransaction.getUuid());
         startActivity(intent);
     }
 
