@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.TimeUnit;
 import android.content.Intent;
-
+import android.os.Handler;
 
 public class Login extends AppCompatActivity {
     //define var
@@ -26,7 +26,7 @@ public class Login extends AppCompatActivity {
     private TextView detail;
     private EditText email;
     private EditText password;
-    private ProgressDialog dialog;
+    private ProgressDialog dialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,22 +40,23 @@ public class Login extends AppCompatActivity {
         email = findViewById(R.id.fieldEmail);
         password = findViewById(R.id.fieldPassword);
         dialog =  new ProgressDialog(this,R.style.AppTheme);
+        dialog.setIndeterminate(true);
 
 
         // add listener
         findViewById(R.id.emailSignInButton).setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View paramView) {
+                //loading("Logging in your account, please wait.");
                 signin(email.getText().toString(), password.getText().toString());
 
-                loading("Logging in your account, please wait.");
             }
         });
         findViewById(R.id.emailCreateAccountButton).setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View paramView) {
+                //loading("Creating your account, please wait.");
                 creatacc();
-                loading("Creating your account, please wait.");
 
             }
         });
@@ -68,9 +69,33 @@ public class Login extends AppCompatActivity {
         findViewById(R.id.verifyEmailButton).setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View paramView) {
-                sendEmailVerification();
+
             }
         });
+        findViewById(R.id.link_reset).setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View paramView) {
+                String ResetEmail = email.getText().toString();
+                if(ResetEmail.length() == 0){
+                    email.setError("Please enter email");
+                }
+                //send reset email
+                auth.sendPasswordResetEmail(ResetEmail)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(Login.this, "Email sent.",
+                                            Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(Login.this, "Email sending fails.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
+
     }
 
     private void loading(String msg){
@@ -103,6 +128,15 @@ public class Login extends AppCompatActivity {
 
     //create account:
     private void creatacc(){
+        dialog.setMessage("Creating...");
+        dialog.show();
+        //close the dialog in 3 secs.
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                dialog.dismiss();
+            }
+        }, 3000);
+        //go to signup activity
         Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
         startActivity(intent);
     }
@@ -121,6 +155,7 @@ public class Login extends AppCompatActivity {
                     findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
                     findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
                     //do something;
+
                 } else {
                     Toast.makeText(Login.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();
@@ -131,10 +166,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void signout(){
-
+        auth.getInstance().signOut();
     }
 
-    private void sendEmailVerification(){
-
-    }
 }
