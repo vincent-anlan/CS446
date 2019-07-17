@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class GroupTransactionDetailsActivity extends AppCompatActivity {
 
@@ -35,17 +34,22 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.group_transaction_details);
-
         model = Model.getInstance();
+        showDetails();
+    }
+
+    private void showDetails() {
+        setContentView(R.layout.group_transaction_details);
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.transaction_details_toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        title.setText("Transaction Details");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        // get elements
         category = (TextView) findViewById(R.id.category);
         note = (TextView) findViewById(R.id.note);
         date = (TextView) findViewById(R.id.date);
@@ -53,34 +57,21 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity {
         creator = (TextView) findViewById(R.id.creator);
         payer = (TextView) findViewById(R.id.payer);
 
+        // determine which transaction is clicked
         int transactionIndex = getIntent().getExtras().getInt("transactionIndex");
         currTransaction = (GroupTransaction) model.getCurrentTransactionList().get(transactionIndex);
 
-        title.setText("Transaction Details");
-        showDetails();
-        displayParticipants();
-    }
-
-    private void showDetails() {
+        //set text
         category.setText(currTransaction.getCategory());
         note.setText(currTransaction.getNote());
         date.setText(currTransaction.getDate());
         amount.setText(currTransaction.getCurrency() + " " + currTransaction.getAmount());
         creator.setText(currTransaction.getCreator().getName());
         payer.setText(currTransaction.getPayer().getName());
+        displayParticipants();
+
     }
 
-    public void setupTransactionLayout() {
-        linearLayout_v = (LinearLayout) findViewById(R.id.participants_list);
-        linearLayout_v.setOrientation(LinearLayout.VERTICAL);
-        params_v = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearLayout_v.setLayoutParams(params_v);
-        params_tv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,1);
-        params_tv.setMargins( 0, 0, dpTopx(5), 0);
-        params_tv.gravity = Gravity.CENTER_VERTICAL;
-        params_h = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params_h.setMargins( dpTopx(50), 0, dpTopx(50), 0);
-    }
 
     public void addParticipantToLayout(String name, String amount) {
         TextView textview_name = new TextView(this);
@@ -103,8 +94,17 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity {
     }
 
     public void displayParticipants() {
-        setupTransactionLayout();
-
+        // setup linearlayout
+        linearLayout_v = (LinearLayout) findViewById(R.id.participants_list);
+        linearLayout_v.setOrientation(LinearLayout.VERTICAL);
+        params_v = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearLayout_v.setLayoutParams(params_v);
+        params_tv = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,1);
+        params_tv.setMargins( 0, 0, dpTopx(5), 0);
+        params_tv.gravity = Gravity.CENTER_VERTICAL;
+        params_h = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params_h.setMargins( dpTopx(50), 0, dpTopx(50), 0);
+        // draw participants
         HashMap<Participant, Float> participants =   currTransaction.getParticipants();
         for (HashMap.Entry<Participant,Float> entry : participants.entrySet()) {
             addParticipantToLayout(entry.getKey().getName(), Float.toString(entry.getValue()));
