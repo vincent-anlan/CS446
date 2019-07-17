@@ -29,14 +29,69 @@
             android:label="@string/app_name" />
 
         <activity
-            android:name=".GroupAccountBookActivity"
+            android:name=".AccountBookUpsertActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity
+            android:name=".GroupAccountBookDetailsActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
+        <activity
+            android:name=".IndividualAccountBookDetailsActivity"
             android:label="@string/app_name"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".GroupTransactionActivity"
+            android:name=".GroupTransactionUpsertActivity"
             android:label="@string/exbill"
-            android:parentActivityName=".GroupAccountBookActivity"
-            android:windowSoftInputMode="stateHidden" />
+            android:parentActivityName=".GroupAccountBookDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity
+            android:name=".IndividualTransactionUpsertActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".IndividualAccountBookDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity
+            android:name=".IndividualTransactionDetailsActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".IndividualAccountBookDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity
+            android:name=".GroupTransactionDetailsActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".GroupAccountBookDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity
+            android:name=".IndividualUpsert"
+            android:label="@string/exbill"
+            android:parentActivityName=".IndividualTransactionDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity
+            android:name=".GroupUpsert"
+            android:label="@string/exbill"
+            android:parentActivityName=".GroupTransactionDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <!--<activity-->
+            <!--android:name=".TransactionUpsertActivityTemplate"-->
+            <!--android:label="template"-->
+            <!--android:windowSoftInputMode="stateHidden">-->
+        <!--</activity>-->
     </application>
 
 </manifest>

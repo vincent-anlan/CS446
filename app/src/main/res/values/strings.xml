@@ -12,7 +12,7 @@
     <string name="b">B</string>
     <string name="c">C</string>
     <string name="d">D</string>
-    <string name="MORE">...</string>
+    <string name="MORE">\u002B</string>
     <string name="amount">Amount</string>
     <string name="auto_sum">Auto Sum</string>
     <string name="participant">Participant</string>
@@ -20,6 +20,19 @@
     <string name="Text_view">TextView</string>
     <string name="exbill">EzBill</string>
     <string name="new_expense_toolbar">New Expense</string>
+    <string name="category">Category</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="name">Name</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="my_expense">My Expense</string>
+    <string name="total_expense">Total Expense</string>
+    <string name="expense">Expense</string>
+    <string name="calculate">Calculate</string>
+    <string name="bills">Bills</string>
+    <string name="view_all_bills">View All Bills</string>
+    <string name="income">Income</string>
+    <string name="type">Type</string>
+    <string name="creator">Creator</string>
     <!--for sign in and sign up-->
     <string name="signed_out">Signed Out</string>
     <string name="sign_in">Sign In</string>
@@ -29,6 +42,4 @@
     <string name="sign_out">Sign Out</string>
     <string name="verify_email">Verify Email</string>
     <string name="emailpassword_title_text">Email and Password</string>
-
-
 </resources>

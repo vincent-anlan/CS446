@@ -1,164 +1,312 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        >
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_marginLeft="25dp"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:layout_marginRight="25dp"-->
+        <!--android:layout_marginBottom="15dp"-->
+        <!--android:orientation="vertical">-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/note"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:text="@string/Note"
-                android:textSize="25sp" />
-            <EditText
-                android:id="@+id/editNote"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="@string/enter_note"
-                android:inputType="textPersonName"
-                android:textSize="25sp" />
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical">-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:text="@string/Date"
-                android:textSize="25sp" />
-            <TextView
-                android:id="@+id/selectDate"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:hint="@string/select_date"
-                android:textSize="25sp" />
-        </LinearLayout>
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:layout_marginTop="15dp"-->
+                <!--android:gravity="center"-->
+                <!--android:orientation="horizontal">-->
 
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        >
-        <TextView
-            android:id="@+id/payer"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:text="@string/payer"
-            android:textSize="25sp" />
-        <Spinner
-            android:id="@+id/payer_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="select payer"
-            android:layout_weight="1" />
-        </LinearLayout>
+                <!--<ImageView-->
+                    <!--android:id="@+id/icon_dining"-->
+                    <!--android:layout_width="75dp"-->
+                    <!--android:layout_height="75dp"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:src="@drawable/dining" />-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            >
-            <TextView
-                android:id="@+id/currency"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:text="Currency"
-                android:textSize="25sp" />
-            <Spinner
-                android:id="@+id/currency_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="select currency"
-                android:layout_weight="1" />
-        </LinearLayout>
+                <!--<ImageView-->
+                    <!--android:id="@+id/icon_transport"-->
+                    <!--android:layout_width="75dp"-->
+                    <!--android:layout_height="75dp"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:src="@drawable/transport" />-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            >
+                <!--<ImageView-->
+                    <!--android:id="@+id/icon_entertainment"-->
+                    <!--android:layout_width="75dp"-->
+                    <!--android:layout_height="75dp"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:src="@drawable/entertainment" />-->
 
-            <TextView
-                android:id="@+id/amount"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:text="@string/amount"
-                android:textSize="25sp" />
-            <Button
-                android:id="@+id/totalAmount"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:hint="@string/auto_sum"
-                android:textSize="25sp" />
-        </LinearLayout>
+                <!--<ImageView-->
+                    <!--android:id="@+id/icon_clothing"-->
+                    <!--android:layout_width="75dp"-->
+                    <!--android:layout_height="75dp"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:src="@drawable/clothing" />-->
+            <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            >
-            <TextView
-                android:id="@+id/participant"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:text="@string/participant"
-                android:textSize="25sp"/>
-            <Button
-                android:id="@+id/selectParticipant"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/select_participant" />
-        </LinearLayout>
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:layout_marginTop="15dp"-->
+                <!--android:layout_marginBottom="15dp"-->
+                <!--android:gravity="center"-->
+                <!--android:orientation="horizontal">-->
 
-        <LinearLayout
-            android:id="@+id/listparticipant"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            >
+                <!--<ImageView-->
+                    <!--android:id="@+id/icon_drink"-->
+                    <!--android:layout_width="75dp"-->
+                    <!--android:layout_height="75dp"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:src="@drawable/drink" />-->
 
-        </LinearLayout>
+                <!--<ImageView-->
+                    <!--android:id="@+id/icon_grocery"-->
+                    <!--android:layout_width="75dp"-->
+                    <!--android:layout_height="75dp"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:src="@drawable/grocery" />-->
 
-    </LinearLayout>
+                <!--<ImageView-->
+                    <!--android:id="@+id/icon_ticket"-->
+                    <!--android:layout_width="75dp"-->
+                    <!--android:layout_height="75dp"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:src="@drawable/ticket" />-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/icon_other"-->
+                    <!--android:layout_width="75dp"-->
+                    <!--android:layout_height="75dp"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:src="@drawable/other" />-->
+            <!--</LinearLayout>-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/cateshow"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/category"-->
+                <!--android:layout_width="140dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/category"-->
+                <!--android:textSize="25sp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/select_category"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="select category"-->
+                <!--android:gravity="center"-->
+                <!--android:textSize="25sp" />-->
+
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/note"-->
+                <!--android:layout_width="140dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/Note"-->
+                <!--android:textSize="25sp" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/editNote"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:ems="10"-->
+                <!--android:gravity="center"-->
+                <!--android:hint="@string/enter_note"-->
+                <!--android:inputType="textPersonName"-->
+                <!--android:textSize="25sp" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/date"-->
+                <!--android:layout_width="140dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/Date"-->
+                <!--android:textSize="25sp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/selectDate"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
+                <!--android:hint="@string/select_date"-->
+                <!--android:textSize="25sp" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/currency"-->
+                <!--android:layout_width="140dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Currency"-->
+                <!--android:textSize="25sp" />-->
+
+            <!--<Spinner-->
+                <!--android:id="@+id/currency_spinner"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:hint="select currency" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center"-->
+            <!--android:id="@+id/individual"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/individual_amount"-->
+                <!--android:layout_width="140dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/amount"-->
+                <!--android:textSize="25sp" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/editIndividual"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:ems="10"-->
+                <!--android:gravity="center"-->
+                <!--android:hint="@string/enter_amount"-->
+                <!--android:inputType="numberDecimal"-->
+                <!--android:textSize="25sp" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center"-->
+            <!--android:id="@+id/payerlayout"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/payer"-->
+                <!--android:layout_width="140dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/payer"-->
+                <!--android:textSize="25sp" />-->
+
+            <!--<Spinner-->
+                <!--android:id="@+id/payer_spinner"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:hint="select payer" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center"-->
+            <!--android:id="@+id/autosumlayout"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/amount"-->
+                <!--android:layout_width="140dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/amount"-->
+                <!--android:textSize="25sp" />-->
+
+            <!--<Button-->
+                <!--android:id="@+id/totalAmount"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
+                <!--android:hint="@string/auto_sum"-->
+                <!--android:textSize="25sp" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center"-->
+            <!--android:id="@+id/partilayout"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/participant"-->
+                <!--android:layout_width="140dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/participant"-->
+                <!--android:textSize="25sp" />-->
+
+            <!--<Button-->
+                <!--android:id="@+id/selectParticipant"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="@string/select_participant" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/listparticipant"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="horizontal">-->
+
+        <!--</LinearLayout>-->
+
+    <!--</LinearLayout>-->
 
 </android.support.constraint.ConstraintLayout>

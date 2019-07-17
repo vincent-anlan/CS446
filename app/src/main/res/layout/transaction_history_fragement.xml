@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/recent_bills"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:text="@string/bills"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <include layout="@layout/line_separator" />
+
+
+    <LinearLayout
+        android:id="@+id/transactionHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:orientation="horizontal"></LinearLayout>
+
+    <TextView
+        android:id="@+id/viewAllBills"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:onClick="viewAllBillsClicked"
+        android:text="@string/view_all_bills"
+        android:textStyle="bold" />
+
+    <include layout="@layout/line_separator" />
+
+
+</LinearLayout>
+
+
+

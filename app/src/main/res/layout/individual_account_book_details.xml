@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/border"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/individual_toolbar"
+        layout="@layout/toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="520dp"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/line_separator" />
+
+            <!--Income & Expense-->
+            <include layout="@layout/individual_expense_fragment" />
+            <include layout="@layout/line_separator" />
+
+            <!--Transaction-->
+            <include layout="@layout/transaction_history_fragement" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!--Add Transaction Btn-->
+    <include layout="@layout/add_transaction_btn" />
+
+</LinearLayout>
