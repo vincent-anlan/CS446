@@ -69,7 +69,30 @@ public class Login extends AppCompatActivity {
         findViewById(R.id.verifyEmailButton).setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View paramView) {
-                sendEmailVerification();
+
+            }
+        });
+        findViewById(R.id.link_reset).setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View paramView) {
+                String ResetEmail = email.getText().toString();
+                if(ResetEmail.length() == 0){
+                    email.setError("Please enter email");
+                }
+                //send reset email
+                auth.sendPasswordResetEmail(ResetEmail)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(Login.this, "Email sent.",
+                                            Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(Login.this, "Email sending fails.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
 
@@ -132,6 +155,7 @@ public class Login extends AppCompatActivity {
                     findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
                     findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
                     //do something;
+
                 } else {
                     Toast.makeText(Login.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();
@@ -142,10 +166,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void signout(){
-
+        auth.getInstance().signOut();
     }
 
-    private void sendEmailVerification(){
-
-    }
 }
