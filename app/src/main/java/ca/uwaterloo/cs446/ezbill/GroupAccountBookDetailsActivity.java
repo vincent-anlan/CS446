@@ -171,7 +171,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
 
     public void addTransactionBtnClick(View view) {
-        Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
+        Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupUpsert.class);
         startActivity(transactionIntent);
     }
 

@@ -13,11 +13,11 @@ public class IndividualUpsert extends Template {
 
     @Override
     public void initView(){
-        mAmountedit = (EditText) findViewById(R.id.editIndividual);
         LinearLayout transLayout = (LinearLayout) findViewById(R.id.addtransTemplate);
-
         View newView = getLayoutInflater().inflate(R.layout.add_trans_detail_individual, transLayout, false);
         transLayout.addView(newView);
+
+        mAmountedit = (EditText) findViewById(R.id.editIndividual);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class IndividualUpsert extends Template {
         IndividualTransaction newIndividualTransaction = new IndividualTransaction(uuid, "Food", "Expense",
                                                                                     Float.valueOf(mAmountedit.getText().toString()), currency, note, date);
 
-
+        model.addToCurrentTransactionList(newIndividualTransaction, false);
         Intent intent = new Intent(this, IndividualAccountBookDetailsActivity.class);
         startActivity(intent);
     }
