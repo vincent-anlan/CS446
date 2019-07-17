@@ -33,6 +33,19 @@ public abstract class AccountBookListFragmentTemplate extends Fragment implement
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        View view = initView(inflater, container);
+
+        // Init date for timeline
+        initDate();
+
+        addDateToView(model, dates, Rv);
+
+        addAccountBookInfoToView(model, Rv);
+
+        return view;
+    }
+
+    public View initView(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.account_book_fragment, container, false);
 
         // Init RecyclerView for timeline
@@ -41,17 +54,14 @@ public abstract class AccountBookListFragmentTemplate extends Fragment implement
         Rv.setLayoutManager(layoutManager);
         Rv.setHasFixedSize(true);
 
-        // Init data for timeline
+        return view;
+    }
+
+    public void initDate() {
         dates = new ArrayList<>();
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         String date = formatter.format(new Date());
         dates.add(date);
-
-        addDateToView(model, dates, Rv);
-
-        addAccountBookInfoToView(model, Rv);
-
-        return view;
     }
 
     public abstract void addDateToView(Model model, ArrayList<String> dates, RecyclerView Rv);
