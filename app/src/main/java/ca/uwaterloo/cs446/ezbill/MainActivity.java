@@ -22,12 +22,10 @@ public class MainActivity extends AppCompatActivity{
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_my_account_book:
-                    model.setMainPageGroupViewOnSelect(false);
                     Fragment individualAccountBookFragment = new IndividualAccountBookListFragment();
                     loadFragment(individualAccountBookFragment);
                     return true;
                 case R.id.navigation_group_account_book:
-                    model.setMainPageGroupViewOnSelect(true);
                     Fragment groupAccountBookFragement = new GroupAccountBookListFragment();
                     loadFragment(groupAccountBookFragement);
                     return true;
@@ -52,13 +50,7 @@ public class MainActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         title.setText("EzBill");
 
-        if (model.mainPageGroupViewOnSelect) {
-            navView.setSelectedItemId(R.id.navigation_group_account_book);
-            loadFragment(new GroupAccountBookListFragment());
-        } else {
-            navView.setSelectedItemId(R.id.navigation_my_account_book);
-            loadFragment(new IndividualAccountBookListFragment());
-        }
+        loadFragment(new GroupAccountBookListFragment());
 
 
     }

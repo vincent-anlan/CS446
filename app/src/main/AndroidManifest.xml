@@ -31,7 +31,14 @@
             android:label="@string/app_name" />
 
         <activity
-            android:name=".AccountBookUpsertActivity"
+            android:name=".GroupAccountBookUpsertActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity
+            android:name=".IndividualAccountBookUpsertActivity"
             android:label="@string/exbill"
             android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="stateHidden">

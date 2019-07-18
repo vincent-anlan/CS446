@@ -32,8 +32,6 @@ public class Model extends Observable {
         return modelInstance;
     }
 
-    boolean mainPageGroupViewOnSelect;
-
     ArrayList<GroupAccountBook> groupAccountBookList;
     ArrayList<IndividualAccountBook> individualAccountBookList;
     String currentUserId;
@@ -47,7 +45,6 @@ public class Model extends Observable {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
         currentTransactionList = new ArrayList<>();
-        mainPageGroupViewOnSelect = true;
         viewAllBillClicked = false;
         readAccountBooksFromDB();
     }
@@ -269,14 +266,6 @@ public class Model extends Observable {
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         String formattedDate = formatter.format(date);
         return formattedDate;
-    }
-
-    public boolean isMainPageGroupViewOnSelect() {
-        return mainPageGroupViewOnSelect;
-    }
-
-    public void setMainPageGroupViewOnSelect(boolean mainPageGroupViewOnSelect) {
-        this.mainPageGroupViewOnSelect = mainPageGroupViewOnSelect;
     }
 
     public void readAccountBooksFromDB() {
