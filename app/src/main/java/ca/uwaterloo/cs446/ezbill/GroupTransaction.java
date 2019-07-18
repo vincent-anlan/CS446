@@ -2,19 +2,11 @@ package ca.uwaterloo.cs446.ezbill;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,9 +16,9 @@ public class GroupTransaction extends Transaction {
 //    Model model;
     private Participant creator;
     private Participant payer;
-    private ArrayList<HashMap<Participant, Float>> participants;
+    private HashMap<Participant, Float> participants;
 
-    public GroupTransaction(String uuid, String category, String type, Float amount, String currency, String note, String date, Participant creator, Participant payer, ArrayList<HashMap<Participant, Float>> participants) {
+    public GroupTransaction(String uuid, String category, String type, Float amount, String currency, String note, String date, Participant creator, Participant payer, HashMap<Participant, Float> participants) {
         super(uuid, category, type, amount, currency, note, date);
         this.creator = creator;
         this.payer = payer;
@@ -48,11 +40,11 @@ public class GroupTransaction extends Transaction {
         this.payer = payer;
     }
 
-    public ArrayList<HashMap<Participant, Float>> getParticipants() {
+    public HashMap<Participant, Float> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(ArrayList<HashMap<Participant, Float>> participants) {
+    public void setParticipants(HashMap<Participant, Float> participants) {
         this.participants = participants;
     }
 
@@ -72,14 +64,11 @@ public class GroupTransaction extends Transaction {
     private EditText mNoteedit;
 
     public void cancelButtonHandler(View v) {
-        startActivity(new Intent(GroupTransaction.this, GroupAccountBookActivity.class));
+        startActivity(new Intent(GroupTransaction.this, GroupAccountBookDetailsActivity.class));
     }
 
     public void saveButtonHandler(View v) {
-        this.setNote(mNoteedit.getText().toString());
-        this.setDate(mDisplayDate.getText().toString());
-
-        startActivity(new Intent(GroupTransaction.this, GroupAccountBookActivity.class));
+        startActivity(new Intent(GroupTransaction.this, GroupAccountBookDetailsActivity.class));
     }
 
 }

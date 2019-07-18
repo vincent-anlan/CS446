@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/addTransactionBtn"
+    app:layout_constraintTop_toTopOf="parent"
+    app:srcCompat="@drawable/circle"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:layout_gravity="center|bottom"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="20dp"
+    android:background="@drawable/circle"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:onClick="addTransactionBtnClick"
+    android:text="@string/MORE"
+    android:textSize="30dp" />

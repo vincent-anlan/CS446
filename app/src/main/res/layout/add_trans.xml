@@ -12,92 +12,7 @@
         android:id="@+id/group_toolbar_add_new_expense"
         layout="@layout/toolbar_add_new_expense" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border"
-        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/icon_dining"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/dining" />
-            <ImageView
-                android:id="@+id/icon_transport"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/transport" />
-            <ImageView
-                android:id="@+id/icon_entertainment"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/entertainment" />
-            <ImageView
-                android:id="@+id/icon_clothing"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/clothing" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/icon_drink"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/drink" />
-
-            <ImageView
-                android:id="@+id/icon_grocery"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/grocery" />
-
-            <ImageView
-                android:id="@+id/icon_ticket"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/ticket" />
-
-            <ImageView
-                android:id="@+id/icon_other"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/other" />
-        </LinearLayout>
-    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -105,7 +20,7 @@
         android:clipToPadding="false"
         android:paddingTop="10dp">
 
-        <include layout="@layout/add_trans_detail" />
+        <include layout="@layout/add_trans_detail_template" />
 
     </ScrollView>
 </LinearLayout>

@@ -3,29 +3,27 @@ package ca.uwaterloo.cs446.ezbill;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class TimeAdapter extends RecyclerView.Adapter {
 
     private Context context;
     private LayoutInflater inflater;
-    private ArrayList<GroupAccountBook> data;
+    private ArrayList<AccountBook> data;
+    private String type;
     Model model;
 
 
-    public TimeAdapter(Context context, ArrayList<GroupAccountBook> data) {
+    public TimeAdapter(Context context, ArrayList<AccountBook> data, String type) {
         inflater = LayoutInflater.from(context);
         this.data = data;
         this.context = context;
+        this.type = type;
         model = Model.getInstance();
     }
 
@@ -44,10 +42,21 @@ public class TimeAdapter extends RecyclerView.Adapter {
 
         @Override
         public void onClick(View view) {
-            Intent groupIntent = new Intent(context,GroupAccountBookActivity.class);
-            model.currentGroupTransactionList = new ArrayList<>();
-            model.setClickedAccountBookId(data.get(this.getAdapterPosition()).getId());
-            context.startActivity(groupIntent);
+            int position = this.getAdapterPosition();
+            Intent intent;
+            if (position > 0) {
+                if (type.equals("Group")) {
+                    intent = new Intent(context, GroupAccountBookDetailsActivity.class);
+                } else {
+                    intent = new Intent(context, IndividualAccountBookDetailsActivity.class);
+                }
+                model.currentTransactionList = new ArrayList<>();
+                model.setClickedAccountBookId(data.get(position - 1).getId());
+                context.startActivity(intent);
+            } else {
+                intent = new Intent(context,AccountBookUpsertActivity.class);
+                context.startActivity(intent);
+            }
         }
     }
 
@@ -59,12 +68,16 @@ public class TimeAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-        viewHolder.text.setText(data.get(position).getName());
+        if (position == 0) {
+            viewHolder.text.setText("+ New Account Book");
+        } else {
+            viewHolder.text.setText(data.get(position - 1).getName());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return model.getGroupAccountBookList().size();
+        return data.size() + 1;
     }
 
 }
