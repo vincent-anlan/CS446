@@ -4,6 +4,8 @@
     package="ca.uwaterloo.cs446.ezbill">
 
     <dist:module dist:instant="true" />
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
 
     <application
         android:allowBackup="true"

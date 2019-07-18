@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -76,9 +77,12 @@ public class Login extends AppCompatActivity {
 
             public void onClick(View paramView) {
                 String ResetEmail = email.getText().toString();
+                Log.d("Reset fails ","length:"+ ResetEmail.length() );
                 if(ResetEmail.length() == 0){
                     email.setError("Please enter email");
+                    return;
                 }
+
                 //send reset email
                 auth.sendPasswordResetEmail(ResetEmail)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -98,18 +102,19 @@ public class Login extends AppCompatActivity {
 
     }
 
-    private void loading(String msg){
-        dialog.setMessage(msg);
-        dialog.show();
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
-    }
+    //comment since this is alternative function
+//    private void loading(String msg){
+//        dialog.setMessage(msg);
+//        dialog.show();
+//        try {
+//            TimeUnit.SECONDS.sleep(2);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        if (dialog.isShowing()) {
+//            dialog.dismiss();
+//        }
+//    }
     //check email and password
     private boolean checkinput() {
         boolean result = true;
