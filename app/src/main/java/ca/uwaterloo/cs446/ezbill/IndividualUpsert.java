@@ -21,23 +21,15 @@ public class IndividualUpsert extends Template {
     }
 
     @Override
-    public void cancelButtonHandler(View v) {
-        startActivity(new Intent(this, IndividualAccountBookDetailsActivity.class));
-    }
-
-    @Override
     public void saveButtonHandler(View v) {
         String uuid = UUID.randomUUID().toString();
-
         String note = getNote();
         String date = getDate();
         String currency = getSelectedCurrency();
 
         IndividualTransaction newIndividualTransaction = new IndividualTransaction(uuid, "Food", "Expense",
                                                                                     Float.valueOf(mAmountedit.getText().toString()), currency, note, date);
-
         model.addToCurrentTransactionList(newIndividualTransaction, false);
-        Intent intent = new Intent(this, IndividualAccountBookDetailsActivity.class);
-        startActivity(intent);
+        finish();
     }
 }

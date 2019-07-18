@@ -26,7 +26,6 @@ import java.util.UUID;
 public class GroupUpsert extends Template {
 
     private Spinner mSelectPayer;
-    private String payerSaveString;
     private String payerIDSaveString;
     private String sumSaveString;
     private ArrayList<String> selectName;
@@ -223,11 +222,6 @@ public class GroupUpsert extends Template {
     }
 
     @Override
-    public void cancelButtonHandler(View v) {
-        startActivity(new Intent(this, GroupAccountBookDetailsActivity.class));
-    }
-
-    @Override
     public void saveButtonHandler(View v) {
         Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername());
         Participant payer = new Participant(payerIDSaveString, mSelectPayer.getSelectedItem().toString());
@@ -236,9 +230,6 @@ public class GroupUpsert extends Template {
         GroupTransaction newGroupTransaction = new GroupTransaction(uuid, "Food", "Expense", Float.valueOf(sumSaveString), getSelectedCurrency(), getNote(), getDate(), transactionCreator, payer, select_participants);
 
         model.addToCurrentTransactionList(newGroupTransaction, true);
-
-        Intent intent = new Intent(this, GroupAccountBookDetailsActivity.class);
-//        intent.putExtra("transactionId", newGroupTransaction.getUuid());
-        startActivity(intent);
+        finish();
     }
 }

@@ -54,7 +54,11 @@ public class TimeAdapter extends RecyclerView.Adapter {
                 model.setClickedAccountBookId(data.get(position - 1).getId());
                 context.startActivity(intent);
             } else {
-                intent = new Intent(context,AccountBookUpsertActivity.class);
+                if (type.equals("Group")) {
+                    intent = new Intent(context, GroupAccountBookUpsertActivity.class);
+                } else {
+                    intent = new Intent(context, IndividualAccountBookUpsertActivity.class);
+                }
                 context.startActivity(intent);
             }
         }

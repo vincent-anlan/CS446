@@ -156,6 +156,10 @@ public abstract class Template extends AppCompatActivity {
     }
 
     public abstract void initView();
-    public abstract void cancelButtonHandler(View v);
+
+    public void cancelButtonHandler(View v) {
+        finish();
+    }
+
     public abstract void saveButtonHandler(View v);
 }
