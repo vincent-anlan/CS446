@@ -245,15 +245,13 @@ public class Model extends Observable {
     }
 
     public String getUsername(String id) {
-        if (id.equals("U1")) {
-            return "Alice";
-        } else if (id.equals("U2")) {
-            return "Bob";
-        } else if (id.equals("U3")) {
-            return "Carol";
-        } else {
-            return "David";
+        ArrayList<Participant> participants = getGroupAccountBook(getClickedAccountBookId()).getParticipantList();
+        for (Participant participant : participants) {
+            if (participant.getId().equals(id)) {
+                return participant.getName();
+            }
         }
+        return "anonym";
     }
 
     public Date parseStringToDate(String date) throws Exception{
@@ -353,10 +351,10 @@ public class Model extends Observable {
                                         Participant payer = new Participant(payerId, payerName);
 
                                         String data = document.getData().get("participant").toString();
-                                        data = data.substring(1,data.length()-2);
+                                        data = data.substring(1,data.length()-1);
 
                                         HashMap<Participant, Float> participants = new HashMap<>();
-                                        String[] pairs = data.split(",");
+                                        String[] pairs = data.split(", ");
                                         for (int i=0;i<pairs.length;i++) {
                                             String pair = pairs[i];
                                             String[] keyValue = pair.split("=");
