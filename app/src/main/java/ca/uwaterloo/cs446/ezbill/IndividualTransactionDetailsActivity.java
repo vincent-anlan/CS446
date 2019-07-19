@@ -48,8 +48,8 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity impl
         amount = (TextView) findViewById(R.id.currency_and_amount);
 
         // determine which transaction is clicked
-        int transactionIndex = getIntent().getExtras().getInt("transactionIndex");
-        currTransaction = (IndividualTransaction) model.getCurrentTransactionList().get(transactionIndex);
+        String transactionID = getIntent().getStringExtra("transactionID");
+        currTransaction = (IndividualTransaction) model.getTransaction(transactionID);
 
         //set text
         type.setText(currTransaction.getType());
