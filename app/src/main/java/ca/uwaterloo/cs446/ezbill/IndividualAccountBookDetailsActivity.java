@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -20,6 +21,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     LinearLayout.LayoutParams column_params;
     LinearLayout.LayoutParams row_params;
     View lineSeparator;
+    TextView title;
     TextView viewAllBills;
     TextView income;
     TextView expense;
@@ -38,7 +40,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
 
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.individual_toolbar);
-        TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -137,6 +139,19 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         startActivity(transactionIntent);
     }
 
+    public void onEdit(View view) {
+        Intent intent = new Intent(this, IndividualAccountBookUpsertActivity.class);
+        intent.putExtra("accountBookId", model.getClickedAccountBookId());
+        startActivity(intent);
+        Log.d("WRITE", "Edit Btn clicked!!!");
+    }
+
+    public void onDelete(View view) {
+        Log.d("WRITE", "Delete Btn clicked!!!");
+        model.removeFromIndividualAccountBookList(model.getClickedAccountBookId());
+        finish();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -153,7 +168,11 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         } else {
             viewAllBills.setText("View All Bills");
         }
-        income.setText(String.valueOf(model.getIndividualAccountBook(model.getClickedAccountBookId()).getIncome()));
-        expense.setText(String.valueOf(model.getIndividualAccountBook(model.getClickedAccountBookId()).getExpense()));
+        IndividualAccountBook individualAccountBook = model.getIndividualAccountBook(model.getClickedAccountBookId());
+        if (individualAccountBook != null) {
+            title.setText(individualAccountBook.getName());
+            income.setText(String.valueOf(individualAccountBook.getIncome()));
+            expense.setText(String.valueOf(individualAccountBook.getExpense()));
+        }
     }
 }

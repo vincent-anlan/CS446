@@ -15,10 +15,11 @@ import java.util.ArrayList;
 public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivity {
 
     Model model;
-    private Toolbar toolbar;
-    private EditText mNameEdit;
-    private Spinner mSelectCurrency;
-    private String currencySaveString;
+    Toolbar toolbar;
+    EditText mNameEdit;
+    Spinner mSelectCurrency;
+    String currencySaveString;
+    AccountBook accountBook;
 
 
     public void setToolbar() {
@@ -83,6 +84,8 @@ public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivit
 
         //select currency
         setSelectCurrency();
+
+        setInitValues();
     }
 
     public void cancelButtonHandler(View v) {
@@ -90,4 +93,6 @@ public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivit
     }
 
     public abstract void saveButtonHandler(View v);
+
+    public abstract void setInitValues();
 }

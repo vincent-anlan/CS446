@@ -1,6 +1,8 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,13 +12,33 @@ import java.util.UUID;
 public class GroupAccountBookUpsertActivity extends AccountBookUpsertActivityTemplate {
 
     @Override
+    public void setInitValues() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String accountBookId = extras.getString("accountBookId");
+            accountBook = model.getGroupAccountBook(accountBookId);
+            mNameEdit.setText(accountBook.getName());
+            ArrayAdapter<String> adapter = (ArrayAdapter<String>) mSelectCurrency.getAdapter();
+            int position = adapter.getPosition(accountBook.getDefaultCurrency());
+            mSelectCurrency.setSelection(position);
+        }
+    }
+
+    @Override
     public void saveButtonHandler(View v) {
-        String uuid = UUID.randomUUID().toString();
         String name = getName();
-        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        String date = formatter.format(new Date());
-        GroupAccountBook accountBook = new GroupAccountBook(uuid, name, date, date, getSelectedCurrency());
-        model.addToCurrentGroupAccountBookList(accountBook, model.userEmail, model.getCurrentUserId(), model.getCurrentUsername());
+        String currency = getSelectedCurrency();
+        if (accountBook != null) {
+            accountBook.setName(name);
+            accountBook.setDefaultCurrency(currency);
+            model.updateAccountBookInGroupList((GroupAccountBook) accountBook);
+        } else {
+            String uuid = UUID.randomUUID().toString();
+            DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+            String date = formatter.format(new Date());
+            GroupAccountBook newAccountBook = new GroupAccountBook(uuid, name, date, date, currency);
+            model.addToCurrentGroupAccountBookList(newAccountBook, model.userEmail, model.getCurrentUserId(), model.getCurrentUsername());
+        }
         finish();
     }
 }
