@@ -71,9 +71,9 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-
-        model.readTransactionsFromDB(true);
         model.readParticipantsFromDB();
+        model.readTransactionsFromDB(true);
+
         model.setViewAllBillClicked(false);
 
         drawParticipantIcons();
@@ -235,6 +235,15 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
     public void doCalculation(View view) {
         Log.d("WRITE", "Calculation Btn clicked!!!");
+    }
+
+    public void editAccountBook(View view) {
+        Log.d("WRITE", "Edit Btn clicked!!!");
+    }
+
+    public void deleteAccountBook(View view) {
+        Log.d("WRITE", "Delete Btn clicked!!!");
+        finish();
     }
 
     @Override
