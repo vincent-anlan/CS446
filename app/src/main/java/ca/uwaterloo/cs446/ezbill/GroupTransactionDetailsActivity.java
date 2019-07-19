@@ -40,6 +40,7 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = Model.getInstance();
+        model.addObserver(this);
         showDetails();
     }
 
@@ -144,14 +145,24 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
 
     @Override
     public void update(Observable o, Object arg) {
-        int transactionIndex = getIntent().getExtras().getInt("transactionIndex");
-        currTransaction = (GroupTransaction) model.getCurrentTransactionList().get(transactionIndex);
-        //set text
-        category.setText(currTransaction.getCategory());
-        note.setText(currTransaction.getNote());
-        date.setText(currTransaction.getDate());
-        amount.setText(currTransaction.getCurrency() + " " + currTransaction.getAmount());
-        creator.setText(currTransaction.getCreator().getName());
-        payer.setText(currTransaction.getPayer().getName());
+        // determine which transaction is clicked
+        String transactionID = getIntent().getStringExtra("transactionID");
+        currTransaction = (GroupTransaction) model.getTransaction(transactionID);
+        if (currTransaction != null) {
+            //set text
+            category.setText(currTransaction.getCategory());
+            note.setText(currTransaction.getNote());
+            date.setText(currTransaction.getDate());
+            amount.setText(currTransaction.getCurrency() + " " + currTransaction.getAmount());
+            creator.setText(currTransaction.getCreator().getName());
+            payer.setText(currTransaction.getPayer().getName());
+
+            linearLayout_v.removeAllViews();
+            // draw participants
+            HashMap<Participant, Float> participants =   currTransaction.getParticipants();
+            for (HashMap.Entry<Participant,Float> entry : participants.entrySet()) {
+                addParticipantToLayout(entry.getKey().getName(), Float.toString(entry.getValue()));
+            }
+        }
     }
 }

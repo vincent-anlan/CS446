@@ -23,6 +23,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     Model model;
     Button calculateBtn;
     //    TextView addMorePeopleBtn;
+    TextView title;
     TextView myExpense;
     TextView totalExpense;
     TextView viewAllBills;
@@ -54,7 +55,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
-        TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -225,10 +226,14 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
     public void onEdit(View view) {
         Log.d("WRITE", "Edit Btn clicked!!!");
+        Intent intent = new Intent(this, GroupAccountBookUpsertActivity.class);
+        intent.putExtra("accountBookId", model.getClickedAccountBookId());
+        startActivity(intent);
     }
 
     public void onDelete(View view) {
         Log.d("WRITE", "Delete Btn clicked!!!");
+        model.removeFromGroupAccountBookList(model.getClickedAccountBookId());
         finish();
     }
 
@@ -242,16 +247,20 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
     @Override
     public void update(Observable o, Object arg) {
-        int num = model.getParticipantsById(model.getClickedAccountBookId()).size();
-        numOfParticipants.setText(num + " People");
-        myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
-        totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
-        drawParticipantIcons();
-        displayTransactions();
-        if (model.getViewAllBillClicked()) {
-            viewAllBills.setText("Hide");
-        } else {
-            viewAllBills.setText("View All Bills");
+        GroupAccountBook groupAccountBook = model.getGroupAccountBook(model.getClickedAccountBookId());
+        if (groupAccountBook != null) {
+            int num = model.getParticipantsById(model.getClickedAccountBookId()).size();
+            numOfParticipants.setText(num + " People");
+            title.setText(groupAccountBook.getName());
+            myExpense.setText(String.valueOf(groupAccountBook.getMyExpense()));
+            totalExpense.setText(String.valueOf(groupAccountBook.getGroupExpense()));
+            drawParticipantIcons();
+            displayTransactions();
+            if (model.getViewAllBillClicked()) {
+                viewAllBills.setText("Hide");
+            } else {
+                viewAllBills.setText("View All Bills");
+            }
         }
     }
 

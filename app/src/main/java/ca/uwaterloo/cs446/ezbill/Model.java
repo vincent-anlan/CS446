@@ -123,12 +123,15 @@ public class Model extends Observable {
     }
 
     public void removeFromGroupAccountBookList(String id) {
-        for (IndividualAccountBook individualAccountBook : individualAccountBookList) {
-            if (individualAccountBook.getId().equals(id)) {
-                individualAccountBookList.remove(individualAccountBook);
-                Collections.sort(individualAccountBookList);
+        GroupAccountBook groupAccountBook = null;
+        for (GroupAccountBook accountBook : groupAccountBookList) {
+            if (accountBook.getId().equals(id)) {
+                groupAccountBook = accountBook;
             }
         }
+        groupAccountBookList.remove(groupAccountBook);
+        Collections.sort(groupAccountBookList);
+        deleteAccountBookInDB(id);
         setChanged();
         notifyObservers();
     }

@@ -28,6 +28,7 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity impl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = Model.getInstance();
+        model.addObserver(this);
         showDetails();
     }
 
@@ -83,14 +84,16 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity impl
     @Override
     public void update(Observable o, Object arg) {
         // determine which transaction is clicked
-        int transactionIndex = getIntent().getIntExtra("transactionIndex", 0);
-        currTransaction = model.getCurrentTransactionList().get(transactionIndex);
-        //set text
-        type.setText(currTransaction.getType());
-        category.setText(currTransaction.getCategory());
-        note.setText(currTransaction.getNote());
-        date.setText(currTransaction.getDate());
-        amount.setText(currTransaction.getCurrency() + " " + currTransaction.getAmount());
+        String transactionID = getIntent().getStringExtra("transactionID");
+        currTransaction = (IndividualTransaction) model.getTransaction(transactionID);
+        if (currTransaction != null) {
+            //set text
+            type.setText(currTransaction.getType());
+            category.setText(currTransaction.getCategory());
+            note.setText(currTransaction.getNote());
+            date.setText(currTransaction.getDate());
+            amount.setText(currTransaction.getCurrency() + " " + currTransaction.getAmount());
+        }
     }
 
 }
