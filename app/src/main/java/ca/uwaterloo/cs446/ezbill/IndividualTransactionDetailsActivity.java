@@ -32,8 +32,6 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity {
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         title.setText("Transaction Details");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // get elements
@@ -44,8 +42,8 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity {
         amount = (TextView) findViewById(R.id.currency_and_amount);
 
         // determine which transaction is clicked
-        int transactionIndex = getIntent().getIntExtra("transactionIndex", 0);
-        currTransaction = model.getCurrentTransactionList().get(transactionIndex);
+        int transactionIndex = getIntent().getExtras().getInt("transactionIndex");
+        currTransaction = (IndividualTransaction) model.getCurrentTransactionList().get(transactionIndex);
 
         //set text
         type.setText(currTransaction.getType());

@@ -55,9 +55,6 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
         //set up toolbar
         Toolbar mytoolbar_new_Expense = findViewById(R.id.group_toolbar_add_new_expense);
         setSupportActionBar(mytoolbar_new_Expense);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 

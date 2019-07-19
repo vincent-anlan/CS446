@@ -24,9 +24,6 @@ public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivit
     public void setToolbar() {
         toolbar = findViewById(R.id.group_toolbar_add_new_expense);
         setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 

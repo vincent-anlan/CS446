@@ -56,8 +56,6 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 

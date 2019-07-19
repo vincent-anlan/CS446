@@ -40,8 +40,6 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         Toolbar toolbar = (Toolbar) findViewById(R.id.individual_toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         model.readTransactionsFromDB(false);
@@ -98,7 +96,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
             public void onClick(View view) {
                 int index = view.getId();
                 Intent transactionIntent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionDetailsActivity.class);
-                transactionIntent.putExtra("transactionIndex", model.getCurrentTransactionList().get(index).getUuid());
+                transactionIntent.putExtra("transactionIndex", index);
                 startActivity(transactionIntent);
             }
         });
