@@ -1,6 +1,5 @@
 package ca.uwaterloo.cs446.ezbill;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -9,25 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
 import android.widget.LinearLayout;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import javax.annotation.Nonnull;
 
 public class GroupAccountBookDetailsActivity extends AppCompatActivity implements Observer {
 
@@ -171,7 +160,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
 
     public void addTransactionBtnClick(View view) {
-        Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupUpsert.class);
+        Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
         startActivity(transactionIntent);
     }
 
@@ -232,9 +221,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         participantsLayout.addView(btn);
     }
 
-
     public void doCalculation(View view) {
-        Log.d("WRITE", "Calculation Btn clicked!!!");
+        startActivity(new Intent(this, BillSplitActivity.class));
     }
 
     public void editAccountBook(View view) {
