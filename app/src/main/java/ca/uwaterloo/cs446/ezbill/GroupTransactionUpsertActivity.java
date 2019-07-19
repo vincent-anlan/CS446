@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -221,19 +223,103 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
 
     @Override
     public void saveButtonHandler(View v) {
-        Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername());
-        Participant payer = new Participant(payerIDSaveString, mSelectPayer.getSelectedItem().toString());
-        String uuid = UUID.randomUUID().toString();
-
         String note = getNote();
         String date = getDate();
         String currency = getSelectedCurrency();
         String category = getCategory();
+        Float amount = Float.valueOf(mSum.getText().toString());
+        Participant payer = new Participant(payerIDSaveString, mSelectPayer.getSelectedItem().toString());
+        HashMap<Participant, Float> participants = select_participants;
 
-        GroupTransaction newGroupTransaction = new GroupTransaction(uuid, category, "Expense", Float.valueOf(sumSaveString), currency, note, date, transactionCreator, payer, select_participants);
+        if (transaction != null) {
+            transaction.setCategory(category);
+            transaction.setCurrency(currency);
+            transaction.setDate(date);
+            transaction.setNote(note);
+            transaction.setAmount(amount);
+            ((GroupTransaction) transaction).setPayer(payer);
+            ((GroupTransaction) transaction).setParticipants(participants);
+            model.updateTransactionInCurrentList(transaction, true);
+        } else {
+            Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername());
+            String uuid = UUID.randomUUID().toString();
 
-        model.addToCurrentTransactionList(newGroupTransaction, true);
+            GroupTransaction newGroupTransaction = new GroupTransaction(uuid, category, "Expense", amount, currency, note, date, transactionCreator, payer, participants);
+            model.addToCurrentTransactionList(newGroupTransaction, true);
+        }
         finish();
+    }
+
+    public void setInitValues() {
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String transactionId = extras.getString("transactionId");
+            transaction = model.getTransaction(transactionId);
+
+            String category = transaction.getCategory();
+            int id;
+            if (category.equals("Food")) {
+                id = R.id.radioButtonFood;
+            } else if (category.equals("Transportation")) {
+                id = R.id.radioButtonTransport;
+            } else if (category.equals("Entertainment")) {
+                id = R.id.radioButtonEntertainment;
+            } else if (category.equals("Clothing")) {
+                id = R.id.radioButtonClothing;
+            } else if (category.equals("Coffee")) {
+                id = R.id.radioButtonCoffee;
+            } else if (category.equals("Grocery")) {
+                id = R.id.radioButtonGrocery;
+            } else if (category.equals("Tickets")) {
+                id = R.id.radioButtonTickets;
+            } else {
+                id = R.id.radioButtonOther;
+            }
+            RadioButton radioButton = (RadioButton) findViewById(id);
+            radioButton.setChecked(true);
+            mDisplaySelectedCategory.setText(category);
+
+            mNoteedit.setText(transaction.getNote());
+            mDisplayDate.setText(transaction.getDate());
+
+            ArrayAdapter<String> currencyAdapter = (ArrayAdapter<String>) mSelectCurrency.getAdapter();
+            int currencyAdapterPosition = currencyAdapter.getPosition(transaction.getCurrency());
+            mSelectCurrency.setSelection(currencyAdapterPosition);
+
+            ArrayAdapter<String> payerAdapter = (ArrayAdapter<String>) mSelectPayer.getAdapter();
+            int payerAdapterPosition = payerAdapter.getPosition(((GroupTransaction) transaction).getPayer().getName());
+            mSelectPayer.setSelection(payerAdapterPosition);
+
+            mSum.setText(Float.toString(transaction.getAmount()));
+
+            select_participants = ((GroupTransaction) transaction).getParticipants();
+            for (HashMap.Entry<Participant, Float> entry : select_participants.entrySet()) {
+                Participant participant = entry.getKey();
+                Float amount = entry.getValue();
+
+                TextView btn = new TextView(GroupTransactionUpsertActivity.this);
+                btn.setText(participant.getName());
+                btn.setTextSize(25);
+                btn.setLayoutParams(params);
+                btn.setGravity(Gravity.START);
+
+                EditText subExpense = new EditText(GroupTransactionUpsertActivity.this);
+                subExpense.setTextSize(25);
+                subExpense.setText(Float.toString(amount));
+                subExpense.setLayoutParams(params);
+                subExpense.setGravity(Gravity.CENTER);
+                subExpense.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                allEds.add(subExpense);
+
+                LinearLayout linearLayout_h = new LinearLayout(GroupTransactionUpsertActivity.this);
+                linearLayout_h.setOrientation(LinearLayout.HORIZONTAL);
+                linearLayout_h.setGravity(Gravity.START);
+                linearLayout_h.addView(btn);
+                linearLayout_h.addView(subExpense);
+                linearLayout_v.setLayoutParams(params_h);
+                linearLayout_v.addView(linearLayout_h);
+            }
+        }
     }
 
     @Override

@@ -16,18 +16,20 @@ import java.util.ArrayList;
 public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivity {
 
     Model model;
-    private Toolbar toolbar;
-    private EditText mNameEdit;
-    private Spinner mSelectCurrency;
-    private String currencySaveString;
+
+
     private TextView toolbar_title;
+
+    Toolbar toolbar;
+    EditText mNameEdit;
+    Spinner mSelectCurrency;
+    String currencySaveString;
+    AccountBook accountBook;
+
 
     public void setToolbar() {
         toolbar = findViewById(R.id.group_toolbar_add_new_expense);
         setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         toolbar_title = findViewById(R.id.add_new_trans_toolbar_title);
@@ -90,6 +92,8 @@ public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivit
 
         //select currency
         setSelectCurrency();
+
+        setInitValues();
     }
 
     public void cancelButtonHandler(View v) {
@@ -97,4 +101,6 @@ public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivit
     }
 
     public abstract void saveButtonHandler(View v);
+
+    public abstract void setInitValues();
 }

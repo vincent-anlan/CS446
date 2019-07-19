@@ -56,13 +56,11 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-
-        model.readTransactionsFromDB(true);
         model.readParticipantsFromDB();
+        model.readTransactionsFromDB(true);
+
         model.setViewAllBillClicked(false);
 
         drawParticipantIcons();
@@ -127,7 +125,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
             public void onClick(View view) {
                 int index = view.getId();
                 Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionDetailsActivity.class);
-                transactionIntent.putExtra("transactionIndex", index);
+                transactionIntent.putExtra("transactionID", model.getCurrentTransactionList().get(index).getUuid());
                 startActivity(transactionIntent);
             }
         });
@@ -223,6 +221,15 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
     public void doCalculation(View view) {
         startActivity(new Intent(this, BillSplitActivity.class));
+    }
+
+    public void onEdit(View view) {
+        Log.d("WRITE", "Edit Btn clicked!!!");
+    }
+
+    public void onDelete(View view) {
+        Log.d("WRITE", "Delete Btn clicked!!!");
+        finish();
     }
 
     @Override
