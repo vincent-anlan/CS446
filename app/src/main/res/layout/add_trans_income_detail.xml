@@ -28,7 +28,7 @@
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/dining" />
+                android:src="@drawable/salary" />
 
             <ImageView
                 android:id="@+id/icon_investment"
@@ -36,7 +36,7 @@
                 android:layout_height="75dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/transport" />
+                android:src="@drawable/investment" />
 
             <ImageView
                 android:id="@+id/icon_parttime"
@@ -44,14 +44,14 @@
                 android:layout_height="75dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/entertainment" />
+                android:src="@drawable/parttime" />
 
             <ImageView
-                android:id="@+id/icon_redpocket"
+                android:id="@+id/icon_allowance"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/clothing" />
+                android:src="@drawable/allowance" />
         </LinearLayout>
 
         <RadioGroup
@@ -102,7 +102,7 @@
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/drink" />
+                android:src="@drawable/bonus" />
 
             <ImageView
                 android:id="@+id/icon_gambling"
@@ -110,7 +110,7 @@
                 android:layout_height="75dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/grocery" />
+                android:src="@drawable/gambe" />
 
             <ImageView
                 android:id="@+id/icon_rental"
@@ -118,7 +118,7 @@
                 android:layout_height="75dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/ticket" />
+                android:src="@drawable/rental" />
 
             <ImageView
                 android:id="@+id/icon_income_other"

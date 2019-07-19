@@ -3,6 +3,7 @@ package ca.uwaterloo.cs446.ezbill;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.text.InputType;
 import android.view.Gravity;
@@ -223,7 +224,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername());
         Participant payer = new Participant(payerIDSaveString, mSelectPayer.getSelectedItem().toString());
         String uuid = UUID.randomUUID().toString();
-        
+
         String note = getNote();
         String date = getDate();
         String currency = getSelectedCurrency();
@@ -233,5 +234,9 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
 
         model.addToCurrentTransactionList(newGroupTransaction, true);
         finish();
+    }
+
+    @Override
+    public void cameraScan(View view) {
     }
 }

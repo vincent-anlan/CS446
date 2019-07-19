@@ -1,5 +1,6 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -17,6 +18,13 @@ public class IndividualTransactionUpsertActivity extends TransactionUpsertActivi
         transLayout.addView(newView);
 
         mAmountedit = (EditText) findViewById(R.id.editIndividual);
+
+
+    }
+
+    @Override
+    public void cameraScan(View view) {
+        startActivity(new Intent(this, TextRecognitionActivity.class));
     }
 
     @Override
