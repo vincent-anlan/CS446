@@ -61,8 +61,8 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
         payer = (TextView) findViewById(R.id.payer);
 
         // determine which transaction is clicked
-        int transactionIndex = getIntent().getExtras().getInt("transactionIndex");
-        currTransaction = (GroupTransaction) model.getCurrentTransactionList().get(transactionIndex);
+        String transactionID = getIntent().getStringExtra("transactionID");
+        currTransaction = (GroupTransaction) model.getTransaction(transactionID);
 
         //set text
         category.setText(currTransaction.getCategory());

@@ -125,7 +125,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
             public void onClick(View view) {
                 int index = view.getId();
                 Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionDetailsActivity.class);
-                transactionIntent.putExtra("transactionIndex", index);
+                transactionIntent.putExtra("transactionID", model.getCurrentTransactionList().get(index).getUuid());
                 startActivity(transactionIntent);
             }
         });
