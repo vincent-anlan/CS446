@@ -25,8 +25,9 @@ public class IndividualTransactionUpsertActivity extends TransactionUpsertActivi
         String note = getNote();
         String date = getDate();
         String currency = getSelectedCurrency();
+        String category = getCategory();
 
-        IndividualTransaction newIndividualTransaction = new IndividualTransaction(uuid, "Food", "Expense",
+        IndividualTransaction newIndividualTransaction = new IndividualTransaction(uuid, category, "Expense",
                                                                                     Float.valueOf(mAmountedit.getText().toString()), currency, note, date);
         model.addToCurrentTransactionList(newIndividualTransaction, false);
         finish();
