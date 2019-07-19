@@ -96,7 +96,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
             public void onClick(View view) {
                 int index = view.getId();
                 Intent transactionIntent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionDetailsActivity.class);
-                transactionIntent.putExtra("transactionIndex", model.getCurrentTransactionList().get(index).getUuid());
+                transactionIntent.putExtra("transactionIndex", index);
                 startActivity(transactionIntent);
             }
         });
