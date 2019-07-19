@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,10 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
 
     Model model;
 
+    private RadioGroup firstRowCategory;
+    private RadioGroup secondRowCategory;
+    private String mSelectedCategory;
+    private TextView mDisplaySelectedCategory;
     private EditText mNoteedit;
     private TextView mDisplayDate;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -56,17 +61,79 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
-    public String getNote() {
-        return mNoteedit.getText().toString();
+    public String getCategory() {
+        return mSelectedCategory;
     }
 
-    public void setNoteedit() {
-        mNoteedit = findViewById(R.id.editNote);
-    }
+    private RadioGroup.OnCheckedChangeListener listener1 = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            if (checkedId != -1) {
+                secondRowCategory.setOnCheckedChangeListener(null); // remove the listener before clearing so we don't throw that stackoverflow exception(like Vladimir Volodin pointed out)
+                secondRowCategory.clearCheck(); // clear the second RadioGroup!
+                secondRowCategory.setOnCheckedChangeListener(listener2); //reset the listener
+                Log.e("XXX2", Integer.toString(firstRowCategory.getCheckedRadioButtonId()));
+                int realCheck = firstRowCategory.getCheckedRadioButtonId();
+                mDisplaySelectedCategory = findViewById(R.id.select_category);
+                if(realCheck == R.id.radioButtonFood){
+                    mSelectedCategory = "Food";
+                    mDisplaySelectedCategory.setText(mSelectedCategory);
+                }else if(realCheck == R.id.radioButtonTransport){
+                    mSelectedCategory = "Transport";
+                    mDisplaySelectedCategory.setText(mSelectedCategory);
+                }else if(realCheck == R.id.radioButtonEntertainment){
+                    mSelectedCategory = "Entertainment";
+                    mDisplaySelectedCategory.setText(mSelectedCategory);
+                }else if(realCheck == R.id.radioButtonClothing){
+                    mSelectedCategory = "Clothing";
+                    mDisplaySelectedCategory.setText(mSelectedCategory);
+                }
+            }
+        }
+    };
 
-    public String getDate() {
-        return mDisplayDate.getText().toString();
+    private RadioGroup.OnCheckedChangeListener listener2 = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            if (checkedId != -1) {
+                firstRowCategory.setOnCheckedChangeListener(null);
+                firstRowCategory.clearCheck();
+                firstRowCategory.setOnCheckedChangeListener(listener1);
+                Log.e("XXX1", Integer.toString(secondRowCategory.getCheckedRadioButtonId()));
+                int realCheck = secondRowCategory.getCheckedRadioButtonId();
+                mDisplaySelectedCategory = findViewById(R.id.select_category);
+                if(realCheck == R.id.radioButtonCoffee){
+                    mSelectedCategory = "Coffee";
+                    mDisplaySelectedCategory.setText(mSelectedCategory);
+                }else if(realCheck == R.id.radioButtonGrocery){
+                    mSelectedCategory = "Grocery";
+                    mDisplaySelectedCategory.setText(mSelectedCategory);
+                }else if(realCheck == R.id.radioButtonTickets){
+                    mSelectedCategory = "Tickets";
+                    mDisplaySelectedCategory.setText(mSelectedCategory);
+                }else if(realCheck == R.id.radioButtonOther){
+                    mSelectedCategory = "Other";
+                    mDisplaySelectedCategory.setText(mSelectedCategory);
+                }
+            }
+        }
+    };
+
+    public void setCategory() {
+        firstRowCategory = findViewById(R.id.radioGroupFirstRow);
+        secondRowCategory = findViewById(R.id.radioGroupSecondRow);
+        firstRowCategory.clearCheck();
+        secondRowCategory.clearCheck();
+        firstRowCategory.setOnCheckedChangeListener(listener1);
+        secondRowCategory.setOnCheckedChangeListener(listener2);
     }
+    
+
+    public String getNote() { return mNoteedit.getText().toString(); }
+
+    public void setNoteedit() { mNoteedit = findViewById(R.id.editNote); }
+
+    public String getDate() { return mDisplayDate.getText().toString(); }
 
     public void setDateSelector() {
         mDisplayDate = findViewById(R.id.selectDate);
@@ -104,9 +171,7 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
         };
     }
 
-    public String getSelectedCurrency() {
-        return currencySaveString;
-    }
+    public String getSelectedCurrency() { return currencySaveString; }
 
     public void setSelectCurrency() {
         //select currency
@@ -139,6 +204,9 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
     protected void initialTransactionPage(){
         //set up toolbar
         addToolbar();
+
+        //set category
+        setCategory();
 
         //set note
         setNoteedit();
