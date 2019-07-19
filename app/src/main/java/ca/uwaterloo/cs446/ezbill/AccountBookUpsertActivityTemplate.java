@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivit
     private EditText mNameEdit;
     private Spinner mSelectCurrency;
     private String currencySaveString;
-
+    private TextView toolbar_title;
 
     public void setToolbar() {
         toolbar = findViewById(R.id.group_toolbar_add_new_expense);
@@ -28,6 +29,9 @@ public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivit
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        toolbar_title = findViewById(R.id.add_new_trans_toolbar_title);
+        toolbar_title.setText("New ABook");
     }
 
     public String getName() {

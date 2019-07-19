@@ -127,7 +127,6 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
         firstRowCategory.setOnCheckedChangeListener(listener1);
         secondRowCategory.setOnCheckedChangeListener(listener2);
     }
-    
 
     public String getNote() { return mNoteedit.getText().toString(); }
 
