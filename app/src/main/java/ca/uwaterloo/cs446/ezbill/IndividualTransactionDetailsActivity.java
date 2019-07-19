@@ -1,12 +1,18 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import java.util.Observable;
+import java.util.Observer;
 
-public class IndividualTransactionDetailsActivity extends AppCompatActivity {
+
+public class IndividualTransactionDetailsActivity extends AppCompatActivity implements Observer {
 
     Model model;
     Transaction currTransaction;
@@ -47,6 +53,40 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity {
         int transactionIndex = getIntent().getIntExtra("transactionIndex", 0);
         currTransaction = model.getCurrentTransactionList().get(transactionIndex);
 
+        //set text
+        type.setText(currTransaction.getType());
+        category.setText(currTransaction.getCategory());
+        note.setText(currTransaction.getNote());
+        date.setText(currTransaction.getDate());
+        amount.setText(currTransaction.getCurrency() + " " + currTransaction.getAmount());
+    }
+
+    public void onEdit(View view) {
+        Intent intent = new Intent(this, IndividualTransactionUpsertActivity.class);
+        intent.putExtra("transactionId", currTransaction.getUuid());
+        startActivity(intent);
+        Log.d("WRITE", "Edit Btn clicked!!!");
+    }
+
+    public void onDelete(View view) {
+        Log.d("WRITE", "Delete Btn clicked!!!");
+        model.removeFromCurrentTransactionList(currTransaction);
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Remove observer when activity is destroyed.
+        model.deleteObserver(this);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        // determine which transaction is clicked
+        int transactionIndex = getIntent().getIntExtra("transactionIndex", 0);
+        currTransaction = model.getCurrentTransactionList().get(transactionIndex);
         //set text
         type.setText(currTransaction.getType());
         category.setText(currTransaction.getCategory());

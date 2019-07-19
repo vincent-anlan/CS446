@@ -24,15 +24,17 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
 
     Model model;
 
-    private RadioGroup firstRowCategory;
-    private RadioGroup secondRowCategory;
+    RadioGroup firstRowCategory;
+    RadioGroup secondRowCategory;
     private String mSelectedCategory;
-    private TextView mDisplaySelectedCategory;
-    private EditText mNoteedit;
-    private TextView mDisplayDate;
+    TextView mDisplaySelectedCategory;
+    EditText mNoteedit;
+    TextView mDisplayDate;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-    private Spinner mSelectCurrency;
+    Spinner mSelectCurrency;
     private String currencySaveString;
+
+    Transaction transaction;
 
 
     private static final String TAG = "Transaction";
@@ -74,12 +76,11 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
                 secondRowCategory.setOnCheckedChangeListener(listener2); //reset the listener
                 Log.e("XXX2", Integer.toString(firstRowCategory.getCheckedRadioButtonId()));
                 int realCheck = firstRowCategory.getCheckedRadioButtonId();
-                mDisplaySelectedCategory = findViewById(R.id.select_category);
                 if(realCheck == R.id.radioButtonFood){
                     mSelectedCategory = "Food";
                     mDisplaySelectedCategory.setText(mSelectedCategory);
                 }else if(realCheck == R.id.radioButtonTransport){
-                    mSelectedCategory = "Transport";
+                    mSelectedCategory = "Transportation";
                     mDisplaySelectedCategory.setText(mSelectedCategory);
                 }else if(realCheck == R.id.radioButtonEntertainment){
                     mSelectedCategory = "Entertainment";
@@ -101,7 +102,6 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
                 firstRowCategory.setOnCheckedChangeListener(listener1);
                 Log.e("XXX1", Integer.toString(secondRowCategory.getCheckedRadioButtonId()));
                 int realCheck = secondRowCategory.getCheckedRadioButtonId();
-                mDisplaySelectedCategory = findViewById(R.id.select_category);
                 if(realCheck == R.id.radioButtonCoffee){
                     mSelectedCategory = "Coffee";
                     mDisplaySelectedCategory.setText(mSelectedCategory);
@@ -122,6 +122,7 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
     public void setCategory() {
         firstRowCategory = findViewById(R.id.radioGroupFirstRow);
         secondRowCategory = findViewById(R.id.radioGroupSecondRow);
+        mDisplaySelectedCategory = findViewById(R.id.select_category);
         firstRowCategory.clearCheck();
         secondRowCategory.clearCheck();
         firstRowCategory.setOnCheckedChangeListener(listener1);
@@ -219,6 +220,8 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
 
         //initial view
         initView();
+
+        setInitValues();
     }
 
     public abstract void initView();
@@ -228,4 +231,6 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
     }
 
     public abstract void saveButtonHandler(View v);
+
+    public abstract void setInitValues();
 }

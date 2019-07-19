@@ -225,11 +225,11 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         startActivity(new Intent(this, BillSplitActivity.class));
     }
 
-    public void editAccountBook(View view) {
+    public void onEdit(View view) {
         Log.d("WRITE", "Edit Btn clicked!!!");
     }
 
-    public void deleteAccountBook(View view) {
+    public void onDelete(View view) {
         Log.d("WRITE", "Delete Btn clicked!!!");
         finish();
     }

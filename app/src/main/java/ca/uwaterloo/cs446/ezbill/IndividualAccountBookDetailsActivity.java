@@ -141,14 +141,14 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         startActivity(transactionIntent);
     }
 
-    public void editAccountBook(View view) {
+    public void onEdit(View view) {
         Intent intent = new Intent(this, IndividualAccountBookUpsertActivity.class);
         intent.putExtra("accountBookId", model.getClickedAccountBookId());
         startActivity(intent);
         Log.d("WRITE", "Edit Btn clicked!!!");
     }
 
-    public void deleteAccountBook(View view) {
+    public void onDelete(View view) {
         Log.d("WRITE", "Delete Btn clicked!!!");
         model.removeFromIndividualAccountBookList(model.getClickedAccountBookId());
         finish();

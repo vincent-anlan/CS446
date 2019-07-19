@@ -10,6 +10,8 @@
         android:id="@+id/transaction_details_toolbar"
         layout="@layout/toolbar" />
 
+    <include layout="@layout/edit_delete" />
+
     <!--<Space-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="50dp" />-->

@@ -82,6 +82,28 @@ public class Model extends Observable {
         notifyObservers();
     }
 
+    public void removeFromCurrentTransactionList(Transaction transaction) {
+        currentTransactionList.remove(transaction);
+        deleteTransactionInDB(transaction.getUuid());
+        setChanged();
+        notifyObservers();
+    }
+
+    public void updateTransactionInCurrentList(Transaction transaction, boolean isGroup) {
+        int index = 0;
+        for (int i = 0; i < currentTransactionList.size(); i++) {
+            if (currentTransactionList.get(i).getUuid().equals(transaction.getUuid())) {
+                index = i;
+            }
+        }
+        currentTransactionList.set(index, transaction);
+        Collections.sort(currentTransactionList);
+        updateTransactionInDB(transaction, isGroup);
+
+        setChanged();
+        notifyObservers();
+    }
+
     public void addToCurrentGroupAccountBookList(GroupAccountBook newGroupAccountBook, String email, String userId, String username) {
         groupAccountBookList.add(newGroupAccountBook);
         addAccountBookToDB(newGroupAccountBook, "Group", email, userId, username);
@@ -220,6 +242,15 @@ public class Model extends Observable {
     public void addTransaction(Transaction transaction) {
         currentTransactionList.add(transaction);
         Collections.sort(currentTransactionList);
+    }
+
+    public Transaction getTransaction(String id) {
+        for (Transaction transaction : currentTransactionList) {
+            if (transaction.getUuid().equals(id)) {
+                return transaction;
+            }
+        }
+        return null;
     }
 
     public String getCurrentUserId() {
@@ -570,6 +601,28 @@ public class Model extends Observable {
                 });
     }
 
+    public void deleteTransactionInDB(String id) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // read data from database
+        db.collection("transactions")
+                .whereEqualTo("id", id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getReference().delete();
+                                Log.d("WRITE", "Document deleted");
+                            }
+                        } else {
+                            Log.w("WRITE", "Error deleting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
     public void updateAccountBookInDB(AccountBook accountBook) {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -581,6 +634,48 @@ public class Model extends Observable {
         // read data from database
         db.collection("user_account_book_info")
                 .whereEqualTo("accountBookId", accountBook.getId())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getReference().update(updates);
+
+                                Log.d("WRITE", "Document updated");
+                            }
+                        } else {
+                            Log.w("WRITE", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
+
+    }
+
+    public void updateTransactionInDB(Transaction transaction, Boolean isGroup) {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final Map<String, Object> updates = new HashMap<>();
+        updates.put("amount", transaction.getAmount());
+        updates.put("category", transaction.getCategory());
+        updates.put("currency", transaction.getCurrency());
+        updates.put("date", transaction.getDate());
+        updates.put("note", transaction.getNote());
+        if (isGroup) {
+            updates.put("payer", ((GroupTransaction) transaction).getPayer().getId());
+            HashMap<Participant, Float> participants = ((GroupTransaction) transaction).getParticipants();
+            Map<String, Object> data = new HashMap<>();
+            for (HashMap.Entry<Participant,Float> entry : participants.entrySet()) {
+                data.put(entry.getKey().getId(), entry.getValue());
+            }
+            updates.put("participant", data);
+        }
+
+        // read data from database
+        db.collection("transactions")
+                .whereEqualTo("id", transaction.getUuid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

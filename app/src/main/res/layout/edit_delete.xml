@@ -22,7 +22,7 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:src="@drawable/edit"
-            android:onClick="editAccountBook" />
+            android:onClick="onEdit" />
 
         <ImageButton
             android:id="@+id/deleteBtn"
@@ -33,7 +33,7 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:src="@drawable/delete"
-            android:onClick="deleteAccountBook" />
+            android:onClick="onDelete" />
 
     </LinearLayout>
 </LinearLayout>

@@ -1,18 +1,23 @@
 
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
-public class GroupTransactionDetailsActivity extends AppCompatActivity {
+public class GroupTransactionDetailsActivity extends AppCompatActivity implements Observer {
 
     Model model;
     GroupTransaction currTransaction;
@@ -116,5 +121,39 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity {
     public int dpTopx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
 
+    }
+
+    public void onEdit(View view) {
+        Intent intent = new Intent(this, GroupTransactionUpsertActivity.class);
+        intent.putExtra("transactionId", currTransaction.getUuid());
+        startActivity(intent);
+        Log.d("WRITE", "Edit Btn clicked!!!");
+    }
+
+    public void onDelete(View view) {
+        Log.d("WRITE", "Delete Btn clicked!!!");
+        model.removeFromCurrentTransactionList(currTransaction);
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Remove observer when activity is destroyed.
+        model.deleteObserver(this);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        int transactionIndex = getIntent().getExtras().getInt("transactionIndex");
+        currTransaction = (GroupTransaction) model.getCurrentTransactionList().get(transactionIndex);
+        //set text
+        category.setText(currTransaction.getCategory());
+        note.setText(currTransaction.getNote());
+        date.setText(currTransaction.getDate());
+        amount.setText(currTransaction.getCurrency() + " " + currTransaction.getAmount());
+        creator.setText(currTransaction.getCreator().getName());
+        payer.setText(currTransaction.getPayer().getName());
     }
 }
