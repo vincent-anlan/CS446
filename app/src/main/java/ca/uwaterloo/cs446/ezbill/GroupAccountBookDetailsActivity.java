@@ -232,9 +232,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         participantsLayout.addView(btn);
     }
 
-
     public void doCalculation(View view) {
-        Log.d("WRITE", "Calculation Btn clicked!!!");
+        startActivity(new Intent(this, BillSplitActivity.class));
     }
 
     @Override

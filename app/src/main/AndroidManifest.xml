@@ -96,6 +96,13 @@
             android:windowSoftInputMode="stateHidden">
         </activity>
 
+        <activity
+            android:name=".BillSplitActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".GroupAccountBookDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
         <!--<activity-->
             <!--android:name=".TransactionUpsertActivityTemplate"-->
             <!--android:label="template"-->
