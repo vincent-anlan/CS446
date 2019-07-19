@@ -12,8 +12,6 @@
         android:id="@+id/group_toolbar_add_new_expense"
         layout="@layout/toolbar_add_new_expense" />
 
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,4 +21,5 @@
         <include layout="@layout/add_trans_detail_template" />
 
     </ScrollView>
+
 </LinearLayout>

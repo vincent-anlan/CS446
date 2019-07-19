@@ -26,7 +26,6 @@
                 android:id="@+id/icon_dining"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
-                android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:src="@drawable/dining" />
 
@@ -51,16 +50,49 @@
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:src="@drawable/clothing" />
         </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/radioGroupFirstRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/radioButtonFood"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="35dp" />
+
+            <RadioButton
+                android:id="@+id/radioButtonTransport"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp" />
+
+            <RadioButton
+                android:id="@+id/radioButtonEntertainment"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp" />
+
+            <RadioButton
+                android:id="@+id/radioButtonClothing"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="35dp"
+                android:layout_marginEnd="20dp" />
+        </RadioGroup>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -68,7 +100,6 @@
                 android:id="@+id/icon_drink"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
-                android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:src="@drawable/drink" />
 
@@ -93,9 +124,45 @@
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:src="@drawable/other" />
         </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/radioGroupSecondRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/radioButtonCoffee"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="35dp" />
+
+            <RadioButton
+                android:id="@+id/radioButtonGrocery"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp" />
+
+            <RadioButton
+                android:id="@+id/radioButtonTickets"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp" />
+
+            <RadioButton
+                android:id="@+id/radioButtonOther"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="35dp"
+                android:layout_marginEnd="20dp" />
+        </RadioGroup>
+
     </LinearLayout>
 
     <LinearLayout
@@ -118,7 +185,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="select category"
+            android:hint="Select Category"
             android:textSize="25sp" />
 
     </LinearLayout>
@@ -189,7 +256,7 @@
 
         <Spinner
             android:id="@+id/currency_spinner"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="select currency" />

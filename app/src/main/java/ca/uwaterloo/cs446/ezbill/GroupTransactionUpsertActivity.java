@@ -223,8 +223,13 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername());
         Participant payer = new Participant(payerIDSaveString, mSelectPayer.getSelectedItem().toString());
         String uuid = UUID.randomUUID().toString();
+        
+        String note = getNote();
+        String date = getDate();
+        String currency = getSelectedCurrency();
+        String category = getCategory();
 
-        GroupTransaction newGroupTransaction = new GroupTransaction(uuid, "Food", "Expense", Float.valueOf(sumSaveString), getSelectedCurrency(), getNote(), getDate(), transactionCreator, payer, select_participants);
+        GroupTransaction newGroupTransaction = new GroupTransaction(uuid, category, "Expense", Float.valueOf(sumSaveString), currency, note, date, transactionCreator, payer, select_participants);
 
         model.addToCurrentTransactionList(newGroupTransaction, true);
         finish();
