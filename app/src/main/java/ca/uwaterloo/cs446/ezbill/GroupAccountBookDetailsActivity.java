@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,6 +40,11 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     View editDeleteView;
     int numToDisplay;
 
+    FloatingActionButton menu;
+    FloatingActionButton delete;
+    FloatingActionButton edit;
+    FloatingActionButton add;
+    boolean isMenuOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +85,58 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
         totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
 
+        initFloatingActionMenu();
         model.initObservers();
+    }
 
+    private void initFloatingActionMenu() {
+        menu = (FloatingActionButton) findViewById(R.id.menu);
+        delete = (FloatingActionButton) findViewById(R.id.delete);
+        edit = (FloatingActionButton) findViewById(R.id.edit);
+        add = (FloatingActionButton) findViewById(R.id.add);
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleMenu();
+            }
+        });
+
+        delete.setOnClickListener(onButtonClick());
+        edit.setOnClickListener(onButtonClick());
+        add.setOnClickListener(onButtonClick());
+    }
+
+    private void toggleMenu() {
+        if (!isMenuOpen) {
+            delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
+            edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
+            add.animate().translationY(-getResources().getDimension(R.dimen.add));
+            isMenuOpen = true;
+        } else {
+            delete.animate().translationY(0);
+            edit.animate().translationY(0);
+            add.animate().translationY(0);
+            isMenuOpen = false;
+        }
+    }
+
+    private View.OnClickListener onButtonClick() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleMenu();
+                Intent intent;
+                if (view.getId() == R.id.delete) {
+                    intent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
+                } else if (view.getId() == R.id.edit) {
+                    intent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
+                } else {
+                    intent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
+                }
+                startActivity(intent);
+            }
+        };
     }
 
     public TextView createTextView(String text, LinearLayout.LayoutParams params, int gravity) {
