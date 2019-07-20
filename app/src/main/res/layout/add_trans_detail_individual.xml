@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/addtransIndividual"
@@ -15,10 +16,17 @@
 
         <TextView
             android:id="@+id/individual_amount"
-            android:layout_width="140dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="@string/amount"
             android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/camera_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Camera"
+            android:onClick="cameraScan"/>
 
         <EditText
             android:id="@+id/editIndividual"

@@ -5,7 +5,7 @@
 
     <dist:module dist:instant="true" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
@@ -89,6 +89,15 @@
             android:parentActivityName=".GroupAccountBookDetailsActivity"
             android:windowSoftInputMode="stateHidden">
         </activity>
+
+        <activity
+            android:name=".TextRecognitionActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".IndividualTransactionUpsertActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="ocr"/>
 
     </application>
 

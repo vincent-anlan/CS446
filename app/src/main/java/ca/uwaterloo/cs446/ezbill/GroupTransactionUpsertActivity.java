@@ -3,6 +3,7 @@ package ca.uwaterloo.cs446.ezbill;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.InputType;
@@ -249,7 +250,6 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         finish();
     }
 
-    @Override
     public void setInitValues() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -320,5 +320,9 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                 linearLayout_v.addView(linearLayout_h);
             }
         }
+    }
+
+    @Override
+    public void cameraScan(View view) {
     }
 }
