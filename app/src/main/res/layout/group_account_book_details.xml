@@ -1,50 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/border"
-    android:orientation="vertical">
+    android:background="@drawable/border">
 
-    <include
-        android:id="@+id/group_toolbar"
-        layout="@layout/toolbar" />
 
-    <!--<Space-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/border"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/group_toolbar"
+            layout="@layout/toolbar" />
+
+        <!--<Space-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="50dp" />-->
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="520dp"
-        android:clipToPadding="false">
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:clipToPadding="false">
 
-            <include layout="@layout/edit_delete" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <include layout="@layout/line_separator" />
-            <!--Participants-->
-            <include layout="@layout/participants_fragment" />
-            <include layout="@layout/line_separator" />
+                <include layout="@layout/edit_delete" />
 
-            <!--Total expense-->
-            <include layout="@layout/group_expense_fragment" />
-            <include layout="@layout/line_separator" />
+                <include layout="@layout/line_separator" />
+                <!--Participants-->
+                <include layout="@layout/participants_fragment" />
 
-            <!--Transaction-->
-            <include layout="@layout/transaction_history_fragement" />
+                <include layout="@layout/line_separator" />
 
+                <!--Total expense-->
+                <include layout="@layout/group_expense_fragment" />
 
-        </LinearLayout>
+                <include layout="@layout/line_separator" />
 
-    </ScrollView>
-
-    <!--Add Transaction Btn-->
-    <include layout="@layout/add_transaction_btn" />
+                <!--Transaction-->
+                <include layout="@layout/transaction_history_fragement" />
 
 
-</LinearLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </LinearLayout>
+
+
+    <include layout="@layout/floating_action_menu_button" />
+
+
+</RelativeLayout>

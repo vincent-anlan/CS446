@@ -3,6 +3,7 @@ package ca.uwaterloo.cs446.ezbill;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,6 +27,13 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     TextView income;
     TextView expense;
     int numToDisplay;
+
+    FloatingActionButton menu;
+    FloatingActionButton delete;
+    FloatingActionButton edit;
+    FloatingActionButton pie_chart;
+    FloatingActionButton add;
+    boolean isMenuOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +59,65 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         income.setText(String.valueOf(model.getIndividualAccountBook(model.getClickedAccountBookId()).getIncome()));
         expense.setText(String.valueOf(model.getIndividualAccountBook(model.getClickedAccountBookId()).getExpense()));
 
+        initFloatingActionMenu();
         model.initObservers();
     }
 
+    private void initFloatingActionMenu() {
+        menu = (FloatingActionButton) findViewById(R.id.menu);
+        delete = (FloatingActionButton) findViewById(R.id.delete);
+        edit = (FloatingActionButton) findViewById(R.id.edit);
+        pie_chart = (FloatingActionButton) findViewById(R.id.pie_chart);
+        add = (FloatingActionButton) findViewById(R.id.add);
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleMenu();
+            }
+        });
+
+        delete.setOnClickListener(onButtonClick());
+        edit.setOnClickListener(onButtonClick());
+        pie_chart.setOnClickListener(onButtonClick());
+        add.setOnClickListener(onButtonClick());
+    }
+
+    private void toggleMenu() {
+        if (!isMenuOpen) {
+            delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
+            edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
+            pie_chart.animate().translationY(-getResources().getDimension(R.dimen.pie_chart));
+            add.animate().translationY(-getResources().getDimension(R.dimen.add));
+            isMenuOpen = true;
+        } else {
+            delete.animate().translationY(0);
+            edit.animate().translationY(0);
+            pie_chart.animate().translationY(0);
+            add.animate().translationY(0);
+            isMenuOpen = false;
+        }
+    }
+
+    private View.OnClickListener onButtonClick() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleMenu();
+                Intent intent;
+                if (view.getId() == R.id.delete) {
+                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
+                } else if (view.getId() == R.id.edit) {
+                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
+                } else if (view.getId() == R.id.pie_chart) {
+                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
+                } else {
+                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
+                }
+                startActivity(intent);
+            }
+        };
+    }
 
     public TextView createTextView(String text, LinearLayout.LayoutParams params, int gravity) {
         TextView textView = new TextView(this);
