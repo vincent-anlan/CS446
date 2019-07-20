@@ -40,11 +40,13 @@ public class Model extends Observable {
     ArrayList<Transaction> currentTransactionList;
     String userEmail = "alice@gmail.com";
     boolean viewAllBillClicked;
+    HashMap<String, Float> exchangeRates;
 
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
         currentTransactionList = new ArrayList<>();
+        exchangeRates = new HashMap<>();
         viewAllBillClicked = false;
         readAccountBooksFromDB();
     }
@@ -72,11 +74,11 @@ public class Model extends Observable {
 
         if (isGroup) {
             GroupAccountBook groupAccountBook = getGroupAccountBook(clickedAccountBookId);
-            groupAccountBook.setMyExpense(calculateMyExpense(clickedAccountBookId));
-            groupAccountBook.setGroupExpense(calculateTotalExpense(clickedAccountBookId));
+            groupAccountBook.setMyExpense(calculateMyExpense(groupAccountBook.getDefaultCurrency()));
+            groupAccountBook.setGroupExpense(calculateTotalExpense(groupAccountBook.getDefaultCurrency()));
         } else {
             IndividualAccountBook individualAccountBook = getIndividualAccountBook(clickedAccountBookId);
-            individualAccountBook.setExpense(calculateTotalExpense(clickedAccountBookId));
+            individualAccountBook.setExpense(calculateTotalExpense(individualAccountBook.getDefaultCurrency()));
         }
         setChanged();
         notifyObservers();
@@ -308,27 +310,37 @@ public class Model extends Observable {
         return groupAccountBook.getParticipantList();
     }
 
-    public float calculateMyExpense(String id) {
+    public float calculateMyExpense(String accountBookCurrency) {
         float totalAmount = 0;
         for (Transaction transaction : currentTransactionList) {
+            String currency = transaction.getCurrency();
+            float rate = exchangeRates.get(accountBookCurrency) / exchangeRates.get(currency);
             HashMap<Participant, Float> participants =  ((GroupTransaction) transaction).getParticipants();
             for (HashMap.Entry<Participant,Float> entry : participants.entrySet()) {
                 Participant key = entry.getKey();
                 Float value = entry.getValue();
                 if (key.getId().equals(currentUserId)) {
-                    totalAmount += value;
+                    totalAmount += value * rate;
                 }
             }
         }
         return totalAmount;
     }
 
-    public float calculateTotalExpense(String id) {
+    public float calculateTotalExpense(String accountBookCurrency) {
         float totalAmount = 0;
         for (Transaction transaction : currentTransactionList) {
-            totalAmount += transaction.getAmount();
+            String currency = transaction.getCurrency();
+            float value = transaction.getAmount();
+            float rate = exchangeRates.get(accountBookCurrency) / exchangeRates.get(currency);
+            totalAmount += value * rate;
         }
         return totalAmount;
+    }
+
+    public float convertToABDefaultCurrency(float amount, String fromCurrency, String toCurrency) {
+        float rate = exchangeRates.get(toCurrency) / exchangeRates.get(fromCurrency);
+        return  amount * rate;
     }
 
     public String getUsername(String id) {
@@ -351,6 +363,10 @@ public class Model extends Observable {
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         String formattedDate = formatter.format(date);
         return formattedDate;
+    }
+
+    public void setExchangeRates(HashMap<String, Float> rates) {
+        exchangeRates = rates;
     }
 
     public void readAccountBooksFromDB() {
@@ -458,10 +474,12 @@ public class Model extends Observable {
                                 Log.d("READ", document.getId() + " => " + document.getData());
                             }
                             if (isGroup) {
-                                getGroupAccountBook(getClickedAccountBookId()).setMyExpense(calculateMyExpense(getClickedAccountBookId()));
-                                getGroupAccountBook(getClickedAccountBookId()).setGroupExpense(calculateTotalExpense(getClickedAccountBookId()));
+                                GroupAccountBook groupAccountBook = getGroupAccountBook(getClickedAccountBookId());
+                                groupAccountBook.setMyExpense(calculateMyExpense(groupAccountBook.getDefaultCurrency()));
+                                groupAccountBook.setGroupExpense(calculateTotalExpense(groupAccountBook.getDefaultCurrency()));
                             } else {
-                                getIndividualAccountBook(getClickedAccountBookId()).setExpense(calculateTotalExpense(getClickedAccountBookId()));
+                                IndividualAccountBook individualAccountBook = getIndividualAccountBook(getClickedAccountBookId());
+                                individualAccountBook.setExpense(calculateTotalExpense(individualAccountBook.getDefaultCurrency()));
                             }
 
                             setChanged();

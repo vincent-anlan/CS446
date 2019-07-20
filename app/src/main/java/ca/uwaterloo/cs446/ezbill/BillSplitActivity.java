@@ -61,13 +61,15 @@ public class BillSplitActivity extends AppCompatActivity {
     }
 
     private void calculate() {
+        String accountBookDefaultCurrency = model.getGroupAccountBook(model.getClickedAccountBookId()).getDefaultCurrency();
         // compute the balance of each participants and store into a map
         HashMap<String, Float> balanceMap = new HashMap<>();
         for (Transaction transaction : model.getCurrentTransactionList()) {
             // add total expense value to the payer
             GroupTransaction groupTransaction = (GroupTransaction) transaction;
+            String currency = transaction.getCurrency();
             String payerName = groupTransaction.getPayer().getName();
-            Float totalExpense = groupTransaction.getAmount();
+            Float totalExpense = model.convertToABDefaultCurrency(groupTransaction.getAmount(), currency, accountBookDefaultCurrency);
             if (balanceMap.containsKey(payerName)) {
                 balanceMap.put(payerName, balanceMap.get(payerName) + totalExpense);
             } else {
@@ -77,7 +79,7 @@ public class BillSplitActivity extends AppCompatActivity {
             HashMap<Participant, Float> participantsMap = groupTransaction.getParticipants();
             for (HashMap.Entry<Participant, Float> participant : participantsMap.entrySet()) {
                 String participantName = participant.getKey().getName();
-                Float participantExpense = participant.getValue();
+                Float participantExpense = model.convertToABDefaultCurrency(participant.getValue(), currency, accountBookDefaultCurrency);
                 if (balanceMap.containsKey(participantName)) {
                     balanceMap.put(participantName, balanceMap.get(participantName) - participantExpense);
                 } else {

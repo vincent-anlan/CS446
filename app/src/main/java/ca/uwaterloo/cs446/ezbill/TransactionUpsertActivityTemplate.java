@@ -178,9 +178,9 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
         ArrayList<String> currencystring = new ArrayList<>();
         currencystring.add("CAD");
         currencystring.add("USD");
-        currencystring.add("RMB");
+        currencystring.add("CNY");
         currencystring.add("JPY");
-        currencystring.add("EURO");
+        currencystring.add("EUR");
 
         ArrayAdapter<String> adapter_curr = new ArrayAdapter<>(this, R.layout.spinner_item, currencystring);
         adapter_curr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
