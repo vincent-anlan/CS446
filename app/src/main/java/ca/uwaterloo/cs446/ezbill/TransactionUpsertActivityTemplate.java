@@ -228,6 +228,7 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
     }
 
     public abstract void saveButtonHandler(View v);
+    public abstract void cameraScan(View v);
 
     public abstract void setInitValues();
 }
