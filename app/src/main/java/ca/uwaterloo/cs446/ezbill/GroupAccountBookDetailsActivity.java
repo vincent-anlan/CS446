@@ -40,10 +40,10 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     View editDeleteView;
     int numToDisplay;
 
-    FloatingActionButton menu;
-    FloatingActionButton delete;
-    FloatingActionButton edit;
-    FloatingActionButton add;
+    LinearLayout menu;
+    LinearLayout delete;
+    LinearLayout edit;
+    LinearLayout add;
     boolean isMenuOpen = false;
 
     @Override
@@ -90,15 +90,19 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     }
 
     private void initFloatingActionMenu() {
-        menu = (FloatingActionButton) findViewById(R.id.menu);
-        delete = (FloatingActionButton) findViewById(R.id.delete);
-        edit = (FloatingActionButton) findViewById(R.id.edit);
-        add = (FloatingActionButton) findViewById(R.id.add);
+        menu = (LinearLayout) findViewById(R.id.menu);
+        delete = (LinearLayout) findViewById(R.id.delete);
+        edit = (LinearLayout) findViewById(R.id.edit);
+        add = (LinearLayout) findViewById(R.id.add);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleMenu();
+                if (isMenuOpen) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
             }
         });
 
@@ -107,25 +111,45 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         add.setOnClickListener(onButtonClick());
     }
 
-    private void toggleMenu() {
-        if (!isMenuOpen) {
-            delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
-            edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
-            add.animate().translationY(-getResources().getDimension(R.dimen.add));
-            isMenuOpen = true;
-        } else {
-            delete.animate().translationY(0);
-            edit.animate().translationY(0);
-            add.animate().translationY(0);
+    private void closeMenu() {
+        if (isMenuOpen) {
+            delete.animate().translationY(0).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    delete.setVisibility(View.GONE);
+                }
+            }).start();
+            edit.animate().translationY(0).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    edit.setVisibility(View.GONE);
+                }
+            }).start();
+            add.animate().translationY(0).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    add.setVisibility(View.GONE);
+                }
+            }).start();
             isMenuOpen = false;
         }
+    }
+
+    private void openMenu() {
+        delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
+        edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
+        add.animate().translationY(-getResources().getDimension(R.dimen.add));
+        isMenuOpen = true;
+        delete.setVisibility(View.VISIBLE);
+        edit.setVisibility(View.VISIBLE);
+        add.setVisibility(View.VISIBLE);
     }
 
     private View.OnClickListener onButtonClick() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toggleMenu();
+                closeMenu();
                 Intent intent;
                 if (view.getId() == R.id.delete) {
                     intent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
@@ -188,6 +212,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         row_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                closeMenu();
                 int index = view.getId();
                 Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionDetailsActivity.class);
                 transactionIntent.putExtra("transactionID", model.getCurrentTransactionList().get(index).getUuid());
@@ -218,13 +243,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     }
 
     public void viewAllBillsClicked(View view) {
+        closeMenu();
         model.setViewAllBillClicked(!model.getViewAllBillClicked());
-    }
-
-
-    public void addTransactionBtnClick(View view) {
-        Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
-        startActivity(transactionIntent);
     }
 
     public int dpTopx(int dp) {
@@ -285,6 +305,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     }
 
     public void doCalculation(View view) {
+        closeMenu();
         startActivity(new Intent(this, BillSplitActivity.class));
     }
 
