@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     LinearLayout.LayoutParams transactionElementParams;
     LinearLayout.LayoutParams params_h;
     View lineSeparator;
+    View editDeleteView;
     int numToDisplay;
 
 
@@ -45,6 +47,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
         model = Model.getInstance();
         model.addObserver(this);
+
+        editDeleteView = (View) findViewById(R.id.edit_delete);
 
         calculateBtn = (Button) findViewById(R.id.calculateBtn);
 //        addMorePeopleBtn = (TextView) findViewById(R.id.addMorePeopleBtn);
@@ -63,6 +67,10 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         model.readTransactionsFromDB(true);
 
         model.setViewAllBillClicked(false);
+
+        if (!model.getGroupAccountBook(model.getClickedAccountBookId()).getCreatorId().equals(model.currentUserId)) {
+            editDeleteView.setVisibility(View.GONE);
+        }
 
         drawParticipantIcons();
         displayTransactions();
@@ -249,6 +257,9 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     public void update(Observable o, Object arg) {
         GroupAccountBook groupAccountBook = model.getGroupAccountBook(model.getClickedAccountBookId());
         if (groupAccountBook != null) {
+            if (!groupAccountBook.getCreatorId().equals(model.currentUserId)) {
+                editDeleteView.setVisibility(View.GONE);
+            }
             int num = model.getParticipantsById(model.getClickedAccountBookId()).size();
             numOfParticipants.setText(num + " People");
             title.setText(groupAccountBook.getName());

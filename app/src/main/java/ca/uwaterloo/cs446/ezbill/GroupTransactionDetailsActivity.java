@@ -34,6 +34,7 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
     LinearLayout.LayoutParams params_h;
     LinearLayout.LayoutParams params_tv;
 
+    View editDeleteView;
 
 
     @Override
@@ -54,6 +55,7 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // get elements
+        editDeleteView = (View) findViewById(R.id.edit_delete);
         category = (TextView) findViewById(R.id.category);
         note = (TextView) findViewById(R.id.note);
         date = (TextView) findViewById(R.id.date);
@@ -65,6 +67,9 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
         String transactionID = getIntent().getStringExtra("transactionID");
         currTransaction = (GroupTransaction) model.getTransaction(transactionID);
 
+        if (!currTransaction.getCreator().getId().equals(model.currentUserId)) {
+            editDeleteView.setVisibility(View.GONE);
+        }
         //set text
         category.setText(currTransaction.getCategory());
         note.setText(currTransaction.getNote());
@@ -149,6 +154,9 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
         String transactionID = getIntent().getStringExtra("transactionID");
         currTransaction = (GroupTransaction) model.getTransaction(transactionID);
         if (currTransaction != null) {
+            if (!currTransaction.getCreator().getId().equals(model.currentUserId)) {
+                editDeleteView.setVisibility(View.GONE);
+            }
             //set text
             category.setText(currTransaction.getCategory());
             note.setText(currTransaction.getNote());
