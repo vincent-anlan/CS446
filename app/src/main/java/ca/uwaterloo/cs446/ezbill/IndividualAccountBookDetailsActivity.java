@@ -162,17 +162,17 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
 
     @Override
     public void update(Observable o, Object arg) {
-        displayTransactions();
-        if (model.getViewAllBillClicked()) {
-            viewAllBills.setText("Hide");
-        } else {
-            viewAllBills.setText("View All Bills");
-        }
         IndividualAccountBook individualAccountBook = model.getIndividualAccountBook(model.getClickedAccountBookId());
         if (individualAccountBook != null) {
             title.setText(individualAccountBook.getName());
             income.setText(String.valueOf(individualAccountBook.getIncome()));
             expense.setText(String.valueOf(individualAccountBook.getExpense()));
+            displayTransactions();
+            if (model.getViewAllBillClicked()) {
+                viewAllBills.setText("Hide");
+            } else {
+                viewAllBills.setText("View All Bills");
+            }
         }
     }
 }

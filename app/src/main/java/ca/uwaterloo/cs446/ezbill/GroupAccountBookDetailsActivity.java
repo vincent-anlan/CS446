@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     Model model;
     Button calculateBtn;
     //    TextView addMorePeopleBtn;
+    TextView title;
     TextView myExpense;
     TextView totalExpense;
     TextView viewAllBills;
@@ -34,6 +36,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     LinearLayout.LayoutParams transactionElementParams;
     LinearLayout.LayoutParams params_h;
     View lineSeparator;
+    View editDeleteView;
     int numToDisplay;
 
 
@@ -45,6 +48,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         model = Model.getInstance();
         model.addObserver(this);
 
+        editDeleteView = (View) findViewById(R.id.edit_delete);
+
         calculateBtn = (Button) findViewById(R.id.calculateBtn);
 //        addMorePeopleBtn = (TextView) findViewById(R.id.addMorePeopleBtn);
         myExpense = (TextView) findViewById(R.id.myExpense);
@@ -54,7 +59,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
-        TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -62,6 +67,10 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         model.readTransactionsFromDB(true);
 
         model.setViewAllBillClicked(false);
+
+        if (!model.getGroupAccountBook(model.getClickedAccountBookId()).getCreatorId().equals(model.currentUserId)) {
+            editDeleteView.setVisibility(View.GONE);
+        }
 
         drawParticipantIcons();
         displayTransactions();
@@ -225,10 +234,14 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
     public void onEdit(View view) {
         Log.d("WRITE", "Edit Btn clicked!!!");
+        Intent intent = new Intent(this, GroupAccountBookUpsertActivity.class);
+        intent.putExtra("accountBookId", model.getClickedAccountBookId());
+        startActivity(intent);
     }
 
     public void onDelete(View view) {
         Log.d("WRITE", "Delete Btn clicked!!!");
+        model.removeFromGroupAccountBookList(model.getClickedAccountBookId());
         finish();
     }
 
@@ -242,16 +255,23 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
     @Override
     public void update(Observable o, Object arg) {
-        int num = model.getParticipantsById(model.getClickedAccountBookId()).size();
-        numOfParticipants.setText(num + " People");
-        myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
-        totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
-        drawParticipantIcons();
-        displayTransactions();
-        if (model.getViewAllBillClicked()) {
-            viewAllBills.setText("Hide");
-        } else {
-            viewAllBills.setText("View All Bills");
+        GroupAccountBook groupAccountBook = model.getGroupAccountBook(model.getClickedAccountBookId());
+        if (groupAccountBook != null) {
+            if (!groupAccountBook.getCreatorId().equals(model.currentUserId)) {
+                editDeleteView.setVisibility(View.GONE);
+            }
+            int num = model.getParticipantsById(model.getClickedAccountBookId()).size();
+            numOfParticipants.setText(num + " People");
+            title.setText(groupAccountBook.getName());
+            myExpense.setText(String.valueOf(groupAccountBook.getMyExpense()));
+            totalExpense.setText(String.valueOf(groupAccountBook.getGroupExpense()));
+            drawParticipantIcons();
+            displayTransactions();
+            if (model.getViewAllBillClicked()) {
+                viewAllBills.setText("Hide");
+            } else {
+                viewAllBills.setText("View All Bills");
+            }
         }
     }
 

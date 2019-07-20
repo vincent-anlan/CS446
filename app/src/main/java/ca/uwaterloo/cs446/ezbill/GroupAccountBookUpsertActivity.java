@@ -36,7 +36,8 @@ public class GroupAccountBookUpsertActivity extends AccountBookUpsertActivityTem
             String uuid = UUID.randomUUID().toString();
             DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
             String date = formatter.format(new Date());
-            GroupAccountBook newAccountBook = new GroupAccountBook(uuid, name, date, date, currency);
+            String creator = model.currentUserId;
+            GroupAccountBook newAccountBook = new GroupAccountBook(uuid, name, date, date, currency, creator);
             model.addToCurrentGroupAccountBookList(newAccountBook, model.userEmail, model.getCurrentUserId(), model.getCurrentUsername());
         }
         finish();

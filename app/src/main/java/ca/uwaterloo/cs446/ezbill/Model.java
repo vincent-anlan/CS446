@@ -123,12 +123,15 @@ public class Model extends Observable {
     }
 
     public void removeFromGroupAccountBookList(String id) {
-        for (IndividualAccountBook individualAccountBook : individualAccountBookList) {
-            if (individualAccountBook.getId().equals(id)) {
-                individualAccountBookList.remove(individualAccountBook);
-                Collections.sort(individualAccountBookList);
+        GroupAccountBook groupAccountBook = null;
+        for (GroupAccountBook accountBook : groupAccountBookList) {
+            if (accountBook.getId().equals(id)) {
+                groupAccountBook = accountBook;
             }
         }
+        groupAccountBookList.remove(groupAccountBook);
+        Collections.sort(groupAccountBookList);
+        deleteAccountBookInDB(id);
         setChanged();
         notifyObservers();
     }
@@ -374,15 +377,16 @@ public class Model extends Observable {
                                 String endDate = document.getData().get("accountBookEndDate").toString();
                                 String defaultCurrency = document.getData().get("accountBookCurrency").toString();
                                 String type = document.getData().get("accountBookType").toString();
+                                String creatorId = document.getData().get("accountBookCreator").toString();
 
                                 if (type.equals("Group")) {
                                     if (!hasGroupAccountBook(accountBookId)) {
-                                        GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
+                                        GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency, creatorId);
                                         addGroupAccountBook(groupAccountBook);
                                     }
                                 } else {
                                     if (!hasIndividualAccountBook(accountBookId)) {
-                                        IndividualAccountBook individualAccountBook = new IndividualAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
+                                        IndividualAccountBook individualAccountBook = new IndividualAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency, creatorId);
                                         addIndividualAccountBook(individualAccountBook);
                                     }
                                 }
@@ -558,6 +562,7 @@ public class Model extends Observable {
         ab.put("accountBookStartDate", accountBook.getStartDate());
         ab.put("accountBookEndDate", accountBook.getEndDate());
         ab.put("accountBookType", type);
+        ab.put("accountBookCreator", accountBook.getCreatorId());
         ab.put("email", email);
         ab.put("userId", userId);
         ab.put("username", username);
