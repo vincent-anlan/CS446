@@ -22,6 +22,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     LinearLayout.LayoutParams column_params;
     LinearLayout.LayoutParams row_params;
     View lineSeparator;
+    View viewAllBillsLineSeperator;
     TextView title;
     TextView viewAllBills;
     TextView income;
@@ -33,7 +34,8 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     LinearLayout edit;
     LinearLayout pie_chart;
     LinearLayout add;
-    boolean isMenuOpen = false;
+    boolean isMenuOpen;
+    boolean isViewAllBillClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         viewAllBills = (TextView) findViewById(R.id.viewAllBills);
         income = (TextView) findViewById(R.id.income);
         expense = (TextView) findViewById(R.id.expense);
+        viewAllBillsLineSeperator = (View) findViewById(R.id.viewAllBillsLineSeperator);
 
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.individual_toolbar);
@@ -53,11 +56,10 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         model.readTransactionsFromDB(false);
+        isMenuOpen = false;
+        isViewAllBillClicked = false;
         displayTransactions();
-        model.setViewAllBillClicked(false);
-        title.setText(model.getIndividualAccountBook(model.getClickedAccountBookId()).getName());
-        income.setText(String.valueOf(model.getIndividualAccountBook(model.getClickedAccountBookId()).getIncome()));
-        expense.setText(String.valueOf(model.getIndividualAccountBook(model.getClickedAccountBookId()).getExpense()));
+        updateText();
 
         initFloatingActionMenu();
         model.initObservers();
@@ -133,7 +135,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeMenu();
+                restoreDefaultSetting();
                 Intent intent;
                 if (view.getId() == R.id.delete) {
                     intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
@@ -147,6 +149,13 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
                 startActivity(intent);
             }
         };
+    }
+
+    private void restoreDefaultSetting() {
+        closeMenu();
+        isViewAllBillClicked = false;
+        displayTransactions();
+        updateText();
     }
 
     public TextView createTextView(String text, LinearLayout.LayoutParams params, int gravity) {
@@ -190,7 +199,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         row_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeMenu();
+                restoreDefaultSetting();
                 int index = view.getId();
                 Intent transactionIntent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionDetailsActivity.class);
                 transactionIntent.putExtra("transactionID", model.getCurrentTransactionList().get(index).getUuid());
@@ -204,10 +213,18 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         setupTransactionLayout();
 
         int totalTransactionNum = model.currentTransactionList.size();
-        if (model.getViewAllBillClicked()) {
+        if (isViewAllBillClicked) {
             numToDisplay = totalTransactionNum;
         } else {
             numToDisplay = totalTransactionNum > 3 ? 3 : totalTransactionNum;
+        }
+
+        if (totalTransactionNum <= 3) {
+            viewAllBills.setVisibility(View.GONE);
+            viewAllBillsLineSeperator.setVisibility(View.GONE);
+        } else {
+            viewAllBills.setVisibility(View.VISIBLE);
+            viewAllBillsLineSeperator.setVisibility(View.VISIBLE);
         }
 
         for (int i = 0; i < numToDisplay; ++i) {
@@ -221,7 +238,9 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
 
     public void viewAllBillsClicked(View view) {
         closeMenu();
-        model.setViewAllBillClicked(!model.getViewAllBillClicked());
+        isViewAllBillClicked = !isViewAllBillClicked;
+        displayTransactions();
+        updateText();
     }
 
     public int dpTopx(int dp) {
@@ -242,6 +261,18 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         finish();
     }
 
+    private void updateText() {
+        IndividualAccountBook individualAccountBook = model.getIndividualAccountBook(model.getClickedAccountBookId());
+        title.setText(individualAccountBook.getName());
+        income.setText(String.valueOf(individualAccountBook.getIncome()));
+        expense.setText(String.valueOf(individualAccountBook.getExpense()));
+        if (isViewAllBillClicked) {
+            viewAllBills.setText("Hide");
+        } else {
+            viewAllBills.setText("View All Bills");
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -254,15 +285,8 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     public void update(Observable o, Object arg) {
         IndividualAccountBook individualAccountBook = model.getIndividualAccountBook(model.getClickedAccountBookId());
         if (individualAccountBook != null) {
-            title.setText(individualAccountBook.getName());
-            income.setText(String.valueOf(individualAccountBook.getIncome()));
-            expense.setText(String.valueOf(individualAccountBook.getExpense()));
             displayTransactions();
-            if (model.getViewAllBillClicked()) {
-                viewAllBills.setText("Hide");
-            } else {
-                viewAllBills.setText("View All Bills");
-            }
+            updateText();
         }
     }
 }

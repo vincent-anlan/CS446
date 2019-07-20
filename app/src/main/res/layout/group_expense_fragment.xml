@@ -60,6 +60,6 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:text="@string/calculate"
-            android:onClick="doCalculation"/>
+            android:onClick="calculateClicked"/>
     </LinearLayout>
 </LinearLayout>

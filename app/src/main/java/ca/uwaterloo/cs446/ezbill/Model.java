@@ -39,7 +39,6 @@ public class Model extends Observable {
     String clickedAccountBookId;
     ArrayList<Transaction> currentTransactionList;
     String userEmail = "alice@gmail.com";
-    boolean viewAllBillClicked;
     HashMap<String, Float> exchangeRates;
 
     Model() {
@@ -47,21 +46,9 @@ public class Model extends Observable {
         individualAccountBookList = new ArrayList<>();
         currentTransactionList = new ArrayList<>();
         exchangeRates = new HashMap<>();
-        viewAllBillClicked = false;
         readAccountBooksFromDB();
     }
 
-
-    public boolean getViewAllBillClicked() {
-        return viewAllBillClicked;
-    }
-
-    public void setViewAllBillClicked(boolean isClicked) {
-        viewAllBillClicked = isClicked;
-        setChanged();
-        notifyObservers();
-
-    }
 
     public ArrayList<Transaction> getCurrentTransactionList() {
         return currentTransactionList;

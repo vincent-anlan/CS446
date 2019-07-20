@@ -103,7 +103,7 @@ public class BillSplitActivity extends AppCompatActivity {
         }
 
         // find two participants with largest positive/negative balance
-        while (posBalance.size() > 0) {
+        while (posBalance.size() > 0 && negBalance.size() > 0) {
             String payerName = findAbsMaxBalance(negBalance);
             String receiverName = findAbsMaxBalance(posBalance);
             Float lowestBalance = negBalance.get(payerName); // a negative value

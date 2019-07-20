@@ -41,7 +41,8 @@
         android:text="@string/view_all_bills"
         android:textStyle="bold" />
 
-    <include layout="@layout/line_separator" />
+    <include layout="@layout/line_separator"
+        android:id="@+id/viewAllBillsLineSeperator" />
 
 
 </LinearLayout>
