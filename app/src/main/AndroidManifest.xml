@@ -99,6 +99,13 @@
 
         <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="ocr"/>
 
+        <activity
+            android:name=".SummaryActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".IndividualAccountBookDetailsActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
     </application>
 
 </manifest>

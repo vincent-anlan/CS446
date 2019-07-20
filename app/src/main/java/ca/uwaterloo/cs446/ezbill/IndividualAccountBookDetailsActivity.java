@@ -110,7 +110,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
                 } else if (view.getId() == R.id.edit) {
                     intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
                 } else if (view.getId() == R.id.pie_chart) {
-                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
+                    intent = new Intent(IndividualAccountBookDetailsActivity.this, SummaryActivity.class);
                 } else {
                     intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
                 }
