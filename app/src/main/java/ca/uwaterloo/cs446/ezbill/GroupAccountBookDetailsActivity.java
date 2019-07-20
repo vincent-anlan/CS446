@@ -168,22 +168,11 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         updateText();
     }
 
-    public TextView createTextView(String text, LinearLayout.LayoutParams params, int gravity) {
+    public TextView createTextView(String text) {
         TextView textView = new TextView(this);
         textView.setText(text);
 //            category.setTextSize(25);
-        textView.setLayoutParams(params);
-        switch (gravity) {
-            case 1:
-                textView.setGravity(Gravity.START);
-                return textView;
-            case 2:
-                textView.setGravity(Gravity.CENTER);
-                return textView;
-            case 3:
-                textView.setGravity(Gravity.END);
-                return textView;
-        }
+        textView.setLayoutParams(transactionElementParams);
         return textView;
     }
 
@@ -205,8 +194,12 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     }
 
     public void addRowToLayout(String text1, String text2, int index){
-        TextView tv1 = createTextView(text1, transactionElementParams, 1);
-        TextView tv2 = createTextView(text2, transactionElementParams, 3);
+        TextView tv1 = createTextView(text1);
+        tv1.setGravity(Gravity.START);
+
+        TextView tv2 = createTextView(text2);
+        tv2.setGravity(Gravity.END);
+
         LinearLayout row_layout = new LinearLayout(this);
         row_layout.setOrientation(LinearLayout.HORIZONTAL);
 //            linearLayout_h.setGravity(Gravity.START);
@@ -249,7 +242,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         for (int i = 0; i < numToDisplay; ++i) {
             GroupTransaction transaction = (GroupTransaction) model.currentTransactionList.get(i);
             addRowToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()), i);
-            addRowToLayout(transaction.getDate(), transaction.getPayer().getName(), i);
+            addRowToLayout(transaction.getDate(), "Paid by "+transaction.getPayer().getName(), i);
             lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, transactionHistoryLayout, false);
             transactionHistoryLayout.addView(lineSeparator);
         }

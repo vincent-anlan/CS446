@@ -158,22 +158,12 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         updateText();
     }
 
-    public TextView createTextView(String text, LinearLayout.LayoutParams params, int gravity) {
+
+    public TextView createTextView(String text) {
         TextView textView = new TextView(this);
         textView.setText(text);
 //            category.setTextSize(25);
-        textView.setLayoutParams(params);
-        switch (gravity) {
-            case 1:
-                textView.setGravity(Gravity.START);
-                return textView;
-            case 2:
-                textView.setGravity(Gravity.CENTER);
-                return textView;
-            case 3:
-                textView.setGravity(Gravity.END);
-                return textView;
-        }
+        textView.setLayoutParams(column_params);
         return textView;
     }
 
@@ -188,8 +178,12 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     }
 
     public void addColumnToLayout(String text1, String text2, int index) {
-        TextView tv1 = createTextView(text1, column_params, 1);
-        TextView tv2 = createTextView(text2, column_params, 3);
+        TextView tv1 = createTextView(text1);
+        tv1.setGravity(Gravity.START);
+
+        TextView tv2 = createTextView(text2);
+        tv2.setGravity(Gravity.END);
+
         LinearLayout row_layout = new LinearLayout(this);
         row_layout.setOrientation(LinearLayout.HORIZONTAL);
         row_layout.addView(tv1);
