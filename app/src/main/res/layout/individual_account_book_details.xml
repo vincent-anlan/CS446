@@ -19,7 +19,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="520dp"
+            android:layout_height="wrap_content"
             android:clipToPadding="false">
 
             <LinearLayout
@@ -46,7 +46,7 @@
     </LinearLayout>
 
     <!--FloatingActionButton inside menu-->
-    <include layout="@layout/floating_action_menu_no_summary" />
+    <include layout="@layout/floating_action_menu_with_summary" />
 
 
 </RelativeLayout>
