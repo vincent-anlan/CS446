@@ -15,6 +15,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+//add username
+import android.util.Log;
+import android.net.Uri;
+import com.google.firebase.auth.UserProfileChangeRequest;
+
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -22,6 +27,8 @@ public class SignupActivity extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private EditText Confirmpassword;
+    private EditText username;
+
     private ProgressDialog dialog;
 
     @Override
@@ -32,6 +39,7 @@ public class SignupActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         email = findViewById(R.id.input_email);
         password = findViewById(R.id.input_password);
+        username = findViewById(R.id.input_user);
         Confirmpassword = findViewById(R.id.input_password_confirm);
         dialog =  new ProgressDialog(this,R.style.AppTheme);
         dialog.setIndeterminate(true);
@@ -66,6 +74,22 @@ public class SignupActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         FirebaseUser user = auth.getCurrentUser();
+                        //add username;
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(username.getText().toString())
+                                //.setPhotoUri(Uri.parse("https://www.google.com/logo.jpg"))
+                                .build();
+
+                        user.updateProfile(profileUpdates)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("00", "User profile updated.");
+                                        }
+                                    }
+                                });
+
                         //do something;
                         Intent intent = new Intent(getApplicationContext(), Login.class);
                         startActivity(intent);
