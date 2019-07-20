@@ -56,7 +56,7 @@
     </LinearLayout>
 
 
-    <include layout="@layout/floating_action_menu_with_summary" />
+    <include layout="@layout/floating_action_menu_no_summary" />
 
 
 </RelativeLayout>

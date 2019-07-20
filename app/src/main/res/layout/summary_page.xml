@@ -49,7 +49,5 @@
 
     </LinearLayout>
 
-    <include layout="@layout/floating_action_menu_no_summary" />
-
 </RelativeLayout>
 

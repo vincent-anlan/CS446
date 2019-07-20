@@ -39,14 +39,6 @@ public class SummaryActivity extends AppCompatActivity {
     LinearLayout.LayoutParams params_v;
     LinearLayout.LayoutParams params_tv;
 
-    FloatingActionButton menu;
-    FloatingActionButton delete;
-    FloatingActionButton edit;
-    FloatingActionButton add;
-    boolean isMenuOpen = false;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +56,6 @@ public class SummaryActivity extends AppCompatActivity {
         calculatePercentage();
         showPieChart();
         showCategoryWithDescendingOrder();
-        initFloatingActionMenu();
     }
 
     private void calculatePercentage() {
@@ -83,57 +74,6 @@ public class SummaryActivity extends AppCompatActivity {
             }
         }
     }
-
-    private void initFloatingActionMenu() {
-        menu = (FloatingActionButton) findViewById(R.id.menu);
-        delete = (FloatingActionButton) findViewById(R.id.delete);
-        edit = (FloatingActionButton) findViewById(R.id.edit);
-        add = (FloatingActionButton) findViewById(R.id.add);
-
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleMenu();
-            }
-        });
-
-        delete.setOnClickListener(onButtonClick());
-        edit.setOnClickListener(onButtonClick());
-        add.setOnClickListener(onButtonClick());
-    }
-
-    private void toggleMenu() {
-        if (!isMenuOpen) {
-            delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
-            edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
-            add.animate().translationY(-getResources().getDimension(R.dimen.add));
-            isMenuOpen = true;
-        } else {
-            delete.animate().translationY(0);
-            edit.animate().translationY(0);
-            add.animate().translationY(0);
-            isMenuOpen = false;
-        }
-    }
-
-    private View.OnClickListener onButtonClick() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleMenu();
-                Intent intent;
-                if (view.getId() == R.id.delete) {
-                    intent = new Intent(SummaryActivity.this, IndividualTransactionUpsertActivity.class);
-                } else if (view.getId() == R.id.edit) {
-                    intent = new Intent(SummaryActivity.this, IndividualTransactionUpsertActivity.class);
-                } else {
-                    intent = new Intent(SummaryActivity.this, IndividualTransactionUpsertActivity.class);
-                }
-                startActivity(intent);
-            }
-        };
-    }
-
 
     private void showPieChart() {
         // initialize id of Pie Chart
