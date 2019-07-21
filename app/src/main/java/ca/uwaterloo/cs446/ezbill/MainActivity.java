@@ -35,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
     Model model;
     ProgressBar spinner;
 
+    String email;
+    String uid;
+    String username;
+    TextView text;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -58,6 +63,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //The value passed from sign in successfully
+        Bundle info = getIntent().getExtras();
+        if (info != null) {
+            email = info.getString("email");
+            uid = info.getString("uid");
+            username = info.getString("username");
+            //need a image view to add profile picture
+        }
+        //Update user info
+        text = findViewById(R.id.User_info);
+        text.setText("email:"+email+"\n"+"uid:"+uid+"\n"+"username:"+username+"\n");
+        //Login End
+
 
         model = Model.getInstance();
 
