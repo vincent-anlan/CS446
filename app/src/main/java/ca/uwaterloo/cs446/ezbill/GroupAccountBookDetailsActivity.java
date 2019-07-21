@@ -1,17 +1,18 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class GroupAccountBookDetailsActivity extends AppCompatActivity implements Observer {
 
@@ -37,14 +39,17 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     LinearLayout.LayoutParams transactionElementParams;
     LinearLayout.LayoutParams params_h;
     View lineSeparator;
-    View editDeleteView;
+    View viewAllBillsLineSeperator;
     int numToDisplay;
 
     LinearLayout menu;
     LinearLayout delete;
     LinearLayout edit;
     LinearLayout add;
-    boolean isMenuOpen = false;
+    FloatingActionButton addActionButton;
+    boolean isMenuOpen;
+    boolean isViewAllBillClicked;
+    boolean isCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,14 +59,13 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         model = Model.getInstance();
         model.addObserver(this);
 
-        editDeleteView = (View) findViewById(R.id.edit_delete);
-
         calculateBtn = (Button) findViewById(R.id.calculateBtn);
 //        addMorePeopleBtn = (TextView) findViewById(R.id.addMorePeopleBtn);
         myExpense = (TextView) findViewById(R.id.myExpense);
         totalExpense = (TextView) findViewById(R.id.totalExpense);
         viewAllBills = (TextView) findViewById(R.id.viewAllBills);
         numOfParticipants = (TextView) findViewById(R.id.num_of_participants);
+        viewAllBillsLineSeperator = (View) findViewById(R.id.viewAllBillsLineSeperator);
 
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.group_toolbar);
@@ -69,50 +73,90 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        isMenuOpen = false;
+        isViewAllBillClicked = false;
+        isCreator = model.getGroupAccountBook(model.getClickedAccountBookId()).getCreatorId().equals(model.currentUserId);
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.group_account_book_page);
+        if (isCreator) {
+            View newView = getLayoutInflater().inflate(R.layout.floating_menu, layout, false);
+            layout.addView(newView);
+        } else {
+            View newView = getLayoutInflater().inflate(R.layout.floating_menu_add_button, layout, false);
+            layout.addView(newView);
+        }
+
         model.readParticipantsFromDB();
         model.readTransactionsFromDB(true);
 
-        model.setViewAllBillClicked(false);
-
-        if (!model.getGroupAccountBook(model.getClickedAccountBookId()).getCreatorId().equals(model.currentUserId)) {
-            editDeleteView.setVisibility(View.GONE);
-        }
-
         drawParticipantIcons();
         displayTransactions();
-
-        title.setText(model.getGroupAccountBook(model.getClickedAccountBookId()).getName());
-        myExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getMyExpense()));
-        totalExpense.setText(String.valueOf(model.getGroupAccountBook(model.getClickedAccountBookId()).getGroupExpense()));
+        updateText();
 
         initFloatingActionMenu();
         model.initObservers();
     }
 
     private void initFloatingActionMenu() {
-        menu = (LinearLayout) findViewById(R.id.menu);
-        delete = (LinearLayout) findViewById(R.id.delete);
-        edit = (LinearLayout) findViewById(R.id.edit);
-        add = (LinearLayout) findViewById(R.id.add);
-
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isMenuOpen) {
-                    closeMenu();
-                } else {
-                    openMenu();
+        if (isCreator) {
+            menu = (LinearLayout) findViewById(R.id.menu);
+            delete = (LinearLayout) findViewById(R.id.delete);
+            edit = (LinearLayout) findViewById(R.id.edit);
+            add = (LinearLayout) findViewById(R.id.add);
+            menu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (isMenuOpen) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
                 }
-            }
-        });
+            });
 
-        delete.setOnClickListener(onButtonClick());
-        edit.setOnClickListener(onButtonClick());
-        add.setOnClickListener(onButtonClick());
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(GroupAccountBookDetailsActivity.this);
+                    builder.setMessage("You are about to permanently delete all records of this account book. Do you really want to proceed?");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "The account book is deleted.", Toast.LENGTH_SHORT).show();
+                            model.removeFromGroupAccountBookList(model.getClickedAccountBookId());
+                            finish();
+                        }
+                    });
+
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            closeMenu();
+                        }
+                    });
+
+                    builder.show();
+                }
+            });
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    restoreDefaultSetting();
+                    Intent intent = new Intent(GroupAccountBookDetailsActivity.this, GroupAccountBookUpsertActivity.class);
+                    intent.putExtra("accountBookId", model.getClickedAccountBookId());
+                    startActivity(intent);
+                }
+            });
+            add.setOnClickListener(onAddButtonClick());
+        } else {
+            addActionButton = (FloatingActionButton) findViewById(R.id.add);
+            addActionButton.setOnClickListener(onAddButtonClick());
+        }
     }
 
     private void closeMenu() {
-        if (isMenuOpen) {
+        if (isMenuOpen && isCreator) {
             delete.animate().translationY(0).withEndAction(new Runnable() {
                 @Override
                 public void run() {
@@ -145,40 +189,29 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         add.setVisibility(View.VISIBLE);
     }
 
-    private View.OnClickListener onButtonClick() {
+    private View.OnClickListener onAddButtonClick() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeMenu();
-                Intent intent;
-                if (view.getId() == R.id.delete) {
-                    intent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
-                } else if (view.getId() == R.id.edit) {
-                    intent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
-                } else {
-                    intent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
-                }
-                startActivity(intent);
+                restoreDefaultSetting();
+                startActivity(new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class));
             }
         };
     }
 
-    public TextView createTextView(String text, LinearLayout.LayoutParams params, int gravity) {
+
+    private void restoreDefaultSetting() {
+        closeMenu();
+        isViewAllBillClicked = false;
+        displayTransactions();
+        updateText();
+    }
+
+    public TextView createTextView(String text) {
         TextView textView = new TextView(this);
         textView.setText(text);
 //            category.setTextSize(25);
-        textView.setLayoutParams(params);
-        switch (gravity) {
-            case 1:
-                textView.setGravity(Gravity.START);
-                return textView;
-            case 2:
-                textView.setGravity(Gravity.CENTER);
-                return textView;
-            case 3:
-                textView.setGravity(Gravity.END);
-                return textView;
-        }
+        textView.setLayoutParams(transactionElementParams);
         return textView;
     }
 
@@ -200,8 +233,12 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     }
 
     public void addRowToLayout(String text1, String text2, int index){
-        TextView tv1 = createTextView(text1, transactionElementParams, 1);
-        TextView tv2 = createTextView(text2, transactionElementParams, 3);
+        TextView tv1 = createTextView(text1);
+        tv1.setGravity(Gravity.START);
+
+        TextView tv2 = createTextView(text2);
+        tv2.setGravity(Gravity.END);
+
         LinearLayout row_layout = new LinearLayout(this);
         row_layout.setOrientation(LinearLayout.HORIZONTAL);
 //            linearLayout_h.setGravity(Gravity.START);
@@ -212,7 +249,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         row_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeMenu();
+                restoreDefaultSetting();
                 int index = view.getId();
                 Intent transactionIntent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionDetailsActivity.class);
                 transactionIntent.putExtra("transactionID", model.getCurrentTransactionList().get(index).getUuid());
@@ -227,16 +264,24 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         setupTransactionLayout();
 
         int totalTransactionNum = model.currentTransactionList.size();
-        if (model.getViewAllBillClicked()) {
+        if (isViewAllBillClicked) {
             numToDisplay = totalTransactionNum;
         } else {
             numToDisplay = totalTransactionNum > 3 ? 3 : totalTransactionNum;
         }
 
+        if (totalTransactionNum <= 3) {
+            viewAllBills.setVisibility(View.GONE);
+            viewAllBillsLineSeperator.setVisibility(View.GONE);
+        } else {
+            viewAllBills.setVisibility(View.VISIBLE);
+            viewAllBillsLineSeperator.setVisibility(View.VISIBLE);
+        }
+
         for (int i = 0; i < numToDisplay; ++i) {
             GroupTransaction transaction = (GroupTransaction) model.currentTransactionList.get(i);
             addRowToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()), i);
-            addRowToLayout(transaction.getDate(), transaction.getPayer().getName(), i);
+            addRowToLayout(transaction.getDate(), "Paid by "+transaction.getPayer().getName(), i);
             lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, transactionHistoryLayout, false);
             transactionHistoryLayout.addView(lineSeparator);
         }
@@ -244,7 +289,9 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
     public void viewAllBillsClicked(View view) {
         closeMenu();
-        model.setViewAllBillClicked(!model.getViewAllBillClicked());
+        isViewAllBillClicked = !isViewAllBillClicked;
+        displayTransactions();
+        updateText();
     }
 
     public int dpTopx(int dp) {
@@ -268,7 +315,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
 
     public void addMorePeople(View view) {
-        Log.d("WRITE", "Add more people clicked!");
+        closeMenu();
         Participant participant = new Participant(model.currentUserId, model.currentUsername);
         model.addParticipant(model.getClickedAccountBookId(), participant);
         int numOfParticipants = model.getParticipantsById(model.getClickedAccountBookId()).size();
@@ -296,6 +343,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    closeMenu();
                     addMorePeople(v);
                 }
             });
@@ -304,22 +352,22 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         participantsLayout.addView(btn);
     }
 
-    public void doCalculation(View view) {
-        closeMenu();
+    public void calculateClicked(View view) {
+        restoreDefaultSetting();
         startActivity(new Intent(this, BillSplitActivity.class));
     }
 
-    public void onEdit(View view) {
-        Log.d("WRITE", "Edit Btn clicked!!!");
-        Intent intent = new Intent(this, GroupAccountBookUpsertActivity.class);
-        intent.putExtra("accountBookId", model.getClickedAccountBookId());
-        startActivity(intent);
-    }
-
-    public void onDelete(View view) {
-        Log.d("WRITE", "Delete Btn clicked!!!");
-        model.removeFromGroupAccountBookList(model.getClickedAccountBookId());
-        finish();
+    public void updateText() {
+        GroupAccountBook groupAccountBook = model.getGroupAccountBook(model.getClickedAccountBookId());
+        numOfParticipants.setText(groupAccountBook.getParticipantList().size() + " People");
+        title.setText(groupAccountBook.getName());
+        myExpense.setText(groupAccountBook.getDefaultCurrency() + " " + groupAccountBook.getMyExpense());
+        totalExpense.setText(groupAccountBook.getDefaultCurrency() + " " + groupAccountBook.getGroupExpense());
+        if (isViewAllBillClicked) {
+            viewAllBills.setText("Hide");
+        } else {
+            viewAllBills.setText("View All Bills");
+        }
     }
 
     @Override
@@ -334,21 +382,9 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     public void update(Observable o, Object arg) {
         GroupAccountBook groupAccountBook = model.getGroupAccountBook(model.getClickedAccountBookId());
         if (groupAccountBook != null) {
-            if (!groupAccountBook.getCreatorId().equals(model.currentUserId)) {
-                editDeleteView.setVisibility(View.GONE);
-            }
-            int num = model.getParticipantsById(model.getClickedAccountBookId()).size();
-            numOfParticipants.setText(num + " People");
-            title.setText(groupAccountBook.getName());
-            myExpense.setText(String.valueOf(groupAccountBook.getMyExpense()));
-            totalExpense.setText(String.valueOf(groupAccountBook.getGroupExpense()));
             drawParticipantIcons();
             displayTransactions();
-            if (model.getViewAllBillClicked()) {
-                viewAllBills.setText("Hide");
-            } else {
-                viewAllBills.setText("View All Bills");
-            }
+            updateText();
         }
     }
 

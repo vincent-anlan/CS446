@@ -27,8 +27,6 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <include layout="@layout/edit_delete" />
-
                 <include layout="@layout/line_separator" />
 
                 <!--Income & Expense-->
@@ -46,7 +44,7 @@
     </LinearLayout>
 
     <!--FloatingActionButton inside menu-->
-    <include layout="@layout/floating_action_menu_with_summary" />
+    <include layout="@layout/floating_menu" />
 
 
 </RelativeLayout>
