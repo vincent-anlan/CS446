@@ -33,7 +33,7 @@ public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivit
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         toolbar_title = findViewById(R.id.add_new_trans_toolbar_title);
-        toolbar_title.setText("New ABook");
+        toolbar_title.setText("New Account Book");
     }
 
     public String getName() {

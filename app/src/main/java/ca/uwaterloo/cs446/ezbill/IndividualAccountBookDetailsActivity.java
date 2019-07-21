@@ -39,6 +39,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     LinearLayout edit;
     LinearLayout pie_chart;
     LinearLayout add;
+    LinearLayout add_income;
     boolean isMenuOpen;
     boolean isViewAllBillClicked;
     RelativeLayout floating_menu;
@@ -77,6 +78,8 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         edit = (LinearLayout) findViewById(R.id.edit);
         add = (LinearLayout) findViewById(R.id.add);
         floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
+
+        add_income = (LinearLayout) findViewById(R.id.add_income);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,12 +128,19 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
             }
         });
 
-
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 restoreDefaultSetting();
                 startActivity(new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class));
+            }
+        });
+
+        add_income.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                startActivity(new Intent(IndividualAccountBookDetailsActivity.this, IndividualIncomeTransactionUpsertActivity.class));
             }
         });
 
@@ -174,6 +184,14 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
                     add.setVisibility(View.GONE);
                 }
             }).start();
+
+            add_income.animate().translationY(0).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    add_income.setVisibility(View.GONE);
+                }
+            }).start();
+
             isMenuOpen = false;
             floating_menu.setBackgroundColor(0);
         }
@@ -183,6 +201,8 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
         edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
         add.animate().translationY(-getResources().getDimension(R.dimen.add));
+        add_income.animate().translationY(-getResources().getDimension(R.dimen.add_income));
+
         if (model.currentTransactionList.size() > 0) {
             pie_chart.animate().translationY(-getResources().getDimension(R.dimen.pie_chart));
             pie_chart.setVisibility(View.VISIBLE);
@@ -191,6 +211,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         delete.setVisibility(View.VISIBLE);
         edit.setVisibility(View.VISIBLE);
         add.setVisibility(View.VISIBLE);
+        add_income.setVisibility(View.VISIBLE);
 
         floating_menu.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
 
