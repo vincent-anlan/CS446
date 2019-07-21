@@ -12,7 +12,10 @@
         layout="@layout/toolbar" />
 
     <include
-        layout="@layout/progess_bar"/>
+        android:id="@+id/include"
+        layout="@layout/progess_bar" />
+
+
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/nav_view"
@@ -25,6 +28,17 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/bottom_nav_menu" />
+
+    <TextView
+        android:id="@+id/User_info"
+        android:layout_width="165dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="8dp"
+        android:text="user info not update yet"
+        android:lines="3"
+        app:layout_constraintEnd_toEndOf="@+id/include"
+        app:layout_constraintStart_toStartOf="@+id/include"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
 
 </android.support.constraint.ConstraintLayout>
