@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="delete">65dp</dimen>
     <dimen name="edit">130dp</dimen>
-    <dimen name="pie_chart">260dp</dimen>
+    <dimen name="pie_chart">325dp</dimen>
     <dimen name="add">195dp</dimen>
+    <dimen name="add_income">260dp</dimen>
 </resources>
