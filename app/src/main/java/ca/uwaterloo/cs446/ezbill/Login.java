@@ -284,13 +284,16 @@ public class Login extends AppCompatActivity {
                     status.setText(user.getEmail());
                     //get data from user
                     String username = null;
+                    String id = null;
+                    String email = null;
+
                     if (user != null) {
                         for (UserInfo profile : user.getProviderData()) {
                             // Id of the provider (ex: google.com)
                             String providerId = profile.getProviderId();
-                            String id = profile.getUid();
+                            id = profile.getUid();
                             username = profile.getDisplayName();
-                            String email = profile.getEmail();
+                            email = profile.getEmail();
                             //Uri photoUrl = profile.getPhotoUrl();
                         }
                     }
@@ -301,6 +304,11 @@ public class Login extends AppCompatActivity {
                     findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
                     findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
                     //do something;
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra("username", username);
+                    intent.putExtra("uid", id);
+                    intent.putExtra("email", email);
+                    startActivity(intent);
 
                 } else {
                     Toast.makeText(Login.this, "Authentication failed.",
