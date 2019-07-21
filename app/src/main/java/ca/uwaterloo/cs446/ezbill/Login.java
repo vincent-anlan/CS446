@@ -1,12 +1,15 @@
 package ca.uwaterloo.cs446.ezbill;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +19,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 import android.content.Intent;
 import android.os.Handler;
@@ -33,6 +38,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.android.gms.tasks.OnFailureListener;
+import android.net.Uri;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 
 public class Login extends AppCompatActivity {
@@ -44,6 +54,9 @@ public class Login extends AppCompatActivity {
     private EditText password;
     private ProgressDialog dialog = null;
     private GoogleSignInClient GoogleSignin;
+    FirebaseStorage storage;
+    StorageReference refstorage;
+    ImageView img;
 
 
 
@@ -62,6 +75,9 @@ public class Login extends AppCompatActivity {
         password = findViewById(R.id.fieldPassword);
         dialog =  new ProgressDialog(this,R.style.AppTheme);
         dialog.setIndeterminate(true);
+        storage = FirebaseStorage.getInstance();
+        refstorage = storage.getReference();
+        img = findViewById(R.id.icon);
 
 
         // add listener
@@ -275,10 +291,6 @@ public class Login extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    //close the dialog
-                    if(dialog.isShowing()){
-                        dialog.dismiss();
-                    }
                     //create user
                     FirebaseUser user = auth.getCurrentUser();
                     status.setText(user.getEmail());
@@ -286,7 +298,6 @@ public class Login extends AppCompatActivity {
                     String username = null;
                     String id = null;
                     String email = null;
-
                     if (user != null) {
                         for (UserInfo profile : user.getProviderData()) {
                             // Id of the provider (ex: google.com)
@@ -297,6 +308,36 @@ public class Login extends AppCompatActivity {
                             //Uri photoUrl = profile.getPhotoUrl();
                         }
                     }
+                    refstorage.child("images/"+email).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            // Got the download URL for 'users/me/profile.png'
+                            //final Uri imageUri = data.getData();
+                            //String path = getAbsolutePath(data.getData());
+                            try {
+                                final InputStream imageStream = getContentResolver().openInputStream(uri);
+                                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                                img.setImageBitmap(selectedImage);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(), "you don't have profile pics", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                        }
+                    });
+
+                    //close the dialog
+                    if(dialog.isShowing()){
+                        dialog.dismiss();
+                    }
+
+
+
+
                     Log.d("01","username:"+username);
                     detail.setText("username:"+username);
                     findViewById(R.id.link_reset).setVisibility(View.GONE);
@@ -304,11 +345,11 @@ public class Login extends AppCompatActivity {
                     findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
                     findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
                     //do something;
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.putExtra("username", username);
-                    intent.putExtra("uid", id);
-                    intent.putExtra("email", email);
-                    startActivity(intent);
+//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                    intent.putExtra("username", username);
+//                    intent.putExtra("uid", id);
+//                    intent.putExtra("email", email);
+//                    startActivity(intent);
 
                 } else {
                     Toast.makeText(Login.this, "Authentication failed.",
