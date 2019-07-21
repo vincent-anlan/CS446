@@ -54,9 +54,9 @@ public abstract class AccountBookUpsertActivityTemplate extends AppCompatActivit
         ArrayList<String> currencys = new ArrayList<>();
         currencys.add("CAD");
         currencys.add("USD");
-        currencys.add("RMB");
+        currencys.add("CNY");
         currencys.add("JPY");
-        currencys.add("EURO");
+        currencys.add("EUR");
 
         ArrayAdapter<String> adapter_curr = new ArrayAdapter<>(this, R.layout.spinner_item, currencys);
         adapter_curr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

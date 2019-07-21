@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/border"
-    >
+    android:background="@drawable/border">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/border"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <include
-            android:id="@+id/individual_toolbar"
+            android:id="@+id/summary_page_toolbar"
             layout="@layout/toolbar" />
+
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/piechart"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="-20dp"
+            android:layout_marginTop="20dp"/>
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:clipToPadding="false">
 
             <LinearLayout
@@ -29,22 +37,17 @@
 
                 <include layout="@layout/line_separator" />
 
-                <!--Income & Expense-->
-                <include layout="@layout/individual_expense_fragment" />
-
-                <include layout="@layout/line_separator" />
-
-                <!--Transaction-->
-                <include layout="@layout/transaction_history_fragement" />
-
+                <LinearLayout
+                    android:id="@+id/category_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"></LinearLayout>
             </LinearLayout>
+
 
         </ScrollView>
 
     </LinearLayout>
 
-    <!--FloatingActionButton inside menu-->
-    <include layout="@layout/floating_menu" />
-
-
 </RelativeLayout>
+

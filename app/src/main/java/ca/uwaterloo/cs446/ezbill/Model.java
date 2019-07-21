@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,27 +40,16 @@ public class Model extends Observable {
     String clickedAccountBookId;
     ArrayList<Transaction> currentTransactionList;
     String userEmail = "alice@gmail.com";
-    boolean viewAllBillClicked;
+    HashMap<String, Float> exchangeRates;
 
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
         currentTransactionList = new ArrayList<>();
-        viewAllBillClicked = false;
+        exchangeRates = new HashMap<>();
         readAccountBooksFromDB();
     }
 
-
-    public boolean getViewAllBillClicked() {
-        return viewAllBillClicked;
-    }
-
-    public void setViewAllBillClicked(boolean isClicked) {
-        viewAllBillClicked = isClicked;
-        setChanged();
-        notifyObservers();
-
-    }
 
     public ArrayList<Transaction> getCurrentTransactionList() {
         return currentTransactionList;
@@ -72,11 +62,11 @@ public class Model extends Observable {
 
         if (isGroup) {
             GroupAccountBook groupAccountBook = getGroupAccountBook(clickedAccountBookId);
-            groupAccountBook.setMyExpense(calculateMyExpense(clickedAccountBookId));
-            groupAccountBook.setGroupExpense(calculateTotalExpense(clickedAccountBookId));
+            groupAccountBook.setMyExpense(calculateMyExpense(groupAccountBook.getDefaultCurrency()));
+            groupAccountBook.setGroupExpense(calculateTotalExpense(groupAccountBook.getDefaultCurrency()));
         } else {
             IndividualAccountBook individualAccountBook = getIndividualAccountBook(clickedAccountBookId);
-            individualAccountBook.setExpense(calculateTotalExpense(clickedAccountBookId));
+            individualAccountBook.setExpense(calculateTotalExpense(individualAccountBook.getDefaultCurrency()));
         }
         setChanged();
         notifyObservers();
@@ -123,12 +113,15 @@ public class Model extends Observable {
     }
 
     public void removeFromGroupAccountBookList(String id) {
-        for (IndividualAccountBook individualAccountBook : individualAccountBookList) {
-            if (individualAccountBook.getId().equals(id)) {
-                individualAccountBookList.remove(individualAccountBook);
-                Collections.sort(individualAccountBookList);
+        GroupAccountBook groupAccountBook = null;
+        for (GroupAccountBook accountBook : groupAccountBookList) {
+            if (accountBook.getId().equals(id)) {
+                groupAccountBook = accountBook;
             }
         }
+        groupAccountBookList.remove(groupAccountBook);
+        Collections.sort(groupAccountBookList);
+        deleteAccountBookInDB(id);
         setChanged();
         notifyObservers();
     }
@@ -305,27 +298,37 @@ public class Model extends Observable {
         return groupAccountBook.getParticipantList();
     }
 
-    public float calculateMyExpense(String id) {
+    public float calculateMyExpense(String accountBookCurrency) {
         float totalAmount = 0;
         for (Transaction transaction : currentTransactionList) {
+            String currency = transaction.getCurrency();
+            float rate = exchangeRates.get(accountBookCurrency) / exchangeRates.get(currency);
             HashMap<Participant, Float> participants =  ((GroupTransaction) transaction).getParticipants();
             for (HashMap.Entry<Participant,Float> entry : participants.entrySet()) {
                 Participant key = entry.getKey();
                 Float value = entry.getValue();
                 if (key.getId().equals(currentUserId)) {
-                    totalAmount += value;
+                    totalAmount += value * rate;
                 }
             }
         }
-        return totalAmount;
+        return BigDecimal.valueOf(totalAmount).setScale(2,BigDecimal.ROUND_HALF_UP).floatValue();
     }
 
-    public float calculateTotalExpense(String id) {
+    public float calculateTotalExpense(String accountBookCurrency) {
         float totalAmount = 0;
         for (Transaction transaction : currentTransactionList) {
-            totalAmount += transaction.getAmount();
+            String currency = transaction.getCurrency();
+            float value = transaction.getAmount();
+            float rate = exchangeRates.get(accountBookCurrency) / exchangeRates.get(currency);
+            totalAmount += value * rate;
         }
-        return totalAmount;
+        return BigDecimal.valueOf(totalAmount).setScale(2,BigDecimal.ROUND_HALF_UP).floatValue();
+    }
+
+    public float convertToABDefaultCurrency(float amount, String fromCurrency, String toCurrency) {
+        float rate = exchangeRates.get(toCurrency) / exchangeRates.get(fromCurrency);
+        return  amount * rate;
     }
 
     public String getUsername(String id) {
@@ -348,6 +351,10 @@ public class Model extends Observable {
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         String formattedDate = formatter.format(date);
         return formattedDate;
+    }
+
+    public void setExchangeRates(HashMap<String, Float> rates) {
+        exchangeRates = rates;
     }
 
     public void readAccountBooksFromDB() {
@@ -374,15 +381,16 @@ public class Model extends Observable {
                                 String endDate = document.getData().get("accountBookEndDate").toString();
                                 String defaultCurrency = document.getData().get("accountBookCurrency").toString();
                                 String type = document.getData().get("accountBookType").toString();
+                                String creatorId = document.getData().get("accountBookCreator").toString();
 
                                 if (type.equals("Group")) {
                                     if (!hasGroupAccountBook(accountBookId)) {
-                                        GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
+                                        GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency, creatorId);
                                         addGroupAccountBook(groupAccountBook);
                                     }
                                 } else {
                                     if (!hasIndividualAccountBook(accountBookId)) {
-                                        IndividualAccountBook individualAccountBook = new IndividualAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency);
+                                        IndividualAccountBook individualAccountBook = new IndividualAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency, creatorId);
                                         addIndividualAccountBook(individualAccountBook);
                                     }
                                 }
@@ -454,10 +462,12 @@ public class Model extends Observable {
                                 Log.d("READ", document.getId() + " => " + document.getData());
                             }
                             if (isGroup) {
-                                getGroupAccountBook(getClickedAccountBookId()).setMyExpense(calculateMyExpense(getClickedAccountBookId()));
-                                getGroupAccountBook(getClickedAccountBookId()).setGroupExpense(calculateTotalExpense(getClickedAccountBookId()));
+                                GroupAccountBook groupAccountBook = getGroupAccountBook(getClickedAccountBookId());
+                                groupAccountBook.setMyExpense(calculateMyExpense(groupAccountBook.getDefaultCurrency()));
+                                groupAccountBook.setGroupExpense(calculateTotalExpense(groupAccountBook.getDefaultCurrency()));
                             } else {
-                                getIndividualAccountBook(getClickedAccountBookId()).setExpense(calculateTotalExpense(getClickedAccountBookId()));
+                                IndividualAccountBook individualAccountBook = getIndividualAccountBook(getClickedAccountBookId());
+                                individualAccountBook.setExpense(calculateTotalExpense(individualAccountBook.getDefaultCurrency()));
                             }
 
                             setChanged();
@@ -558,6 +568,7 @@ public class Model extends Observable {
         ab.put("accountBookStartDate", accountBook.getStartDate());
         ab.put("accountBookEndDate", accountBook.getEndDate());
         ab.put("accountBookType", type);
+        ab.put("accountBookCreator", accountBook.getCreatorId());
         ab.put("email", email);
         ab.put("userId", userId);
         ab.put("username", username);

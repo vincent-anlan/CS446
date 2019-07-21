@@ -32,6 +32,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
 
 
 public class Login extends AppCompatActivity {
@@ -260,7 +261,7 @@ public class Login extends AppCompatActivity {
         if(!checkinput()){
             return;
         }
-        dialog.setMessage("Creating...");
+        dialog.setMessage("Logging in your account...");
         dialog.show();
         //close the dialog in 3 secs.
         new Handler().postDelayed(new Runnable() {
@@ -281,7 +282,20 @@ public class Login extends AppCompatActivity {
                     //create user
                     FirebaseUser user = auth.getCurrentUser();
                     status.setText(user.getEmail());
-                    detail.setText("Login success");
+                    //get data from user
+                    String username = null;
+                    if (user != null) {
+                        for (UserInfo profile : user.getProviderData()) {
+                            // Id of the provider (ex: google.com)
+                            String providerId = profile.getProviderId();
+                            String id = profile.getUid();
+                            username = profile.getDisplayName();
+                            String email = profile.getEmail();
+                            //Uri photoUrl = profile.getPhotoUrl();
+                        }
+                    }
+                    Log.d("01","username:"+username);
+                    detail.setText("username:"+username);
                     findViewById(R.id.link_reset).setVisibility(View.GONE);
                     findViewById(R.id.google_login).setVisibility(View.GONE);
                     findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);

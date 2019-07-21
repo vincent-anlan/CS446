@@ -16,13 +16,15 @@ public class AccountBook implements Serializable, Comparable<AccountBook> {
     private String startDate;
     private String endDate;
     private String defaultCurrency;
+    private String creatorId;
 
-    AccountBook(String id, String name, String startDate, String endDate, String defaultCurrency) {
+    AccountBook(String id, String name, String startDate, String endDate, String defaultCurrency, String creatorId) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.defaultCurrency = defaultCurrency;
+        this.creatorId = creatorId;
     }
 
     public String getId() {
@@ -63,6 +65,14 @@ public class AccountBook implements Serializable, Comparable<AccountBook> {
 
     public void setDefaultCurrency(String defaultCurrency) {
         this.defaultCurrency = defaultCurrency;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 
     public Date parseStringToDate(String date) throws Exception{

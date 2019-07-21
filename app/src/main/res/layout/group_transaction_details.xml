@@ -1,114 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/border"
-    android:orientation="vertical">
+    android:id="@+id/group_transaction_details_page">
 
-    <include
-        android:id="@+id/transaction_details_toolbar"
-        layout="@layout/toolbar" />
-
-    <!--<Space-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="50dp" />-->
-
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false">
+        android:background="@drawable/border"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <include
+            android:id="@+id/transaction_details_toolbar"
+            layout="@layout/toolbar" />
+
+        <!--<Space-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp" />-->
+
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:clipToPadding="false">
 
-            <include layout="@layout/edit_delete" />
-
-            <include layout="@layout/line_separator" />
-            <include layout="@layout/common_transaction_details" />
-
-            <!--Creator-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/creator"
-                    android:layout_gravity="center_vertical"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:textSize="20sp"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
+                <include layout="@layout/line_separator" />
+
+                <include layout="@layout/common_transaction_details" />
+
+                <!--Creator-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginRight="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="@string/creator"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/creator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <include layout="@layout/line_separator" />
+
+                <!--Payer-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginRight="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="Payer"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/payer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <include layout="@layout/line_separator" />
+
+                <!--Participants-->
                 <TextView
-                    android:id="@+id/creator"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:textSize="20sp"/>
+                    android:layout_marginLeft="50dp"
+                    android:text="Participants:"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/participants_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginRight="50dp"
+                    android:orientation="horizontal"></LinearLayout>
+
+                <include layout="@layout/line_separator" />
+
             </LinearLayout>
-            <include layout="@layout/line_separator" />
 
-            <!--Payer-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Payer"
-                    android:layout_gravity="center_vertical"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:textSize="20sp"/>
+        </ScrollView>
+    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/payer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:textSize="20sp"/>
-            </LinearLayout>
-            <include layout="@layout/line_separator" />
-
-            <!--Participants-->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Participants:"
-                android:layout_marginLeft="50dp"
-                android:layout_gravity="center_vertical"
-                android:textStyle="bold"
-                android:textSize="20sp"/>
-            <LinearLayout
-                android:id="@+id/participants_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp">
-            </LinearLayout>
-
-            <include layout="@layout/line_separator" />
-
-        </LinearLayout>
-
-    </ScrollView>
-
-
-
-
-</LinearLayout>
-
+</RelativeLayout>
 

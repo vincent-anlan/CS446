@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 public class BillSplitActivity extends AppCompatActivity {
@@ -61,13 +62,15 @@ public class BillSplitActivity extends AppCompatActivity {
     }
 
     private void calculate() {
+        String accountBookDefaultCurrency = model.getGroupAccountBook(model.getClickedAccountBookId()).getDefaultCurrency();
         // compute the balance of each participants and store into a map
         HashMap<String, Float> balanceMap = new HashMap<>();
         for (Transaction transaction : model.getCurrentTransactionList()) {
             // add total expense value to the payer
             GroupTransaction groupTransaction = (GroupTransaction) transaction;
+            String currency = transaction.getCurrency();
             String payerName = groupTransaction.getPayer().getName();
-            Float totalExpense = groupTransaction.getAmount();
+            Float totalExpense = model.convertToABDefaultCurrency(groupTransaction.getAmount(), currency, accountBookDefaultCurrency);
             if (balanceMap.containsKey(payerName)) {
                 balanceMap.put(payerName, balanceMap.get(payerName) + totalExpense);
             } else {
@@ -77,7 +80,7 @@ public class BillSplitActivity extends AppCompatActivity {
             HashMap<Participant, Float> participantsMap = groupTransaction.getParticipants();
             for (HashMap.Entry<Participant, Float> participant : participantsMap.entrySet()) {
                 String participantName = participant.getKey().getName();
-                Float participantExpense = participant.getValue();
+                Float participantExpense = model.convertToABDefaultCurrency(participant.getValue(), currency, accountBookDefaultCurrency);
                 if (balanceMap.containsKey(participantName)) {
                     balanceMap.put(participantName, balanceMap.get(participantName) - participantExpense);
                 } else {
@@ -101,7 +104,7 @@ public class BillSplitActivity extends AppCompatActivity {
         }
 
         // find two participants with largest positive/negative balance
-        while (posBalance.size() > 0) {
+        while (posBalance.size() > 0 && negBalance.size() > 0) {
             String payerName = findAbsMaxBalance(negBalance);
             String receiverName = findAbsMaxBalance(posBalance);
             Float lowestBalance = negBalance.get(payerName); // a negative value
@@ -172,7 +175,8 @@ public class BillSplitActivity extends AppCompatActivity {
                 addTextView(payer.getKey(), "payer");
                 addTextView("should pay ", "text");
                 addTextView(receiver.getKey(), "receiver");
-                addTextView(Float.toString(receiver.getValue()), "amount");
+                Float roundedAmount = BigDecimal.valueOf(receiver.getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).floatValue();
+                addTextView(Float.toString(roundedAmount), "amount");
                 linearLayout_v.addView(linearLayout_h);
                 lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, linearLayout_v, false);
                 linearLayout_v.addView(lineSeparator);

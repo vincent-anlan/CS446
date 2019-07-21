@@ -7,8 +7,8 @@ public class IndividualAccountBook extends AccountBook implements Serializable {
     private float income;
     private float expense;
 
-    IndividualAccountBook(String id, String name, String startDate, String endDate, String defaultCurrency) {
-        super(id, name, startDate, endDate, defaultCurrency);
+    IndividualAccountBook(String id, String name, String startDate, String endDate, String defaultCurrency, String creatorId) {
+        super(id, name, startDate, endDate, defaultCurrency, creatorId);
     }
 
     public float getIncome() {
