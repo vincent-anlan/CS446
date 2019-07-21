@@ -3,6 +3,7 @@ package ca.uwaterloo.cs446.ezbill;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     LinearLayout add;
     boolean isMenuOpen;
     boolean isViewAllBillClicked;
+    RelativeLayout floating_menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +75,8 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         menu = (LinearLayout) findViewById(R.id.menu);
         delete = (LinearLayout) findViewById(R.id.delete);
         edit = (LinearLayout) findViewById(R.id.edit);
-        pie_chart = (LinearLayout) findViewById(R.id.pie_chart);
         add = (LinearLayout) findViewById(R.id.add);
+        floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,13 +125,6 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
             }
         });
 
-        pie_chart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                restoreDefaultSetting();
-                startActivity(new Intent(IndividualAccountBookDetailsActivity.this, SummaryActivity.class));
-            }
-        });
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +133,17 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
                 startActivity(new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class));
             }
         });
+
+        if (model.currentTransactionList.size() > 0) {
+            pie_chart = (LinearLayout) findViewById(R.id.pie_chart);
+            pie_chart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    restoreDefaultSetting();
+                    startActivity(new Intent(IndividualAccountBookDetailsActivity.this, SummaryActivity.class));
+                }
+            });
+        }
     }
 
     private void closeMenu() {
@@ -153,12 +160,14 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
                     edit.setVisibility(View.GONE);
                 }
             }).start();
-            pie_chart.animate().translationY(0).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    pie_chart.setVisibility(View.GONE);
-                }
-            }).start();
+            if (model.currentTransactionList.size() > 0) {
+                pie_chart.animate().translationY(0).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        pie_chart.setVisibility(View.GONE);
+                    }
+                }).start();
+            }
             add.animate().translationY(0).withEndAction(new Runnable() {
                 @Override
                 public void run() {
@@ -166,19 +175,25 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
                 }
             }).start();
             isMenuOpen = false;
+            floating_menu.setBackgroundColor(0);
         }
     }
 
     private void openMenu() {
         delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
         edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
-        pie_chart.animate().translationY(-getResources().getDimension(R.dimen.pie_chart));
         add.animate().translationY(-getResources().getDimension(R.dimen.add));
+        if (model.currentTransactionList.size() > 0) {
+            pie_chart.animate().translationY(-getResources().getDimension(R.dimen.pie_chart));
+            pie_chart.setVisibility(View.VISIBLE);
+        }
         isMenuOpen = true;
         delete.setVisibility(View.VISIBLE);
         edit.setVisibility(View.VISIBLE);
-        pie_chart.setVisibility(View.VISIBLE);
         add.setVisibility(View.VISIBLE);
+
+        floating_menu.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
+
     }
 
     private void restoreDefaultSetting() {
@@ -298,6 +313,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         if (individualAccountBook != null) {
             displayTransactions();
             updateText();
+            initFloatingActionMenu();
         }
     }
 }

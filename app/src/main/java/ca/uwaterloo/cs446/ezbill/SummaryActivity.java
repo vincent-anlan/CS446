@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
@@ -81,19 +82,22 @@ public class SummaryActivity extends AppCompatActivity {
 
         // enable DataSet in Percentage
         pieChart.setUsePercentValues(true);
+        pieChart.setCenterText("Expense");
 
         // create dataset
         ArrayList<Entry> values = new ArrayList<Entry>();
         ArrayList<String> labels = new ArrayList<String>();
-        PieDataSet dataSet = new PieDataSet(values, "");
         int index = 0;
         for (HashMap.Entry<String, Float> entry : summary.entrySet()) {
             Float percentage = entry.getValue()/total;
             values.add(new Entry(percentage, index));
             labels.add(entry.getKey());
+            ++index;
         }
 
+        PieDataSet dataSet = new PieDataSet(values, "");
         PieData data = new PieData(labels, dataSet);
+
         data.setValueFormatter(new PercentFormatter());
         pieChart.setData(data);
         dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
@@ -102,9 +106,13 @@ public class SummaryActivity extends AppCompatActivity {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setTransparentCircleRadius(30f);
         pieChart.setHoleRadius(30f);
+        pieChart.animateY(1000, Easing.EasingOption.Linear);
+        pieChart.animateX(1000, Easing.EasingOption.Linear);
 
         // set text size and color
         data.setValueTextSize(13f);
+//        data.setDrawValues(false);
+//        pieChart.setDrawSliceText(false);
         data.setValueTextColor(Color.DKGRAY);
 
         // disable description

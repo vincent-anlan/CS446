@@ -6,5 +6,6 @@
     <color name="button">#FEDBD0</color>
     <color name="background">#FEEAE6</color>
     <color name="backup">#442C2E</color>
+    <color name="transparentBackground">#66E0E0E0</color>
 
 </resources>

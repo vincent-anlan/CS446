@@ -45,6 +45,7 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
     FloatingActionButton addActionButton;
     boolean isMenuOpen;
     boolean isCreator;
+    RelativeLayout floating_menu;
 
 
     @Override
@@ -67,6 +68,7 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
             menu = (LinearLayout) findViewById(R.id.menu);
             delete = (LinearLayout) findViewById(R.id.delete);
             edit = (LinearLayout) findViewById(R.id.edit);
+            floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
 
             menu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -132,6 +134,7 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
                 }
             }).start();
             isMenuOpen = false;
+            floating_menu.setBackgroundColor(0);
         }
     }
 
@@ -141,6 +144,7 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
         isMenuOpen = true;
         delete.setVisibility(View.VISIBLE);
         edit.setVisibility(View.VISIBLE);
+        floating_menu.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
     }
 
     private void showDetails() {

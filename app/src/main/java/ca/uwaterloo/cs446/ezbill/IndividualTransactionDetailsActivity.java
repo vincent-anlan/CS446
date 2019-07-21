@@ -2,6 +2,7 @@ package ca.uwaterloo.cs446.ezbill;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +33,7 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity impl
     LinearLayout delete;
     LinearLayout edit;
     boolean isMenuOpen;
-    boolean isCreator;
+    RelativeLayout floating_menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity impl
         delete = (LinearLayout) findViewById(R.id.delete);
         edit = (LinearLayout) findViewById(R.id.edit);
         isMenuOpen = false;
+        floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +114,7 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity impl
                 }
             }).start();
             isMenuOpen = false;
+            floating_menu.setBackgroundColor(0);
         }
     }
 
@@ -120,6 +124,7 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity impl
         isMenuOpen = true;
         delete.setVisibility(View.VISIBLE);
         edit.setVisibility(View.VISIBLE);
+        floating_menu.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
     }
 
     private void showDetails() {
