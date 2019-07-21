@@ -261,7 +261,7 @@ public class Login extends AppCompatActivity {
         if(!checkinput()){
             return;
         }
-        dialog.setMessage("Creating...");
+        dialog.setMessage("Logging in your account...");
         dialog.show();
         //close the dialog in 3 secs.
         new Handler().postDelayed(new Runnable() {
