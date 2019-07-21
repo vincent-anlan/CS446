@@ -48,7 +48,6 @@ public class Model extends Observable {
         currentTransactionList = new ArrayList<>();
         exchangeRates = new HashMap<>();
         viewAllBillClicked = false;
-        readAccountBooksFromDB();
     }
 
 
@@ -369,56 +368,6 @@ public class Model extends Observable {
         exchangeRates = rates;
     }
 
-    public void readAccountBooksFromDB() {
-        // Access a Cloud Firestore instance from your Activity
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-//      read data from database
-        db.collection("user_account_book_info")
-                .whereEqualTo("email", userEmail)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String userId = document.getData().get("userId").toString();
-                                setCurrentUserId(userId);
-                                String username = document.getData().get("username").toString();
-                                setCurrentUsername(username);
-
-                                String accountBookId = document.getData().get("accountBookId").toString();
-                                String accountBookName = document.getData().get("accountBookName").toString();
-                                String startDate = document.getData().get("accountBookStartDate").toString();
-                                String endDate = document.getData().get("accountBookEndDate").toString();
-                                String defaultCurrency = document.getData().get("accountBookCurrency").toString();
-                                String type = document.getData().get("accountBookType").toString();
-                                String creatorId = document.getData().get("accountBookCreator").toString();
-
-                                if (type.equals("Group")) {
-                                    if (!hasGroupAccountBook(accountBookId)) {
-                                        GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency, creatorId);
-                                        addGroupAccountBook(groupAccountBook);
-                                    }
-                                } else {
-                                    if (!hasIndividualAccountBook(accountBookId)) {
-                                        IndividualAccountBook individualAccountBook = new IndividualAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency, creatorId);
-                                        addIndividualAccountBook(individualAccountBook);
-                                    }
-                                }
-                                Log.d("READ", document.getId() + " => " + document.getData());
-                            }
-
-                            setChanged();
-                            notifyObservers();
-
-                        } else {
-                            Log.w("READ", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-    }
-
     public void readTransactionsFromDB(final boolean isGroup) {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -491,34 +440,31 @@ public class Model extends Observable {
                 });
     }
 
-    public void readParticipantsFromDB() {
+    public void readParticipantsFromDB(final String groupAccountBookId) {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // read data from database
         db.collection("user_account_book_info")
-                .whereEqualTo("accountBookId", getClickedAccountBookId())
+                .whereEqualTo("accountBookId", groupAccountBookId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@Nonnull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                GroupAccountBook groupAccountBook = getGroupAccountBook(getClickedAccountBookId());
+                                GroupAccountBook groupAccountBook = getGroupAccountBook(groupAccountBookId);
 
                                 String userId = document.getData().get("userId").toString();
                                 String username = document.getData().get("username").toString();
 
-                                if (!hasParticipant(getClickedAccountBookId(), userId)) {
+                                if (!hasParticipant(groupAccountBook.getId(), userId)) {
                                     Participant participant = new Participant(userId, username);
                                     groupAccountBook.addParticipant(participant);
                                 }
 
                                 Log.d("READ", document.getId() + " => " + document.getData());
                             }
-
-                            setChanged();
-                            notifyObservers();
                         } else {
                             Log.w("READ", "Error getting documents.", task.getException());
                         }

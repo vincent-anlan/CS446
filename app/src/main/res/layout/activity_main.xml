@@ -11,6 +11,9 @@
         android:id="@+id/my_toolbar"
         layout="@layout/toolbar" />
 
+    <include
+        layout="@layout/progess_bar"/>
+
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="0dp"

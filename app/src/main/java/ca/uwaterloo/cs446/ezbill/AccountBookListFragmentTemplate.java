@@ -18,8 +18,8 @@ import java.util.Observer;
 public abstract class AccountBookListFragmentTemplate extends Fragment implements Observer {
 
     Model model;
-    private ArrayList<String> dates;
-    private RecyclerView Rv;
+    ArrayList<String> dates;
+    RecyclerView Rv;
 
     public AccountBookListFragmentTemplate() {}
 
@@ -38,9 +38,9 @@ public abstract class AccountBookListFragmentTemplate extends Fragment implement
         // Init date for timeline
         initDate();
 
-        addDateToView(model, dates, Rv);
+        addDateToView();
 
-        addAccountBookInfoToView(model, Rv);
+        addAccountBookInfoToView();
 
         return view;
     }
@@ -64,9 +64,9 @@ public abstract class AccountBookListFragmentTemplate extends Fragment implement
         dates.add(date);
     }
 
-    public abstract void addDateToView(Model model, ArrayList<String> dates, RecyclerView Rv);
+    public abstract void addDateToView();
 
-    public abstract void addAccountBookInfoToView(Model model, RecyclerView Rv);
+    public abstract void addAccountBookInfoToView();
 
     @Override
     public void onDestroy() {
@@ -78,10 +78,10 @@ public abstract class AccountBookListFragmentTemplate extends Fragment implement
 
     @Override
     public void update(Observable o, Object arg) {
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
-        addDateToView(model, dates, Rv);
-        dividerItemDecoration.setDates(dates);
-        Rv.addItemDecoration(dividerItemDecoration);
-        addAccountBookInfoToView(model, Rv);
+        while (Rv.getItemDecorationCount() > 0) {
+            Rv.removeItemDecorationAt(0);
+        }
+        addDateToView();
+        addAccountBookInfoToView();
     }
 }

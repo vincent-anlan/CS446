@@ -69,7 +69,6 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        model.readParticipantsFromDB();
         model.readTransactionsFromDB(true);
 
         model.setViewAllBillClicked(false);
