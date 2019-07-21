@@ -1,15 +1,18 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class GroupAccountBookDetailsActivity extends AppCompatActivity implements Observer {
 
@@ -36,15 +40,16 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     LinearLayout.LayoutParams params_h;
     View lineSeparator;
     View viewAllBillsLineSeperator;
-    View editDeleteView;
     int numToDisplay;
 
     LinearLayout menu;
     LinearLayout delete;
     LinearLayout edit;
     LinearLayout add;
+    FloatingActionButton addActionButton;
     boolean isMenuOpen;
     boolean isViewAllBillClicked;
+    boolean isCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +58,6 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
         model = Model.getInstance();
         model.addObserver(this);
-
-        editDeleteView = (View) findViewById(R.id.edit_delete);
 
         calculateBtn = (Button) findViewById(R.id.calculateBtn);
 //        addMorePeopleBtn = (TextView) findViewById(R.id.addMorePeopleBtn);
@@ -72,6 +75,17 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
         isMenuOpen = false;
         isViewAllBillClicked = false;
+        isCreator = model.getGroupAccountBook(model.getClickedAccountBookId()).getCreatorId().equals(model.currentUserId);
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.group_account_book_page);
+        if (isCreator) {
+            View newView = getLayoutInflater().inflate(R.layout.floating_menu, layout, false);
+            layout.addView(newView);
+        } else {
+            View newView = getLayoutInflater().inflate(R.layout.floating_menu_add_button, layout, false);
+            layout.addView(newView);
+        }
+
         model.readParticipantsFromDB();
         model.readTransactionsFromDB(true);
 
@@ -79,38 +93,70 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         displayTransactions();
         updateText();
 
-        if (!model.getGroupAccountBook(model.getClickedAccountBookId()).getCreatorId().equals(model.currentUserId)) {
-            editDeleteView.setVisibility(View.GONE);
-        }
-
         initFloatingActionMenu();
         model.initObservers();
     }
 
     private void initFloatingActionMenu() {
-        menu = (LinearLayout) findViewById(R.id.menu);
-        delete = (LinearLayout) findViewById(R.id.delete);
-        edit = (LinearLayout) findViewById(R.id.edit);
-        add = (LinearLayout) findViewById(R.id.add);
-
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isMenuOpen) {
-                    closeMenu();
-                } else {
-                    openMenu();
+        if (isCreator) {
+            menu = (LinearLayout) findViewById(R.id.menu);
+            delete = (LinearLayout) findViewById(R.id.delete);
+            edit = (LinearLayout) findViewById(R.id.edit);
+            add = (LinearLayout) findViewById(R.id.add);
+            menu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (isMenuOpen) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
                 }
-            }
-        });
+            });
 
-        delete.setOnClickListener(onButtonClick());
-        edit.setOnClickListener(onButtonClick());
-        add.setOnClickListener(onButtonClick());
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(GroupAccountBookDetailsActivity.this);
+                    builder.setMessage("You are about to permanently delete all records of this account book. Do you really want to proceed?");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "The account book is deleted.", Toast.LENGTH_SHORT).show();
+                            model.removeFromGroupAccountBookList(model.getClickedAccountBookId());
+                            finish();
+                        }
+                    });
+
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            closeMenu();
+                        }
+                    });
+
+                    builder.show();
+                }
+            });
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    restoreDefaultSetting();
+                    Intent intent = new Intent(GroupAccountBookDetailsActivity.this, GroupAccountBookUpsertActivity.class);
+                    intent.putExtra("accountBookId", model.getClickedAccountBookId());
+                    startActivity(intent);
+                }
+            });
+            add.setOnClickListener(onAddButtonClick());
+        } else {
+            addActionButton = (FloatingActionButton) findViewById(R.id.add);
+            addActionButton.setOnClickListener(onAddButtonClick());
+        }
     }
 
     private void closeMenu() {
-        if (isMenuOpen) {
+        if (isMenuOpen && isCreator) {
             delete.animate().translationY(0).withEndAction(new Runnable() {
                 @Override
                 public void run() {
@@ -143,23 +189,16 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         add.setVisibility(View.VISIBLE);
     }
 
-    private View.OnClickListener onButtonClick() {
+    private View.OnClickListener onAddButtonClick() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 restoreDefaultSetting();
-                Intent intent;
-                if (view.getId() == R.id.delete) {
-                    intent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
-                } else if (view.getId() == R.id.edit) {
-                    intent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
-                } else {
-                    intent = new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class);
-                }
-                startActivity(intent);
+                startActivity(new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class));
             }
         };
     }
+
 
     private void restoreDefaultSetting() {
         closeMenu();
@@ -316,20 +355,6 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     public void calculateClicked(View view) {
         restoreDefaultSetting();
         startActivity(new Intent(this, BillSplitActivity.class));
-    }
-
-    public void onEdit(View view) {
-        Log.d("WRITE", "Edit Btn clicked!!!");
-        Intent intent = new Intent(this, GroupAccountBookUpsertActivity.class);
-        intent.putExtra("accountBookId", model.getClickedAccountBookId());
-        restoreDefaultSetting();
-        startActivity(intent);
-    }
-
-    public void onDelete(View view) {
-        Log.d("WRITE", "Delete Btn clicked!!!");
-        model.removeFromGroupAccountBookList(model.getClickedAccountBookId());
-        finish();
     }
 
     public void updateText() {

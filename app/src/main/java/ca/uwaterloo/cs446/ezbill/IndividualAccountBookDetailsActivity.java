@@ -1,9 +1,11 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -83,10 +86,57 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
             }
         });
 
-        delete.setOnClickListener(onButtonClick());
-        edit.setOnClickListener(onButtonClick());
-        pie_chart.setOnClickListener(onButtonClick());
-        add.setOnClickListener(onButtonClick());
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(IndividualAccountBookDetailsActivity.this);
+                builder.setMessage("You are about to permanently delete all records of this account book. Do you really want to proceed?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), "The account book is deleted.", Toast.LENGTH_SHORT).show();
+                        model.removeFromIndividualAccountBookList(model.getClickedAccountBookId());
+                        finish();
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        closeMenu();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                Intent intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualAccountBookUpsertActivity.class);
+                intent.putExtra("accountBookId", model.getClickedAccountBookId());
+                startActivity(intent);
+            }
+        });
+
+        pie_chart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                startActivity(new Intent(IndividualAccountBookDetailsActivity.this, SummaryActivity.class));
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                startActivity(new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class));
+            }
+        });
     }
 
     private void closeMenu() {
@@ -129,26 +179,6 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         edit.setVisibility(View.VISIBLE);
         pie_chart.setVisibility(View.VISIBLE);
         add.setVisibility(View.VISIBLE);
-    }
-
-    private View.OnClickListener onButtonClick() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                restoreDefaultSetting();
-                Intent intent;
-                if (view.getId() == R.id.delete) {
-                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
-                } else if (view.getId() == R.id.edit) {
-                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
-                } else if (view.getId() == R.id.pie_chart) {
-                    intent = new Intent(IndividualAccountBookDetailsActivity.this, SummaryActivity.class);
-                } else {
-                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
-                }
-                startActivity(intent);
-            }
-        };
     }
 
     private void restoreDefaultSetting() {
@@ -240,19 +270,6 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     public int dpTopx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
 
-    }
-
-    public void onEdit(View view) {
-        Intent intent = new Intent(this, IndividualAccountBookUpsertActivity.class);
-        intent.putExtra("accountBookId", model.getClickedAccountBookId());
-        startActivity(intent);
-        Log.d("WRITE", "Edit Btn clicked!!!");
-    }
-
-    public void onDelete(View view) {
-        Log.d("WRITE", "Delete Btn clicked!!!");
-        model.removeFromIndividualAccountBookList(model.getClickedAccountBookId());
-        finish();
     }
 
     private void updateText() {
