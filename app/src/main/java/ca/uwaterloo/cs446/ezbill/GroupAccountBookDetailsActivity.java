@@ -50,6 +50,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     boolean isMenuOpen;
     boolean isViewAllBillClicked;
     boolean isCreator;
+    RelativeLayout floating_menu;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +115,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
                     }
                 }
             });
+            floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
 
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -176,6 +179,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
                 }
             }).start();
             isMenuOpen = false;
+            floating_menu.setBackgroundColor(0);
         }
     }
 
@@ -187,6 +191,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         delete.setVisibility(View.VISIBLE);
         edit.setVisibility(View.VISIBLE);
         add.setVisibility(View.VISIBLE);
+        floating_menu.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
     }
 
     private View.OnClickListener onAddButtonClick() {
