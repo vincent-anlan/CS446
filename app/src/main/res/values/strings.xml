@@ -33,6 +33,9 @@
     <string name="income">Income</string>
     <string name="type">Type</string>
     <string name="creator">Creator</string>
+    <string name="user_email">Email</string>
+    <string name="qr_code">My QR Code</string>
+    <string name="profile_photo">Profile Photo</string>
     <!--for sign in and sign up-->
     <string name="signed_out">Signed Out</string>
     <string name="sign_in">Sign In</string>

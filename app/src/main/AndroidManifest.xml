@@ -116,6 +116,13 @@
             android:windowSoftInputMode="stateHidden">
         </activity>
 
+        <activity
+            android:name=".MyInfoActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
     </application>
 
 </manifest>
