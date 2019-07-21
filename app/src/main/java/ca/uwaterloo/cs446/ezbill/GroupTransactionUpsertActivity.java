@@ -6,9 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -32,7 +39,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
     private ArrayList<String> selectId;
     private HashMap<Participant, Float> select_participants;
     private ArrayList<String> pstring;
-    private Button mSum;
+    private TextView mSum;
 
     ArrayList<Participant> participants;
 
@@ -47,6 +54,9 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
 
     ArrayList<String> collectSumParticipant;
     float totalExpense;
+
+    float collectExpense;
+
     int onetimeUse;
     ArrayList<EditText> allEds;
 
@@ -89,7 +99,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         collectSumParticipant = new ArrayList<>();
         sumSaveString = "";
 
-        mSum = (Button) findViewById(R.id.totalAmount);
+        mSum = findViewById(R.id.amountShow);
         onetimeUse = 0;
         totalExpense = Float.parseFloat("0.0");
 
@@ -106,6 +116,8 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
         params.setMargins(0, dpTopx(10), dpTopx(1000), dpTopx(10));
         params_h = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        collectExpense = Float.parseFloat("0.0");
 
         mParticipant.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,6 +164,72 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                             subExpense.setLayoutParams(params);
                             subExpense.setGravity(Gravity.CENTER);
                             subExpense.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                            subExpense.addTextChangedListener(new TextWatcher() {
+                                public void afterTextChanged(Editable s) {
+                                    totalExpense = collectExpense + Float.parseFloat(s.toString());
+                                    mSum.setText(Float.toString(totalExpense));
+//                                    String item = s.toString();
+//                                    float f = Float.parseFloat("0");
+//                                    if(item.isEmpty()){
+//                                        collectExpense = collectExpense + f;
+//                                        mSum.setText(Float.toString(collectExpense));
+//                                        mSum.setEnabled(false);
+//                                    }else{
+//                                        f = Float.parseFloat(item);
+//                                        collectExpense = collectExpense + f;
+//                                        mSum.setText(Float.toString(collectExpense));
+//                                        mSum.setEnabled(false);
+//                                    }
+
+                                }
+
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                                }
+
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                                        SpannableString spannableString = new SpannableString(s);
+//                                        BackgroundColorSpan backgroundSpan = new BackgroundColorSpan(getResources().getColor(android.R.color.holo_blue_light));
+//                                        spannableString.setSpan(backgroundSpan, start, start + count, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                                    String item = s.toString();
+                                    float f = Float.parseFloat("0");
+                                    if (item.isEmpty()) {
+//                                            collectExpense = collectExpense + f;
+//                                            mSum.setText(Float.toString(collectExpense));
+                                        collectExpense = f;
+                                        mSum.setText(Float.toString(f));
+                                    } else {
+                                        f = Float.parseFloat(item);
+//                                            collectExpense = collectExpense + f;
+//                                            mSum.setText(Float.toString(collectExpense));
+                                        collectExpense = f;
+                                        mSum.setText(Float.toString(f));
+                                    }
+                                }
+
+                            });
+//                            subExpense.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//                                @Override
+//                                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                                    if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+//                                            actionId == EditorInfo.IME_ACTION_DONE ||
+//                                            event != null &&
+//                                                    event.getAction() == KeyEvent.ACTION_DOWN &&
+//                                                    event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+//                                        if (event == null || !event.isShiftPressed()) {
+//                                            // the user is done typing.
+//                                            float f = Float.parseFloat(v.getText().toString());
+//                                            if(mSum.getText().toString() != ""){
+//                                                collectExpense = Float.parseFloat(mSum.getText().toString()) + f;
+//                                            }
+//
+//                                            mSum.setText(Float.toString(collectExpense));
+//                                            return true; // consume.
+//                                        }
+//                                    }
+//                                    return false; // pass on to other listeners.
+//                                }
+//                            });
                             allEds.add(subExpense);
 
                             LinearLayout linearLayout_h = new LinearLayout(GroupTransactionUpsertActivity.this);
@@ -184,31 +262,32 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
             }
         });
 
-        mSum.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onetimeUse == 0) {
-                    for (int i = 0; i < allEds.size(); i++) {
-                        String item = allEds.get(i).getText().toString();
-                        float f = Float.parseFloat(item);
-                        totalExpense = totalExpense + f;
-                    }
-                    mSum.setText(Float.toString(totalExpense));
-                    sumSaveString = Float.toString(totalExpense);
-                    select_participants = new HashMap<>();
-                    for (int i = 0; i < allEds.size(); i++) {
-                        String item = allEds.get(i).getText().toString();
-                        float f = Float.parseFloat(item);
-                        String checkName = selectName.get(i);
-                        String checkId = selectId.get(i);
-                        Participant p = new Participant(checkId, checkName);
-                        select_participants.put(p, f);
-                    }
-                    onetimeUse = 1;
-                } else {
-                }
-            }
-        });
+
+//        mSum.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (onetimeUse == 0) {
+//                    for (int i = 0; i < allEds.size(); i++) {
+//                        String item = allEds.get(i).getText().toString();
+//                        float f = Float.parseFloat(item);
+//                        totalExpense = totalExpense + f;
+//                    }
+//                    mSum.setText(Float.toString(totalExpense));
+//                    sumSaveString = Float.toString(totalExpense);
+//                    select_participants = new HashMap<>();
+//                    for (int i = 0; i < allEds.size(); i++) {
+//                        String item = allEds.get(i).getText().toString();
+//                        float f = Float.parseFloat(item);
+//                        String checkName = selectName.get(i);
+//                        String checkId = selectId.get(i);
+//                        Participant p = new Participant(checkId, checkName);
+//                        select_participants.put(p, f);
+//                    }
+//                    onetimeUse = 1;
+//                } else {
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -229,6 +308,17 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         String category = getCategory();
         Float amount = Float.valueOf(mSum.getText().toString());
         Participant payer = new Participant(payerIDSaveString, mSelectPayer.getSelectedItem().toString());
+
+        sumSaveString = Float.toString(collectExpense);
+        select_participants = new HashMap<>();
+        for (int i = 0; i < allEds.size(); i++) {
+            String item = allEds.get(i).getText().toString();
+            float f = Float.parseFloat(item);
+            String checkName = selectName.get(i);
+            String checkId = selectId.get(i);
+            Participant p = new Participant(checkId, checkName);
+            select_participants.put(p, f);
+        }
         HashMap<Participant, Float> participants = select_participants;
 
         if (transaction != null) {

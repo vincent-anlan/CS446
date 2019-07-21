@@ -4,7 +4,8 @@
     xmlns:fab="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/border">
+    android:background="@drawable/border"
+    android:id="@+id/group_account_book_page">
 
 
     <LinearLayout
@@ -31,8 +32,6 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <include layout="@layout/edit_delete" />
-
                 <include layout="@layout/line_separator" />
                 <!--Participants-->
                 <include layout="@layout/participants_fragment" />
@@ -54,9 +53,6 @@
 
 
     </LinearLayout>
-
-
-    <include layout="@layout/floating_action_menu_no_summary" />
 
 
 </RelativeLayout>

@@ -15,12 +15,21 @@
         android:paddingRight="24dp">
 
         <ImageView
-            android:id="@+id/icon"
+            android:id="@+id/icon_reg"
             style="@style/ThemeOverlay.FirebaseIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/dining"
             android:layout_gravity="center"/>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_upload"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:padding="12dp"
+            android:text="Upload Profile Picture "
+            android:background="@color/button"/>
 
         <!--  Name Label -->
 

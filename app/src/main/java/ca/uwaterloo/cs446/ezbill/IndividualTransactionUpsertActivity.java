@@ -8,9 +8,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 
+import java.util.Observable;
+import java.util.Observer;
 import java.util.UUID;
 
-public class IndividualTransactionUpsertActivity extends TransactionUpsertActivityTemplate {
+public class IndividualTransactionUpsertActivity extends TransactionUpsertActivityTemplate implements Observer {
 
     private EditText mAmountedit;
 
@@ -21,8 +23,6 @@ public class IndividualTransactionUpsertActivity extends TransactionUpsertActivi
         transLayout.addView(newView);
 
         mAmountedit = (EditText) findViewById(R.id.editIndividual);
-
-
     }
 
     @Override
@@ -93,5 +93,10 @@ public class IndividualTransactionUpsertActivity extends TransactionUpsertActivi
 
             mAmountedit.setText(Float.toString(transaction.getAmount()));
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        mAmountedit.setText(model.getCameraUpdateExpense());
     }
 }

@@ -1,17 +1,22 @@
 
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Observable;
@@ -34,7 +39,13 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
     LinearLayout.LayoutParams params_h;
     LinearLayout.LayoutParams params_tv;
 
-    View editDeleteView;
+    LinearLayout menu;
+    LinearLayout delete;
+    LinearLayout edit;
+    FloatingActionButton addActionButton;
+    boolean isMenuOpen;
+    boolean isCreator;
+    RelativeLayout floating_menu;
 
 
     @Override
@@ -43,6 +54,97 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
         model = Model.getInstance();
         model.addObserver(this);
         showDetails();
+    }
+
+    private void initFloatingActionMenu() {
+        isMenuOpen = false;
+        isCreator = currTransaction.getCreator().getId().equals(model.currentUserId);
+
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.group_transaction_details_page);
+        if (isCreator) {
+            View newView = getLayoutInflater().inflate(R.layout.floating_menu, layout, false);
+            layout.addView(newView);
+
+            menu = (LinearLayout) findViewById(R.id.menu);
+            delete = (LinearLayout) findViewById(R.id.delete);
+            edit = (LinearLayout) findViewById(R.id.edit);
+            floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
+
+            menu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (isMenuOpen) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
+                }
+            });
+
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(GroupTransactionDetailsActivity.this);
+                    builder.setMessage("You are about to permanently delete all records of this transaction. Do you really want to proceed?");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "The transaction is deleted.", Toast.LENGTH_SHORT).show();
+                            model.removeFromCurrentTransactionList(currTransaction);
+                            finish();
+                        }
+                    });
+
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            closeMenu();
+                        }
+                    });
+
+                    builder.show();
+                }
+            });
+
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    closeMenu();
+                    Intent intent = new Intent(GroupTransactionDetailsActivity.this, GroupTransactionUpsertActivity.class);
+                    intent.putExtra("transactionId", currTransaction.getUuid());
+                    startActivity(intent);
+                }
+            });
+        }
+    }
+
+    private void closeMenu() {
+        if (isMenuOpen) {
+            delete.animate().translationY(0).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    delete.setVisibility(View.GONE);
+                }
+            }).start();
+            edit.animate().translationY(0).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    edit.setVisibility(View.GONE);
+                }
+            }).start();
+            isMenuOpen = false;
+            floating_menu.setBackgroundColor(0);
+        }
+    }
+
+    private void openMenu() {
+        delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
+        edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
+        isMenuOpen = true;
+        delete.setVisibility(View.VISIBLE);
+        edit.setVisibility(View.VISIBLE);
+        floating_menu.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
     }
 
     private void showDetails() {
@@ -55,7 +157,6 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         // get elements
-        editDeleteView = (View) findViewById(R.id.edit_delete);
         category = (TextView) findViewById(R.id.category);
         note = (TextView) findViewById(R.id.note);
         date = (TextView) findViewById(R.id.date);
@@ -67,9 +168,6 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
         String transactionID = getIntent().getStringExtra("transactionID");
         currTransaction = (GroupTransaction) model.getTransaction(transactionID);
 
-        if (!currTransaction.getCreator().getId().equals(model.currentUserId)) {
-            editDeleteView.setVisibility(View.GONE);
-        }
         //set text
         category.setText(currTransaction.getCategory());
         note.setText(currTransaction.getNote());
@@ -78,7 +176,7 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
         creator.setText(currTransaction.getCreator().getName());
         payer.setText(currTransaction.getPayer().getName());
         displayParticipants();
-
+        initFloatingActionMenu();
     }
 
 
@@ -127,19 +225,6 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
 
     }
 
-    public void onEdit(View view) {
-        Intent intent = new Intent(this, GroupTransactionUpsertActivity.class);
-        intent.putExtra("transactionId", currTransaction.getUuid());
-        startActivity(intent);
-        Log.d("WRITE", "Edit Btn clicked!!!");
-    }
-
-    public void onDelete(View view) {
-        Log.d("WRITE", "Delete Btn clicked!!!");
-        model.removeFromCurrentTransactionList(currTransaction);
-        finish();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -154,9 +239,6 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
         String transactionID = getIntent().getStringExtra("transactionID");
         currTransaction = (GroupTransaction) model.getTransaction(transactionID);
         if (currTransaction != null) {
-            if (!currTransaction.getCreator().getId().equals(model.currentUserId)) {
-                editDeleteView.setVisibility(View.GONE);
-            }
             //set text
             category.setText(currTransaction.getCategory());
             note.setText(currTransaction.getNote());

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,20 +20,39 @@ import com.google.firebase.auth.FirebaseUser;
 import android.util.Log;
 import android.net.Uri;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageException;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import java.io.InputStream;
+import android.graphics.Bitmap;
+import java.io.FileNotFoundException;
+import android.graphics.BitmapFactory;
+import android.database.Cursor;
+import android.provider.MediaStore.MediaColumns;
+
 
 
 public class SignupActivity extends AppCompatActivity {
+    final int RESULT_IMAGE = 666;
 
     private FirebaseAuth auth;
     private EditText email;
     private EditText password;
     private EditText Confirmpassword;
     private EditText username;
+    FirebaseStorage storage;
 
     private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup2);
         //pre
@@ -42,6 +62,7 @@ public class SignupActivity extends AppCompatActivity {
         username = findViewById(R.id.input_user);
         Confirmpassword = findViewById(R.id.input_password_confirm);
         dialog =  new ProgressDialog(this,R.style.AppTheme);
+        storage = FirebaseStorage.getInstance();
         dialog.setIndeterminate(true);
         // add listener
         findViewById(R.id.btn_signup).setOnClickListener(new View.OnClickListener() {
@@ -57,7 +78,81 @@ public class SignupActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        findViewById(R.id.btn_upload).setOnClickListener(new View.OnClickListener() {
 
+            public void onClick(View paramView) {
+                Intent img_intent = new Intent(Intent.ACTION_PICK);
+                img_intent.setType("image/*");
+                img_intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(img_intent, RESULT_IMAGE);
+
+            }
+        });
+        ImageView img = findViewById(R.id.icon_reg);
+        img.setImageResource(R.drawable.dining);
+
+    }
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != SignupActivity.RESULT_CANCELED) {
+            if (requestCode == RESULT_IMAGE && resultCode == RESULT_OK && data != null) {
+                try {
+                    ImageView img = findViewById(R.id.icon_reg);
+                    final Uri imageUri = data.getData();
+                    String path = getAbsolutePath(data.getData());
+                    final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    img.setImageBitmap(selectedImage);
+                    //img.setImageBitmap(decodeFile(path));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+                }
+
+            } else {
+                Toast.makeText(getApplicationContext(), "You haven't picked Image", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public Bitmap decodeFile(String path) {
+        try {
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, o);
+            // The new size we want to scale to
+            final int REQUIRED_SIZE = 70;
+
+            // Find the correct scale value. It should be the power of 2.
+            int scale = 1;
+            while (o.outWidth / scale / 2 >= REQUIRED_SIZE && o.outHeight / scale / 2 >= REQUIRED_SIZE)
+                scale *= 2;
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeFile(path, o2);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public String getAbsolutePath(Uri uri) {
+        String[] projection = { MediaColumns.DATA };
+        @SuppressWarnings("deprecation")
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaColumns.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else
+            return null;
     }
 
     private void creatacc(String eml, String pw){

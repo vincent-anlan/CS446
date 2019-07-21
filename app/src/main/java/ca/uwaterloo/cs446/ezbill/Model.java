@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,9 +38,9 @@ public class Model extends Observable {
     String currentUserId;
     String currentUsername;
     String clickedAccountBookId;
+    String mIndividualExpense;
     ArrayList<Transaction> currentTransactionList;
     String userEmail = "alice@gmail.com";
-    boolean viewAllBillClicked;
     HashMap<String, Float> exchangeRates;
 
     Model() {
@@ -47,20 +48,8 @@ public class Model extends Observable {
         individualAccountBookList = new ArrayList<>();
         currentTransactionList = new ArrayList<>();
         exchangeRates = new HashMap<>();
-        viewAllBillClicked = false;
     }
 
-
-    public boolean getViewAllBillClicked() {
-        return viewAllBillClicked;
-    }
-
-    public void setViewAllBillClicked(boolean isClicked) {
-        viewAllBillClicked = isClicked;
-        setChanged();
-        notifyObservers();
-
-    }
 
     public ArrayList<Transaction> getCurrentTransactionList() {
         return currentTransactionList;
@@ -323,7 +312,7 @@ public class Model extends Observable {
                 }
             }
         }
-        return totalAmount;
+        return BigDecimal.valueOf(totalAmount).setScale(2,BigDecimal.ROUND_HALF_UP).floatValue();
     }
 
     public float calculateTotalExpense(String accountBookCurrency) {
@@ -334,7 +323,7 @@ public class Model extends Observable {
             float rate = exchangeRates.get(accountBookCurrency) / exchangeRates.get(currency);
             totalAmount += value * rate;
         }
-        return totalAmount;
+        return BigDecimal.valueOf(totalAmount).setScale(2,BigDecimal.ROUND_HALF_UP).floatValue();
     }
 
     public float convertToABDefaultCurrency(float amount, String fromCurrency, String toCurrency) {
@@ -662,6 +651,14 @@ public class Model extends Observable {
                 });
 
 
+    }
+
+
+    public void cameraUpdateExpense(String fromCamera){
+        mIndividualExpense = fromCamera;
+    }
+    public String getCameraUpdateExpense(){
+        return mIndividualExpense;
     }
 
 

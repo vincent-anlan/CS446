@@ -1,16 +1,21 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -22,6 +27,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     LinearLayout.LayoutParams column_params;
     LinearLayout.LayoutParams row_params;
     View lineSeparator;
+    View viewAllBillsLineSeperator;
     TextView title;
     TextView viewAllBills;
     TextView income;
@@ -33,7 +39,9 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     LinearLayout edit;
     LinearLayout pie_chart;
     LinearLayout add;
-    boolean isMenuOpen = false;
+    boolean isMenuOpen;
+    boolean isViewAllBillClicked;
+    RelativeLayout floating_menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         viewAllBills = (TextView) findViewById(R.id.viewAllBills);
         income = (TextView) findViewById(R.id.income);
         expense = (TextView) findViewById(R.id.expense);
+        viewAllBillsLineSeperator = (View) findViewById(R.id.viewAllBillsLineSeperator);
 
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.individual_toolbar);
@@ -53,11 +62,10 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         model.readTransactionsFromDB(false);
+        isMenuOpen = false;
+        isViewAllBillClicked = false;
         displayTransactions();
-        model.setViewAllBillClicked(false);
-        title.setText(model.getIndividualAccountBook(model.getClickedAccountBookId()).getName());
-        income.setText(String.valueOf(model.getIndividualAccountBook(model.getClickedAccountBookId()).getIncome()));
-        expense.setText(String.valueOf(model.getIndividualAccountBook(model.getClickedAccountBookId()).getExpense()));
+        updateText();
 
         initFloatingActionMenu();
         model.initObservers();
@@ -67,8 +75,8 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         menu = (LinearLayout) findViewById(R.id.menu);
         delete = (LinearLayout) findViewById(R.id.delete);
         edit = (LinearLayout) findViewById(R.id.edit);
-        pie_chart = (LinearLayout) findViewById(R.id.pie_chart);
         add = (LinearLayout) findViewById(R.id.add);
+        floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,10 +89,61 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
             }
         });
 
-        delete.setOnClickListener(onButtonClick());
-        edit.setOnClickListener(onButtonClick());
-        pie_chart.setOnClickListener(onButtonClick());
-        add.setOnClickListener(onButtonClick());
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(IndividualAccountBookDetailsActivity.this);
+                builder.setMessage("You are about to permanently delete all records of this account book. Do you really want to proceed?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getApplicationContext(), "The account book is deleted.", Toast.LENGTH_SHORT).show();
+                        model.removeFromIndividualAccountBookList(model.getClickedAccountBookId());
+                        finish();
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        closeMenu();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                Intent intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualAccountBookUpsertActivity.class);
+                intent.putExtra("accountBookId", model.getClickedAccountBookId());
+                startActivity(intent);
+            }
+        });
+
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                startActivity(new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class));
+            }
+        });
+
+        if (model.currentTransactionList.size() > 0) {
+            pie_chart = (LinearLayout) findViewById(R.id.pie_chart);
+            pie_chart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    restoreDefaultSetting();
+                    startActivity(new Intent(IndividualAccountBookDetailsActivity.this, SummaryActivity.class));
+                }
+            });
+        }
     }
 
     private void closeMenu() {
@@ -101,12 +160,14 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
                     edit.setVisibility(View.GONE);
                 }
             }).start();
-            pie_chart.animate().translationY(0).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    pie_chart.setVisibility(View.GONE);
-                }
-            }).start();
+            if (model.currentTransactionList.size() > 0) {
+                pie_chart.animate().translationY(0).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        pie_chart.setVisibility(View.GONE);
+                    }
+                }).start();
+            }
             add.animate().translationY(0).withEndAction(new Runnable() {
                 @Override
                 public void run() {
@@ -114,57 +175,40 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
                 }
             }).start();
             isMenuOpen = false;
+            floating_menu.setBackgroundColor(0);
         }
     }
 
     private void openMenu() {
         delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
         edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
-        pie_chart.animate().translationY(-getResources().getDimension(R.dimen.pie_chart));
         add.animate().translationY(-getResources().getDimension(R.dimen.add));
+        if (model.currentTransactionList.size() > 0) {
+            pie_chart.animate().translationY(-getResources().getDimension(R.dimen.pie_chart));
+            pie_chart.setVisibility(View.VISIBLE);
+        }
         isMenuOpen = true;
         delete.setVisibility(View.VISIBLE);
         edit.setVisibility(View.VISIBLE);
-        pie_chart.setVisibility(View.VISIBLE);
         add.setVisibility(View.VISIBLE);
+
+        floating_menu.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
+
     }
 
-    private View.OnClickListener onButtonClick() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeMenu();
-                Intent intent;
-                if (view.getId() == R.id.delete) {
-                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
-                } else if (view.getId() == R.id.edit) {
-                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
-                } else if (view.getId() == R.id.pie_chart) {
-                    intent = new Intent(IndividualAccountBookDetailsActivity.this, SummaryActivity.class);
-                } else {
-                    intent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionUpsertActivity.class);
-                }
-                startActivity(intent);
-            }
-        };
+    private void restoreDefaultSetting() {
+        closeMenu();
+        isViewAllBillClicked = false;
+        displayTransactions();
+        updateText();
     }
 
-    public TextView createTextView(String text, LinearLayout.LayoutParams params, int gravity) {
+
+    public TextView createTextView(String text) {
         TextView textView = new TextView(this);
         textView.setText(text);
 //            category.setTextSize(25);
-        textView.setLayoutParams(params);
-        switch (gravity) {
-            case 1:
-                textView.setGravity(Gravity.START);
-                return textView;
-            case 2:
-                textView.setGravity(Gravity.CENTER);
-                return textView;
-            case 3:
-                textView.setGravity(Gravity.END);
-                return textView;
-        }
+        textView.setLayoutParams(column_params);
         return textView;
     }
 
@@ -179,8 +223,12 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     }
 
     public void addColumnToLayout(String text1, String text2, int index) {
-        TextView tv1 = createTextView(text1, column_params, 1);
-        TextView tv2 = createTextView(text2, column_params, 3);
+        TextView tv1 = createTextView(text1);
+        tv1.setGravity(Gravity.START);
+
+        TextView tv2 = createTextView(text2);
+        tv2.setGravity(Gravity.END);
+
         LinearLayout row_layout = new LinearLayout(this);
         row_layout.setOrientation(LinearLayout.HORIZONTAL);
         row_layout.addView(tv1);
@@ -190,7 +238,7 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         row_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeMenu();
+                restoreDefaultSetting();
                 int index = view.getId();
                 Intent transactionIntent = new Intent(IndividualAccountBookDetailsActivity.this, IndividualTransactionDetailsActivity.class);
                 transactionIntent.putExtra("transactionID", model.getCurrentTransactionList().get(index).getUuid());
@@ -204,16 +252,24 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         setupTransactionLayout();
 
         int totalTransactionNum = model.currentTransactionList.size();
-        if (model.getViewAllBillClicked()) {
+        if (isViewAllBillClicked) {
             numToDisplay = totalTransactionNum;
         } else {
             numToDisplay = totalTransactionNum > 3 ? 3 : totalTransactionNum;
         }
 
+        if (totalTransactionNum <= 3) {
+            viewAllBills.setVisibility(View.GONE);
+            viewAllBillsLineSeperator.setVisibility(View.GONE);
+        } else {
+            viewAllBills.setVisibility(View.VISIBLE);
+            viewAllBillsLineSeperator.setVisibility(View.VISIBLE);
+        }
+
         for (int i = 0; i < numToDisplay; ++i) {
             IndividualTransaction transaction = (IndividualTransaction) model.currentTransactionList.get(i);
-            addColumnToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()), i);
-            addColumnToLayout(transaction.getDate(), transaction.getCurrency(), i);
+            addColumnToLayout(transaction.getCategory(), transaction.getCurrency() + " " +  transaction.getAmount(), i);
+            addColumnToLayout(transaction.getDate(), transaction.getType(), i);
             lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, column_layout, false);
             column_layout.addView(lineSeparator);
         }
@@ -221,7 +277,9 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
 
     public void viewAllBillsClicked(View view) {
         closeMenu();
-        model.setViewAllBillClicked(!model.getViewAllBillClicked());
+        isViewAllBillClicked = !isViewAllBillClicked;
+        displayTransactions();
+        updateText();
     }
 
     public int dpTopx(int dp) {
@@ -229,17 +287,16 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
 
     }
 
-    public void onEdit(View view) {
-        Intent intent = new Intent(this, IndividualAccountBookUpsertActivity.class);
-        intent.putExtra("accountBookId", model.getClickedAccountBookId());
-        startActivity(intent);
-        Log.d("WRITE", "Edit Btn clicked!!!");
-    }
-
-    public void onDelete(View view) {
-        Log.d("WRITE", "Delete Btn clicked!!!");
-        model.removeFromIndividualAccountBookList(model.getClickedAccountBookId());
-        finish();
+    private void updateText() {
+        IndividualAccountBook individualAccountBook = model.getIndividualAccountBook(model.getClickedAccountBookId());
+        title.setText(individualAccountBook.getName());
+        income.setText(individualAccountBook.getDefaultCurrency() + " " + individualAccountBook.getIncome());
+        expense.setText(individualAccountBook.getDefaultCurrency() + " " + individualAccountBook.getExpense());
+        if (isViewAllBillClicked) {
+            viewAllBills.setText("Hide");
+        } else {
+            viewAllBills.setText("View All Bills");
+        }
     }
 
     @Override
@@ -254,15 +311,9 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     public void update(Observable o, Object arg) {
         IndividualAccountBook individualAccountBook = model.getIndividualAccountBook(model.getClickedAccountBookId());
         if (individualAccountBook != null) {
-            title.setText(individualAccountBook.getName());
-            income.setText(String.valueOf(individualAccountBook.getIncome()));
-            expense.setText(String.valueOf(individualAccountBook.getExpense()));
             displayTransactions();
-            if (model.getViewAllBillClicked()) {
-                viewAllBills.setText("Hide");
-            } else {
-                viewAllBills.setText("View All Bills");
-            }
+            updateText();
+            initFloatingActionMenu();
         }
     }
 }

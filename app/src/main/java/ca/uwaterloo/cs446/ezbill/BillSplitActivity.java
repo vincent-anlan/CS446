@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 public class BillSplitActivity extends AppCompatActivity {
@@ -103,7 +104,7 @@ public class BillSplitActivity extends AppCompatActivity {
         }
 
         // find two participants with largest positive/negative balance
-        while (posBalance.size() > 0) {
+        while (posBalance.size() > 0 && negBalance.size() > 0) {
             String payerName = findAbsMaxBalance(negBalance);
             String receiverName = findAbsMaxBalance(posBalance);
             Float lowestBalance = negBalance.get(payerName); // a negative value
@@ -174,7 +175,8 @@ public class BillSplitActivity extends AppCompatActivity {
                 addTextView(payer.getKey(), "payer");
                 addTextView("should pay ", "text");
                 addTextView(receiver.getKey(), "receiver");
-                addTextView(Float.toString(receiver.getValue()), "amount");
+                Float roundedAmount = BigDecimal.valueOf(receiver.getValue()).setScale(2,BigDecimal.ROUND_HALF_UP).floatValue();
+                addTextView(Float.toString(roundedAmount), "amount");
                 linearLayout_v.addView(linearLayout_h);
                 lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, linearLayout_v, false);
                 linearLayout_v.addView(lineSeparator);
