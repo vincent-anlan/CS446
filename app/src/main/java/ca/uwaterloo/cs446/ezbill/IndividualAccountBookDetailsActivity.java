@@ -223,8 +223,8 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
 
         for (int i = 0; i < numToDisplay; ++i) {
             IndividualTransaction transaction = (IndividualTransaction) model.currentTransactionList.get(i);
-            addColumnToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()), i);
-            addColumnToLayout(transaction.getDate(), transaction.getCurrency(), i);
+            addColumnToLayout(transaction.getCategory(), transaction.getCurrency() + " " +  transaction.getAmount(), i);
+            addColumnToLayout(transaction.getDate(), transaction.getType(), i);
             lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, column_layout, false);
             column_layout.addView(lineSeparator);
         }
@@ -258,8 +258,8 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     private void updateText() {
         IndividualAccountBook individualAccountBook = model.getIndividualAccountBook(model.getClickedAccountBookId());
         title.setText(individualAccountBook.getName());
-        income.setText(String.valueOf(individualAccountBook.getIncome()));
-        expense.setText(String.valueOf(individualAccountBook.getExpense()));
+        income.setText(individualAccountBook.getDefaultCurrency() + " " + individualAccountBook.getIncome());
+        expense.setText(individualAccountBook.getDefaultCurrency() + " " + individualAccountBook.getExpense());
         if (isViewAllBillClicked) {
             viewAllBills.setText("Hide");
         } else {
