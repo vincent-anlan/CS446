@@ -43,6 +43,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.android.gms.tasks.OnFailureListener;
 import android.net.Uri;
 import com.google.android.gms.tasks.OnSuccessListener;
+import java.net.URL;
+import java.net.MalformedURLException;
+import android.graphics.drawable.Drawable;
 
 
 public class Login extends AppCompatActivity {
@@ -273,7 +276,7 @@ public class Login extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void signin(String eml, String pw){
+    private void signin (String eml, String pw){
         if(!checkinput()){
             return;
         }
@@ -297,12 +300,15 @@ public class Login extends AppCompatActivity {
                     //get data from user
                     String username = null;
                     String id = null;
+                    String id2 = user.getUid();
                     String email = null;
                     if (user != null) {
                         for (UserInfo profile : user.getProviderData()) {
-                            // Id of the provider (ex: google.com)
                             String providerId = profile.getProviderId();
                             id = profile.getUid();
+                            //id2 = profile.getUid();
+                            Log.d("31","uuid:"+id);
+                            Log.d("331","uuid:"+id2);
                             username = profile.getDisplayName();
                             email = profile.getEmail();
                             //Uri photoUrl = profile.getPhotoUrl();
@@ -314,14 +320,22 @@ public class Login extends AppCompatActivity {
                             // Got the download URL for 'users/me/profile.png'
                             //final Uri imageUri = data.getData();
                             //String path = getAbsolutePath(data.getData());
-                            try {
-                                final InputStream imageStream = getContentResolver().openInputStream(uri);
-                                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                                img.setImageBitmap(selectedImage);
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                                Toast.makeText(getApplicationContext(), "you don't have profile pics", Toast.LENGTH_LONG).show();
-                            }
+                            URL url = null;
+                            //try {
+                                Log.d("30","uri:"+uri);
+                                String addr =  uri.toString();
+                                try {
+                                    url = new URL(addr);
+                                } catch(MalformedURLException e) {
+                                    e.printStackTrace();
+                                }
+
+                                img.setImageDrawable(GetDrawable(addr));
+
+//                            } catch (FileNotFoundException e) {
+//                                e.printStackTrace();
+//                                Toast.makeText(getApplicationContext(), "you don't have profile pics", Toast.LENGTH_LONG).show();
+//                            }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -345,11 +359,12 @@ public class Login extends AppCompatActivity {
                     findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
                     findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
                     //do something;
-//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                    intent.putExtra("username", username);
-//                    intent.putExtra("uid", id);
-//                    intent.putExtra("email", email);
-//                    startActivity(intent);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra("username", username);
+                    intent.putExtra("uid", id2);
+                    intent.putExtra("email", email);
+                    startActivity(intent);
+                    Log.d("331","uuid:"+id2);
 
                 } else {
                     Toast.makeText(Login.this, "Authentication failed.",
@@ -359,7 +374,15 @@ public class Login extends AppCompatActivity {
             }
         });
     }
-
+    public static Drawable GetDrawable(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     private void signout(){
         auth.getInstance().signOut();
