@@ -21,8 +21,6 @@ public class IndividualTransactionUpsertActivity extends TransactionUpsertActivi
         transLayout.addView(newView);
 
         mAmountedit = (EditText) findViewById(R.id.editIndividual);
-
-
     }
 
     @Override

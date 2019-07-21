@@ -24,6 +24,7 @@ public class TextRecognitionActivity extends AppCompatActivity {
     TextView mTextView;
     CameraSource mCameraSource;
 
+    Model model;
     private static final int requestPermissionID = 101;
 
     @Override
@@ -35,6 +36,8 @@ public class TextRecognitionActivity extends AppCompatActivity {
         mTextView = findViewById(R.id.text_view);
 
         startCameraSource();
+
+        model = Model.getInstance();
     }
 
     @Override
@@ -124,12 +127,21 @@ public class TextRecognitionActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             StringBuilder stringBuilder = new StringBuilder();
-                            for(int i=0; i<items.size(); i++){
+                            for(int i=0; i<items.size();){
                                 TextBlock item = items.valueAt(i);
-                                stringBuilder.append(item.getValue());
-                                stringBuilder.append("\n");
+                                if(item.getValue().equals("Total") || item.getValue().equals("TOTAL")){
+                                    stringBuilder.append(item.getValue());
+                                    stringBuilder.append("  ");
+                                    if((i+1) < items.size()){
+                                        TextBlock item_num = items.valueAt(i+1);
+                                        stringBuilder.append(item_num.getValue());
+                                        i++;
+                                    }
+                                }
+                                i++;
                             }
                             mTextView.setText(stringBuilder.toString());
+
                         }
                     });
                 }

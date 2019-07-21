@@ -16,17 +16,11 @@
 
         <TextView
             android:id="@+id/individual_amount"
-            android:layout_width="100dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="@string/amount"
             android:textSize="25sp" />
 
-        <Button
-            android:id="@+id/camera_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Camera"
-            android:onClick="cameraScan"/>
 
         <EditText
             android:id="@+id/editIndividual"
@@ -38,6 +32,14 @@
             android:hint="@string/enter_amount"
             android:inputType="numberDecimal"
             android:textSize="25sp" />
+
+        <ImageButton
+            android:id="@+id/camera_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/camera"
+            android:onClick="cameraScan" />
+
     </LinearLayout>
 
 </LinearLayout>
