@@ -91,6 +91,16 @@ public class Model extends Observable {
         Collections.sort(currentTransactionList);
         updateTransactionInDB(transaction, isGroup);
 
+        if (isGroup) {
+            GroupAccountBook groupAccountBook = getGroupAccountBook(clickedAccountBookId);
+            groupAccountBook.setMyExpense(calculateMyExpense(groupAccountBook.getDefaultCurrency()));
+            groupAccountBook.setGroupExpense(calculateTotalExpense(groupAccountBook.getDefaultCurrency()));
+        } else {
+            IndividualAccountBook individualAccountBook = getIndividualAccountBook(clickedAccountBookId);
+            individualAccountBook.setExpense(calculateTotalExpense(individualAccountBook.getDefaultCurrency()));
+            individualAccountBook.setIncome(calculateTotalIncome(individualAccountBook.getDefaultCurrency()));
+        }
+
         setChanged();
         notifyObservers();
     }
