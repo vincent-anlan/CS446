@@ -92,7 +92,12 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity impl
             @Override
             public void onClick(View view) {
                 closeMenu();
-                Intent intent = new Intent(IndividualTransactionDetailsActivity.this, IndividualTransactionUpsertActivity.class);
+                Intent intent;
+                if(currTransaction.getType().equals("Income")){
+                    intent = new Intent(IndividualTransactionDetailsActivity.this, IndividualIncomeTransactionUpsertActivity.class);
+                }else{
+                    intent = new Intent(IndividualTransactionDetailsActivity.this, IndividualTransactionUpsertActivity.class);
+                }
                 intent.putExtra("transactionId", currTransaction.getUuid());
                 startActivity(intent);
             }

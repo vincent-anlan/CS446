@@ -68,6 +68,7 @@ public class Model extends Observable {
         } else {
             IndividualAccountBook individualAccountBook = getIndividualAccountBook(clickedAccountBookId);
             individualAccountBook.setExpense(calculateTotalExpense(individualAccountBook.getDefaultCurrency()));
+            individualAccountBook.setIncome(calculateTotalIncome(individualAccountBook.getDefaultCurrency()));
         }
         setChanged();
         notifyObservers();
@@ -319,10 +320,29 @@ public class Model extends Observable {
     public float calculateTotalExpense(String accountBookCurrency) {
         float totalAmount = 0;
         for (Transaction transaction : currentTransactionList) {
-            String currency = transaction.getCurrency();
-            float value = transaction.getAmount();
-            float rate = exchangeRates.get(accountBookCurrency) / exchangeRates.get(currency);
-            totalAmount += value * rate;
+            if(transaction.getType().equals("Expense")){
+                String currency = transaction.getCurrency();
+                float value = transaction.getAmount();
+                float rate = exchangeRates.get(accountBookCurrency) / exchangeRates.get(currency);
+                totalAmount += value * rate;
+            }else{
+
+            }
+        }
+        return BigDecimal.valueOf(totalAmount).setScale(2,BigDecimal.ROUND_HALF_UP).floatValue();
+    }
+
+    public float calculateTotalIncome(String accountBookCurrency) {
+        float totalAmount = 0;
+        for (Transaction transaction : currentTransactionList) {
+            if(transaction.getType().equals("Income")){
+                String currency = transaction.getCurrency();
+                float value = transaction.getAmount();
+                float rate = exchangeRates.get(accountBookCurrency) / exchangeRates.get(currency);
+                totalAmount += value * rate;
+            }else{
+
+            }
         }
         return BigDecimal.valueOf(totalAmount).setScale(2,BigDecimal.ROUND_HALF_UP).floatValue();
     }
@@ -469,6 +489,7 @@ public class Model extends Observable {
                             } else {
                                 IndividualAccountBook individualAccountBook = getIndividualAccountBook(getClickedAccountBookId());
                                 individualAccountBook.setExpense(calculateTotalExpense(individualAccountBook.getDefaultCurrency()));
+                                individualAccountBook.setIncome(calculateTotalIncome(individualAccountBook.getDefaultCurrency()));
                             }
 
                             setChanged();

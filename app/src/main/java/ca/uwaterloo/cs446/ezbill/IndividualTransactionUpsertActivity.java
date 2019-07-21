@@ -44,6 +44,7 @@ public class IndividualTransactionUpsertActivity extends TransactionUpsertActivi
             transaction.setDate(date);
             transaction.setNote(note);
             transaction.setAmount(amount);
+            transaction.setType("Expense");
             model.updateTransactionInCurrentList(transaction, false);
         } else {
             String uuid = UUID.randomUUID().toString();
