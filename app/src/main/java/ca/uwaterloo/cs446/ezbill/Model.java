@@ -38,6 +38,7 @@ public class Model extends Observable {
     String currentUserId;
     String currentUsername;
     String clickedAccountBookId;
+    String mIndividualExpense;
     ArrayList<Transaction> currentTransactionList;
     String userEmail = "alice@gmail.com";
     HashMap<String, Float> exchangeRates;
@@ -704,6 +705,14 @@ public class Model extends Observable {
                 });
 
 
+    }
+
+
+    public void cameraUpdateExpense(String fromCamera){
+        mIndividualExpense = fromCamera;
+    }
+    public String getCameraUpdateExpense(){
+        return mIndividualExpense;
     }
 
 
