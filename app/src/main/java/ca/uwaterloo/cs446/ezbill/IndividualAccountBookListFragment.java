@@ -9,7 +9,7 @@ public class IndividualAccountBookListFragment extends AccountBookListFragmentTe
     public IndividualAccountBookListFragment() {}
 
     @Override
-    public void addDateToView(Model model, ArrayList<String> dates, RecyclerView Rv) {
+    public void addDateToView() {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration();
         for (IndividualAccountBook individualAccountBook : model.getIndividualAccountBookList()) {
             dates.add(individualAccountBook.getEndDate());
@@ -19,7 +19,7 @@ public class IndividualAccountBookListFragment extends AccountBookListFragmentTe
     }
 
     @Override
-    public void addAccountBookInfoToView(Model model, RecyclerView Rv) {
+    public void addAccountBookInfoToView() {
         ArrayList<AccountBook> accountBooks = new ArrayList<>();
         for (IndividualAccountBook individualAccountBook : model.getIndividualAccountBookList()) {
             AccountBook accountBook = individualAccountBook;

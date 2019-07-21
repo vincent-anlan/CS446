@@ -9,7 +9,15 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONObject;
 
@@ -22,9 +30,10 @@ import java.net.URL;
 import java.util.HashMap;
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     Model model;
+    ProgressBar spinner;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -61,7 +70,10 @@ public class MainActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         title.setText("EzBill");
 
-        loadFragment(new GroupAccountBookListFragment());
+        spinner = (ProgressBar) findViewById(R.id.progressBar);
+        spinner.setVisibility(View.VISIBLE);
+        readDB();
+
         thread.start();
 
     }
@@ -74,16 +86,67 @@ public class MainActivity extends AppCompatActivity{
         transaction.commit();
     }
 
+    private void readDB() {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // read data from database
+        db.collection("user_account_book_info")
+                .whereEqualTo("email", model.userEmail)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String userId = document.getData().get("userId").toString();
+                                model.setCurrentUserId(userId);
+                                String username = document.getData().get("username").toString();
+                                model.setCurrentUsername(username);
+
+                                String accountBookId = document.getData().get("accountBookId").toString();
+                                String accountBookName = document.getData().get("accountBookName").toString();
+                                String startDate = document.getData().get("accountBookStartDate").toString();
+                                String endDate = document.getData().get("accountBookEndDate").toString();
+                                String defaultCurrency = document.getData().get("accountBookCurrency").toString();
+                                String type = document.getData().get("accountBookType").toString();
+                                String creatorId = document.getData().get("accountBookCreator").toString();
+
+                                if (type.equals("Group")) {
+                                    if (!model.hasGroupAccountBook(accountBookId)) {
+                                        GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency, creatorId);
+                                        model.addGroupAccountBook(groupAccountBook);
+                                    }
+                                } else {
+                                    if (!model.hasIndividualAccountBook(accountBookId)) {
+                                        IndividualAccountBook individualAccountBook = new IndividualAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency, creatorId);
+                                        model.addIndividualAccountBook(individualAccountBook);
+                                    }
+                                }
+                                Log.d("READ", document.getId() + " => " + document.getData());
+                            }
+
+                            spinner.setVisibility(View.GONE);
+                            for (GroupAccountBook groupAccountBook : model.groupAccountBookList) {
+                                model.readParticipantsFromDB(groupAccountBook.getId());
+                            }
+                            loadFragment(new GroupAccountBookListFragment());
+
+                        } else {
+                            Log.w("READ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
     Thread thread = new Thread(new Runnable() {
         @Override
         public void run() {
             HashMap<String, Float> exchangeRates = new HashMap<>();
-            Log.d("READ", "API HIT");
             try {
                 URL url = new URL("https://openexchangerates.org/api/latest.json?app_id=ed4b872b78ba45df9e2bb012f244f046");
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 try {
-                    Log.d("READ", "API RESPONSE");
                     urlConnection.setDoOutput(true);
                     urlConnection.setChunkedStreamingMode(0);
 
@@ -111,7 +174,6 @@ public class MainActivity extends AppCompatActivity{
                     exchangeRates.put("CNY", CNY);
                     model.setExchangeRates(exchangeRates);
                 } finally {
-                    Log.d("READ", "API FINISHED");
                     urlConnection.disconnect();
                 }
             } catch (Exception e) {

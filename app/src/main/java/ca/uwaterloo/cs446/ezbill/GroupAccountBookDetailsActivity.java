@@ -88,7 +88,6 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
             layout.addView(newView);
         }
 
-        model.readParticipantsFromDB();
         model.readTransactionsFromDB(true);
 
         drawParticipantIcons();
