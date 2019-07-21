@@ -55,12 +55,6 @@
             android:text="Total Expense"
             android:textSize="25sp" />
 
-        <ImageButton
-            android:id="@+id/button_refresh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/refersh" />
-
         <!--<EditText-->
         <!--android:id="@+id/autoSumCollect"-->
         <!--android:layout_width="0dp"-->

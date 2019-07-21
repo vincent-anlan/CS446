@@ -12,7 +12,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -37,8 +35,6 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
     private Spinner mSelectPayer;
     private String payerIDSaveString;
     private String sumSaveString;
-    ArrayList<String> collect;
-    ArrayList<String> collectId;
     private ArrayList<String> selectName;
     private ArrayList<String> selectId;
     private HashMap<Participant, Float> select_participants;
@@ -63,9 +59,6 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
 
     int onetimeUse;
     ArrayList<EditText> allEds;
-
-    ImageButton buttonRefresh;
-    boolean loadTrans;
 
     public int dpTopx(int dp) {
         return (int) (10 * Resources.getSystem().getDisplayMetrics().density);
@@ -107,7 +100,6 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         sumSaveString = "";
 
         mSum = findViewById(R.id.amountShow);
-        buttonRefresh = findViewById(R.id.button_refresh);
         onetimeUse = 0;
         totalExpense = Float.parseFloat("0.0");
 
@@ -139,42 +131,24 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                             if (!mUserPart.contains(position)) {
                                 mUserPart.add(position);
                             }
-                        } else {
-                            if (mUserPart.contains(position)) {
-                                mUserPart.remove(mUserPart.indexOf(position));
-                            }
+                        } else if (mUserPart.contains(position)) {
+                            mUserPart.remove(position);
                         }
                     }
                 });
 
                 mBuilder.setCancelable(false);
-
-                collect = new ArrayList<>();
-                collectId = new ArrayList<>();
-
-                mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
-                        linearLayout_v.removeAllViewsInLayout();
-                        mSum.setText("Total Expense");
-                        selectId.clear();
-                        selectName.clear();
-                        collect.clear();
-                        collectId.clear();
-                        allEds.clear();
-                        collectSumParticipant.clear();
-
+                        ArrayList<String> collect = new ArrayList<>();
                         for (int i = 0; i < mUserPart.size(); i++) {
                             String item = listPart[mUserPart.get(i)];
                             String id = participants.get(mUserPart.get(i)).getId();
-                            if(!selectId.contains(id)){
-                                selectName.add(item);
-                                selectId.add(id);
-                                collect.add(item);
-                                collectId.add(id);
-                            }
+                            selectName.add(item);
+                            selectId.add(id);
+                            collect.add(item);
                         }
-
                         for (int i = 0; i < collect.size(); i++) {
                             String item = collect.get(i);
                             collectSumParticipant.add(item);
@@ -190,7 +164,72 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                             subExpense.setLayoutParams(params);
                             subExpense.setGravity(Gravity.CENTER);
                             subExpense.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                            subExpense.addTextChangedListener(new TextWatcher() {
+                                public void afterTextChanged(Editable s) {
+                                    totalExpense = collectExpense + Float.parseFloat(s.toString());
+                                    mSum.setText(Float.toString(totalExpense));
+//                                    String item = s.toString();
+//                                    float f = Float.parseFloat("0");
+//                                    if(item.isEmpty()){
+//                                        collectExpense = collectExpense + f;
+//                                        mSum.setText(Float.toString(collectExpense));
+//                                        mSum.setEnabled(false);
+//                                    }else{
+//                                        f = Float.parseFloat(item);
+//                                        collectExpense = collectExpense + f;
+//                                        mSum.setText(Float.toString(collectExpense));
+//                                        mSum.setEnabled(false);
+//                                    }
 
+                                }
+
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                                }
+
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                                        SpannableString spannableString = new SpannableString(s);
+//                                        BackgroundColorSpan backgroundSpan = new BackgroundColorSpan(getResources().getColor(android.R.color.holo_blue_light));
+//                                        spannableString.setSpan(backgroundSpan, start, start + count, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                                    String item = s.toString();
+                                    float f = Float.parseFloat("0");
+                                    if (item.isEmpty()) {
+//                                            collectExpense = collectExpense + f;
+//                                            mSum.setText(Float.toString(collectExpense));
+                                        collectExpense = f;
+                                        mSum.setText(Float.toString(f));
+                                    } else {
+                                        f = Float.parseFloat(item);
+//                                            collectExpense = collectExpense + f;
+//                                            mSum.setText(Float.toString(collectExpense));
+                                        collectExpense = f;
+                                        mSum.setText(Float.toString(f));
+                                    }
+                                }
+
+                            });
+//                            subExpense.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//                                @Override
+//                                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                                    if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+//                                            actionId == EditorInfo.IME_ACTION_DONE ||
+//                                            event != null &&
+//                                                    event.getAction() == KeyEvent.ACTION_DOWN &&
+//                                                    event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+//                                        if (event == null || !event.isShiftPressed()) {
+//                                            // the user is done typing.
+//                                            float f = Float.parseFloat(v.getText().toString());
+//                                            if(mSum.getText().toString() != ""){
+//                                                collectExpense = Float.parseFloat(mSum.getText().toString()) + f;
+//                                            }
+//
+//                                            mSum.setText(Float.toString(collectExpense));
+//                                            return true; // consume.
+//                                        }
+//                                    }
+//                                    return false; // pass on to other listeners.
+//                                }
+//                            });
                             allEds.add(subExpense);
 
                             LinearLayout linearLayout_h = new LinearLayout(GroupTransactionUpsertActivity.this);
@@ -198,7 +237,6 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                             linearLayout_h.setGravity(Gravity.START);
                             linearLayout_h.addView(btn);
                             linearLayout_h.addView(subExpense);
-                            linearLayout_h.setId(Integer.parseInt(collectId.get(i).replaceAll("[^0-9]", "")));
                             linearLayout_v.setLayoutParams(params_h);
                             linearLayout_v.addView(linearLayout_h);
                         }
@@ -217,14 +255,6 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                             checkedPart[i] = false;
                             mUserPart.clear();
                         }
-                        linearLayout_v.removeAllViewsInLayout();
-                        mSum.setText("Total Expense");
-                        selectId.clear();
-                        selectName.clear();
-                        collect.clear();
-                        collectId.clear();
-                        allEds.clear();
-                        collectSumParticipant.clear();
                     }
                 });
                 AlertDialog mDialog = mBuilder.create();
@@ -233,24 +263,31 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         });
 
 
-        buttonRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                totalExpense = 0;
-                for (int i = 0; i < allEds.size(); i++) {
-                    String item = allEds.get(i).getText().toString();
-                    float f;
-                    if (item.isEmpty()) {
-                        f = Float.parseFloat("0");
-                    } else {
-                        f = Float.parseFloat(item);
-                    }
-                    totalExpense = totalExpense + f;
-                }
-                mSum.setText(Float.toString(totalExpense));
-                sumSaveString = Float.toString(totalExpense);
-            }
-        });
+//        mSum.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (onetimeUse == 0) {
+//                    for (int i = 0; i < allEds.size(); i++) {
+//                        String item = allEds.get(i).getText().toString();
+//                        float f = Float.parseFloat(item);
+//                        totalExpense = totalExpense + f;
+//                    }
+//                    mSum.setText(Float.toString(totalExpense));
+//                    sumSaveString = Float.toString(totalExpense);
+//                    select_participants = new HashMap<>();
+//                    for (int i = 0; i < allEds.size(); i++) {
+//                        String item = allEds.get(i).getText().toString();
+//                        float f = Float.parseFloat(item);
+//                        String checkName = selectName.get(i);
+//                        String checkId = selectId.get(i);
+//                        Participant p = new Participant(checkId, checkName);
+//                        select_participants.put(p, f);
+//                    }
+//                    onetimeUse = 1;
+//                } else {
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -276,12 +313,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         select_participants = new HashMap<>();
         for (int i = 0; i < allEds.size(); i++) {
             String item = allEds.get(i).getText().toString();
-            float f;
-            if (item.isEmpty()) {
-                f = Float.parseFloat("0");
-            } else {
-                f = Float.parseFloat(item);
-            }
+            float f = Float.parseFloat(item);
             String checkName = selectName.get(i);
             String checkId = selectId.get(i);
             Participant p = new Participant(checkId, checkName);
@@ -310,9 +342,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
 
     public void setInitValues() {
         Bundle extras = getIntent().getExtras();
-
         if (extras != null) {
-            loadTrans = true;
             String transactionId = extras.getString("transactionId");
             transaction = model.getTransaction(transactionId);
 
@@ -351,12 +381,8 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
             mSelectPayer.setSelection(payerAdapterPosition);
 
             mSum.setText(Float.toString(transaction.getAmount()));
-            select_participants = ((GroupTransaction) transaction).getParticipants();
 
-            participants = model.getGroupAccountBook(model.getClickedAccountBookId()).getParticipantList();
-            for (Participant participant : participants) {
-                pstring.add(participant.getName());
-            }
+            select_participants = ((GroupTransaction) transaction).getParticipants();
             for (HashMap.Entry<Participant, Float> entry : select_participants.entrySet()) {
                 Participant participant = entry.getKey();
                 Float amount = entry.getValue();
@@ -383,135 +409,6 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                 linearLayout_v.setLayoutParams(params_h);
                 linearLayout_v.addView(linearLayout_h);
             }
-
-            listPart = new String[participants.size()];
-            for (int i = 0; i < participants.size(); i++) {
-                listPart[i] = participants.get(i).getName();
-            }
-            checkedPart = new boolean[listPart.length];
-
-            mParticipant.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(GroupTransactionUpsertActivity.this);
-                    mBuilder.setTitle("Select Participants For Current Transaction");
-                    if(loadTrans){
-                        for(int p = 0; p < listPart.length; p++){
-                            Log.i("here", Integer.toString(listPart.length));
-                            for (HashMap.Entry<Participant, Float> entry : select_participants.entrySet()) {
-                                Participant participant = entry.getKey();
-                                Log.i("herell", Integer.toString(select_participants.size()));
-                                if(participant.getName().equals(listPart[p])) {
-                                    Log.i("here", "inhere");
-                                    checkedPart[p] = true;
-                                    mUserPart.add(p);
-                                }
-                            }
-                        }
-                        loadTrans = false;
-                    }
-
-
-                    mBuilder.setMultiChoiceItems(listPart, checkedPart, new DialogInterface.OnMultiChoiceClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int position, boolean isChecked) {
-                            if (isChecked) {
-                                if (!mUserPart.contains(position)) {
-                                    mUserPart.add(position);
-                                }
-                            } else {
-                                if (mUserPart.contains(position)) {
-                                    mUserPart.remove(mUserPart.indexOf(position));
-                                }
-                            }
-                        }
-                    });
-
-                    mBuilder.setCancelable(false);
-
-                    collect = new ArrayList<>();
-                    collectId = new ArrayList<>();
-
-                    mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int which) {
-                            linearLayout_v.removeAllViewsInLayout();
-                            mSum.setText("Total Expense");
-                            selectId.clear();
-                            selectName.clear();
-                            collect.clear();
-                            collectId.clear();
-                            allEds.clear();
-                            collectSumParticipant.clear();
-
-                            for (int i = 0; i < mUserPart.size(); i++) {
-                                String item = listPart[mUserPart.get(i)];
-                                String id = participants.get(mUserPart.get(i)).getId();
-                                if (!selectId.contains(id)) {
-                                    selectName.add(item);
-                                    selectId.add(id);
-                                    collect.add(item);
-                                    collectId.add(id);
-                                    Log.i("select", Integer.toString(selectName.size()));
-                                    Log.i("selectId", Integer.toString(selectId.size()));
-                                    Log.i("selectMu", Integer.toString(mUserPart.size()));
-                                }
-                            }
-
-                            for (int i = 0; i < collect.size(); i++) {
-                                String item = collect.get(i);
-                                collectSumParticipant.add(item);
-
-                                TextView btn = new TextView(GroupTransactionUpsertActivity.this);
-                                btn.setText(item);
-                                btn.setTextSize(25);
-                                btn.setLayoutParams(params);
-                                btn.setGravity(Gravity.START);
-
-                                EditText subExpense = new EditText(GroupTransactionUpsertActivity.this);
-                                subExpense.setTextSize(25);
-                                subExpense.setLayoutParams(params);
-                                subExpense.setGravity(Gravity.CENTER);
-                                subExpense.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                                allEds.add(subExpense);
-
-                                LinearLayout linearLayout_p = new LinearLayout(GroupTransactionUpsertActivity.this);
-                                linearLayout_p.setOrientation(LinearLayout.HORIZONTAL);
-                                linearLayout_p.setGravity(Gravity.START);
-                                linearLayout_p.addView(btn);
-                                linearLayout_p.addView(subExpense);
-                                linearLayout_v.setLayoutParams(params_h);
-                                linearLayout_v.addView(linearLayout_p);
-                            }
-                        }
-                    });
-                    mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    mBuilder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int which) {
-                            for (int i = 0; i < checkedPart.length; i++) {
-                                checkedPart[i] = false;
-                                mUserPart.clear();
-                            }
-                            linearLayout_v.removeAllViewsInLayout();
-                            mSum.setText("Total Expense");
-                            selectId.clear();
-                            selectName.clear();
-                            collect.clear();
-                            collectId.clear();
-                            allEds.clear();
-                            collectSumParticipant.clear();
-                        }
-                    });
-                    AlertDialog mDialog = mBuilder.create();
-                    mDialog.show();
-                }
-            });
         }
     }
 
