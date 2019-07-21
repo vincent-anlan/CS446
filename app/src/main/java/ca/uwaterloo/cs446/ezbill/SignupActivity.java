@@ -34,6 +34,9 @@ import java.io.FileNotFoundException;
 import android.graphics.BitmapFactory;
 import android.database.Cursor;
 import android.provider.MediaStore.MediaColumns;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 
 
@@ -46,7 +49,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText Confirmpassword;
     private EditText username;
     FirebaseStorage storage;
-
+    StorageReference refstorage;
     private ProgressDialog dialog;
 
     @Override
@@ -63,6 +66,7 @@ public class SignupActivity extends AppCompatActivity {
         Confirmpassword = findViewById(R.id.input_password_confirm);
         dialog =  new ProgressDialog(this,R.style.AppTheme);
         storage = FirebaseStorage.getInstance();
+        refstorage = storage.getReference();
         dialog.setIndeterminate(true);
         // add listener
         findViewById(R.id.btn_signup).setOnClickListener(new View.OnClickListener() {
@@ -106,6 +110,28 @@ public class SignupActivity extends AppCompatActivity {
                     final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                     img.setImageBitmap(selectedImage);
+
+                    //upload img:
+                    //Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
+                    StorageReference userRef = refstorage.child("images/"+email.getText().toString());
+                    UploadTask uploadTask = userRef.putFile(imageUri);
+
+                    // add observers to listen the upload task
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Toast.makeText(getApplicationContext(), "Uploading fails",
+                                    Toast.LENGTH_SHORT).show();
+                            // do something
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(getApplicationContext(), "Uploading successfully",
+                                    Toast.LENGTH_SHORT).show();
+                            // do something
+                        }
+                    });
                     //img.setImageBitmap(decodeFile(path));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
