@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView text;
     private DrawerLayout drawer;
     NavigationView navigationView;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +98,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         spinner.setVisibility(View.VISIBLE);
+
+        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                spinner.setVisibility(View.VISIBLE);
+                readDB();
+            }
+        });
+
         readDB();
 
         thread.start();
@@ -123,10 +135,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startQRScanner();
                 break;
             case R.id.logout:
-//                model.clear();
+                model.clear();
                 FirebaseAuth.getInstance().signOut();
                 showDialog("Successfully Signed Out");
-//                startActivity(new Intent(MainActivity.this, Login.class));
+                startActivity(new Intent(MainActivity.this, Login.class));
 //                // logout logic here
                 Log.d("WRITE", "Sign Out Btn clicked!!!");
                 break;
@@ -292,6 +304,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 model.readParticipantsFromDB(groupAccountBook.getId());
                             }
                             loadNavHeader();
+                            swipeRefreshLayout.setRefreshing(false);
                             loadFragment(new GroupAccountBookListFragment());
 
                         } else {
