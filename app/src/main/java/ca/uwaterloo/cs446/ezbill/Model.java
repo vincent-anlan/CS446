@@ -46,7 +46,7 @@ public class Model extends Observable {
     String mIndividualExpense;
     ArrayList<Transaction> currentTransactionList;
     HashMap<String, Float> exchangeRates;
-
+    
     Model() {
         groupAccountBookList = new ArrayList<>();
         individualAccountBookList = new ArrayList<>();
