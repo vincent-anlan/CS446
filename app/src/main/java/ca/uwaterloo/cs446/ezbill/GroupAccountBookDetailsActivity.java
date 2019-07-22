@@ -46,7 +46,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     LinearLayout delete;
     LinearLayout edit;
     LinearLayout add;
-    FloatingActionButton addActionButton;
+    LinearLayout qr_code;
     boolean isMenuOpen;
     boolean isViewAllBillClicked;
     boolean isCreator;
@@ -80,13 +80,13 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         isCreator = model.getGroupAccountBook(model.getClickedAccountBookId()).getCreatorId().equals(model.currentUserId);
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.group_account_book_page);
-        if (isCreator) {
+//        if (isCreator) {
             View newView = getLayoutInflater().inflate(R.layout.floating_menu, layout, false);
             layout.addView(newView);
-        } else {
-            View newView = getLayoutInflater().inflate(R.layout.floating_menu_add_button, layout, false);
-            layout.addView(newView);
-        }
+//        } else {
+//            View newView = getLayoutInflater().inflate(R.layout.floating_menu_add_button, layout, false);
+//            layout.addView(newView);
+//        }
 
         model.readTransactionsFromDB(true);
 
@@ -100,21 +100,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
     private void initFloatingActionMenu() {
         if (isCreator) {
-            menu = (LinearLayout) findViewById(R.id.menu);
             delete = (LinearLayout) findViewById(R.id.delete);
             edit = (LinearLayout) findViewById(R.id.edit);
-            add = (LinearLayout) findViewById(R.id.add);
-            menu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (isMenuOpen) {
-                        closeMenu();
-                    } else {
-                        openMenu();
-                    }
-                }
-            });
-            floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
 
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -150,31 +137,66 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
                     startActivity(intent);
                 }
             });
-            add.setOnClickListener(onAddButtonClick());
-        } else {
-            addActionButton = (FloatingActionButton) findViewById(R.id.add);
-            addActionButton.setOnClickListener(onAddButtonClick());
         }
+
+        floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
+        menu = (LinearLayout) findViewById(R.id.menu);
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isMenuOpen) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            }
+        });
+
+        add = (LinearLayout) findViewById(R.id.add);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                startActivity(new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class));
+            }
+        });
+
+        qr_code = (LinearLayout) findViewById(R.id.generate_qr_code);
+        qr_code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                startActivity(new Intent(GroupAccountBookDetailsActivity.this, myQRCode.class));
+            }
+        });
     }
 
     private void closeMenu() {
-        if (isMenuOpen && isCreator) {
-            delete.animate().translationY(0).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    delete.setVisibility(View.GONE);
-                }
-            }).start();
-            edit.animate().translationY(0).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    edit.setVisibility(View.GONE);
-                }
-            }).start();
+        if (isMenuOpen) {
+            if (isCreator) {
+                delete.animate().translationY(0).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        delete.setVisibility(View.GONE);
+                    }
+                }).start();
+                edit.animate().translationY(0).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        edit.setVisibility(View.GONE);
+                    }
+                }).start();
+            }
             add.animate().translationY(0).withEndAction(new Runnable() {
                 @Override
                 public void run() {
                     add.setVisibility(View.GONE);
+                }
+            }).start();
+            qr_code.animate().translationY(0).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    qr_code.setVisibility(View.GONE);
                 }
             }).start();
             isMenuOpen = false;
@@ -183,26 +205,22 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     }
 
     private void openMenu() {
-        delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
-        edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
-        add.animate().translationY(-getResources().getDimension(R.dimen.add));
+        if (isCreator) {
+            add.animate().translationY(-getResources().getDimension(R.dimen.add_creator));
+            delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
+            edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
+            qr_code.animate().translationY(-getResources().getDimension(R.dimen.qr_code_creator));
+            delete.setVisibility(View.VISIBLE);
+            edit.setVisibility(View.VISIBLE);
+        } else {
+            add.animate().translationY(-getResources().getDimension(R.dimen.add_no_creator));
+            qr_code.animate().translationY(-getResources().getDimension(R.dimen.qr_code_no_creator));
+        }
         isMenuOpen = true;
-        delete.setVisibility(View.VISIBLE);
-        edit.setVisibility(View.VISIBLE);
         add.setVisibility(View.VISIBLE);
+        qr_code.setVisibility(View.VISIBLE);
         floating_menu.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
     }
-
-    private View.OnClickListener onAddButtonClick() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                restoreDefaultSetting();
-                startActivity(new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class));
-            }
-        };
-    }
-
 
     private void restoreDefaultSetting() {
         closeMenu();

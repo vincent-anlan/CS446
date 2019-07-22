@@ -88,17 +88,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FirebaseUser user = auth.getCurrentUser();
         String url= user.getPhotoUrl().toString();
         Log.d("000","URL:"+url);
-        //Update user info
-        text = findViewById(R.id.User_info);
-        text.setText("email:"+email+"\n"+"uid:"+uid+"\n"+"username:"+username+"\n"
-        +"imageAddress:"+ImgAddr);
-
-//        //Update user info
-//        text = findViewById(R.id.User_info);
-//        text.setText("email:"+email+"\n"+"uid:"+uid+"\n"+"username:"+username+"\n"
-//        +"imageAddress:"+ImgAddr);
-//        //Login End
-
 
         model = Model.getInstance();
 
