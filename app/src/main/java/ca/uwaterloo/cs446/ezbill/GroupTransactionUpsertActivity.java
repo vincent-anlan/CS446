@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -77,6 +78,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         mSelectPayer = (Spinner) findViewById(R.id.payer_spinner);
 
         pstring = new ArrayList<>();
+        participants = new ArrayList<>();
         participants = model.getGroupAccountBook(model.getClickedAccountBookId()).getParticipantList();
         for (Participant participant : participants) {
             pstring.add(participant.getName());
@@ -183,12 +185,13 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
 
                             TextView btn = new TextView(GroupTransactionUpsertActivity.this);
                             btn.setText(item);
-                            btn.setTextSize(25);
+                            btn.setTextSize(20);
+                            btn.setTypeface(null, Typeface.ITALIC);
                             btn.setLayoutParams(params);
                             btn.setGravity(Gravity.START);
 
                             EditText subExpense = new EditText(GroupTransactionUpsertActivity.this);
-                            subExpense.setTextSize(25);
+                            subExpense.setTextSize(20);
                             subExpense.setLayoutParams(params);
                             subExpense.setGravity(Gravity.CENTER);
                             subExpense.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
@@ -356,9 +359,6 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
             select_participants = ((GroupTransaction) transaction).getParticipants();
 
             participants = model.getGroupAccountBook(model.getClickedAccountBookId()).getParticipantList();
-            for (Participant participant : participants) {
-                pstring.add(participant.getName());
-            }
 
             for (HashMap.Entry<Participant, Float> entry : select_participants.entrySet()) {
                 Participant participant = entry.getKey();
@@ -366,12 +366,13 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
 
                 TextView btn = new TextView(GroupTransactionUpsertActivity.this);
                 btn.setText(participant.getName());
-                btn.setTextSize(25);
+                btn.setTypeface(null, Typeface.ITALIC);
+                btn.setTextSize(20);
                 btn.setLayoutParams(params);
                 btn.setGravity(Gravity.START);
 
                 EditText subExpense = new EditText(GroupTransactionUpsertActivity.this);
-                subExpense.setTextSize(25);
+                subExpense.setTextSize(20);
                 subExpense.setText(Float.toString(amount));
                 subExpense.setLayoutParams(params);
                 subExpense.setGravity(Gravity.CENTER);
@@ -465,13 +466,13 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                                 collectSumParticipant.add(item);
 
                                 TextView btn = new TextView(GroupTransactionUpsertActivity.this);
-                                btn.setText(item);
-                                btn.setTextSize(25);
+                                btn.setTypeface(null, Typeface.ITALIC);
+                                btn.setTextSize(20);
                                 btn.setLayoutParams(params);
                                 btn.setGravity(Gravity.START);
 
                                 EditText subExpense = new EditText(GroupTransactionUpsertActivity.this);
-                                subExpense.setTextSize(25);
+                                subExpense.setTextSize(20);
                                 subExpense.setLayoutParams(params);
                                 subExpense.setGravity(Gravity.CENTER);
                                 subExpense.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);

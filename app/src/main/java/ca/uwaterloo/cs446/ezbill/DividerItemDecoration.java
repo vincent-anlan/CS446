@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -24,7 +25,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     public DividerItemDecoration() {
 
-        int primaryColor = Color.rgb(0,133,119);
+        int primaryColor = Color.rgb(253,183,161);
 
         mPaint1 = new Paint();
         mPaint1.setColor(primaryColor);
