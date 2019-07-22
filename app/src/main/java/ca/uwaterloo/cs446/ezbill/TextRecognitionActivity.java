@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Observer;
 import java.util.UUID;
@@ -55,6 +56,7 @@ public class TextRecognitionActivity extends AppCompatActivity {
 
     public void saveButtonHandler(View v) {
         model.cameraUpdateExpense(saveAmount);
+        Log.i("finish", saveAmount);
         finish();
     }
 
@@ -152,21 +154,23 @@ public class TextRecognitionActivity extends AppCompatActivity {
             @Override
             public void receiveDetections(Detector.Detections<TextBlock> detections) {
                 final SparseArray<TextBlock> items = detections.getDetectedItems();
-                if (items.size() != 0 ){
+                if (items.size() != 0) {
 
                     mTextView.post(new Runnable() {
                         @Override
                         public void run() {
                             StringBuilder stringBuilder = new StringBuilder();
-                            for(int i=0; i<items.size();){
+                            ArrayList<Float> collectAllFloat = new ArrayList<>();
+                            collectAllFloat.add(Float.parseFloat("0"));
+                            for (int i = 0; i < items.size(); i++) {
                                 TextBlock item = items.valueAt(i);
-                                if(item.getValue().equals("Total") || item.getValue().equals("TOTAL")){
+                                if (item.getValue().equals("Total") || item.getValue().equals("TOTAL")) {
                                     stringBuilder.append(item.getValue());
                                     stringBuilder.append("  ");
-                                    if((i+1) < items.size()){
-                                        Log.i("here",Integer.toString(items.size()));
-                                        TextBlock item_num = items.valueAt(i+1);
-                                        stringBuilder.append(item_num.getValue());
+//                                    if((i+1) < items.size()){
+//                                        Log.i("here",Integer.toString(items.size()));
+//                                        TextBlock item_num = items.valueAt(i+1);
+//                                        stringBuilder.append(item_num.getValue());
 //                                        if(item_num.getValue().matches("[0-9]*\\.?[0-9]+")){
 //                                            Log.i("here","float problem");
 //                                            ArrayList<String> collectRaw =  parseIntsAndFloats(item_num.getValue());
@@ -174,12 +178,25 @@ public class TextRecognitionActivity extends AppCompatActivity {
 //                                                saveAmount = collectRaw.get(k);
 //                                            }
 //                                        }
-                                        i++;
-                                    }
+//                                    i++;
+                                }
+                                String regex="([0-9]+[.][0-9]+)";
+
+                                Pattern pattern = Pattern.compile(regex);
+                                Matcher matcher = pattern.matcher(item.getValue());
+                                while(matcher.find()) {
+                                    Log.i("camera get", matcher.group());
+                                    collectAllFloat.add(Float.parseFloat(matcher.group()));
                                 }
                                 i++;
                             }
+
+                            Float maxFloat = Float.parseFloat("0");
+                            maxFloat = Collections.max(collectAllFloat);
+                            stringBuilder.append(Float.toString(maxFloat));
                             mTextView.setText(stringBuilder.toString());
+                            Log.i("here", stringBuilder.toString());
+                            saveAmount = Float.toString(maxFloat);
                         }
                     });
                 }

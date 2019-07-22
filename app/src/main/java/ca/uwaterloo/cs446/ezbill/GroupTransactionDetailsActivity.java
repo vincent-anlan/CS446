@@ -47,6 +47,9 @@ public class GroupTransactionDetailsActivity extends AppCompatActivity implement
     boolean isCreator;
     RelativeLayout floating_menu;
 
+    public void cancelButtonHandlerBack(View v) {
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

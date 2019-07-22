@@ -13,7 +13,7 @@
 
         <include
             android:id="@+id/summary_page_toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/toolbar_with_icon" />
 
 
         <com.github.mikephil.charting.charts.PieChart

@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/bill_split_page_toolbar"
-        layout="@layout/toolbar" />
+        layout="@layout/toolbar_with_icon" />
 
     <ScrollView
         android:layout_width="match_parent"
