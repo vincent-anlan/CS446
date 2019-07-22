@@ -15,6 +15,10 @@ public class MyInfoActivity extends AppCompatActivity {
     TextView email;
     TextView username;
 
+    public void cancelButtonHandlerBack(View v) {
+        finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

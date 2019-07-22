@@ -39,6 +39,10 @@ public class SummaryActivity extends AppCompatActivity {
     LinearLayout linearLayout_v;
     LinearLayout.LayoutParams params_v;
 
+    public void cancelButtonHandlerBack(View v) {
+        finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

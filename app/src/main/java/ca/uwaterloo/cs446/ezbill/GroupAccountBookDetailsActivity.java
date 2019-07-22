@@ -4,7 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -59,6 +59,9 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     boolean isCreator;
     RelativeLayout floating_menu;
 
+    public void cancelButtonHandlerBack(View v) {
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,12 +246,16 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         participantsLayout.removeAllViews();
     }
 
-    public void addRowToLayout(String text1, String text2, int index){
+    public void addRowToLayout(String text1, String text2, int index, String type){
         TextView tv1 = createTextView(text1);
         tv1.setGravity(Gravity.START);
 
         TextView tv2 = createTextView(text2);
         tv2.setGravity(Gravity.END);
+        if(type.equals("Amount")){
+            tv2.setTextSize(18);
+            tv2.setTypeface(null, Typeface.BOLD);
+        }
 
         LinearLayout row_layout = new LinearLayout(this);
         row_layout.setOrientation(LinearLayout.HORIZONTAL);
@@ -291,8 +298,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
         for (int i = 0; i < numToDisplay; ++i) {
             GroupTransaction transaction = (GroupTransaction) model.currentTransactionList.get(i);
-            addRowToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()), i);
-            addRowToLayout(transaction.getDate(), "Paid by "+transaction.getPayer().getName(), i);
+            addRowToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()), i, "Amount");
+            addRowToLayout(transaction.getDate(), "Paid by "+transaction.getPayer().getName(), i, "Detail");
             lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, transactionHistoryLayout, false);
             transactionHistoryLayout.addView(lineSeparator);
         }
@@ -388,6 +395,10 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         title.setText(groupAccountBook.getName());
         myExpense.setText(groupAccountBook.getDefaultCurrency() + " " + groupAccountBook.getMyExpense());
         totalExpense.setText(groupAccountBook.getDefaultCurrency() + " " + groupAccountBook.getGroupExpense());
+        myExpense.setTypeface(null, Typeface.BOLD);
+        myExpense.setTextSize(20);
+        totalExpense.setTypeface(null, Typeface.BOLD);
+        totalExpense.setTextSize(20);
         if (isViewAllBillClicked) {
             viewAllBills.setText("Hide");
         } else {

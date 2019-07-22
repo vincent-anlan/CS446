@@ -123,8 +123,13 @@ public class SignupActivity extends AppCompatActivity {
 
                     //upload img:
                     //Uri file = Uri.fromFile(new File("path/to/images/rivers.jpg"));
-                    final StorageReference userRef = refstorage.child("images/"+email.getText().toString());
-                    final UploadTask uploadTask = userRef.putFile(imageUri);
+                    String EmailAddr = email.getText().toString();
+                    if(EmailAddr.length() == 0){
+                        email.setError("Required");
+                        return;
+                    }
+                    final StorageReference userRef = refstorage.child("images/"+EmailAddr);
+                    UploadTask uploadTask = userRef.putFile(imageUri);
 
                     // add observers to listen the upload task
                     uploadTask.addOnFailureListener(new OnFailureListener() {

@@ -16,25 +16,31 @@
         android:gravity="center"
         android:orientation="horizontal">
 
+        <Button
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:background="@drawable/cancel"
+            android:gravity="start"
+            android:onClick="cancelButtonHandlerBack" />
+
         <TextView
             android:id="@+id/toolbar_title"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="#FFFFFF"
-            android:textSize="25sp"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:gravity="center"
             android:text="test"
-            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
 
         <Button
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_gravity="end"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/profile"
-            android:onClick="viewMyProfile" />
+            android:background="@drawable/empty" />
+
     </LinearLayout>
 
 </android.support.v7.widget.Toolbar>

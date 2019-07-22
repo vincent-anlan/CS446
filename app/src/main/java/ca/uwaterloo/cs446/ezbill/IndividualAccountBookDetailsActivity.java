@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -43,6 +44,10 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     boolean isMenuOpen;
     boolean isViewAllBillClicked;
     RelativeLayout floating_menu;
+
+    public void cancelButtonHandlerBack(View v) {
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,12 +248,17 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         column_layout.removeAllViews();
     }
 
-    public void addColumnToLayout(String text1, String text2, int index) {
+    public void addColumnToLayout(String text1, String text2, int index, String type) {
         TextView tv1 = createTextView(text1);
         tv1.setGravity(Gravity.START);
 
         TextView tv2 = createTextView(text2);
         tv2.setGravity(Gravity.END);
+
+        if(type.equals("Amount")){
+            tv2.setTextSize(18);
+            tv2.setTypeface(null, Typeface.BOLD);
+        }
 
         LinearLayout row_layout = new LinearLayout(this);
         row_layout.setOrientation(LinearLayout.HORIZONTAL);
@@ -289,8 +299,8 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
 
         for (int i = 0; i < numToDisplay; ++i) {
             IndividualTransaction transaction = (IndividualTransaction) model.currentTransactionList.get(i);
-            addColumnToLayout(transaction.getCategory(), transaction.getCurrency() + " " +  transaction.getAmount(), i);
-            addColumnToLayout(transaction.getDate(), transaction.getType(), i);
+            addColumnToLayout(transaction.getCategory(), transaction.getCurrency() + " " +  transaction.getAmount(), i, "Amount");
+            addColumnToLayout(transaction.getDate(), transaction.getType(), i,"Detail");
             lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, column_layout, false);
             column_layout.addView(lineSeparator);
         }
@@ -313,6 +323,10 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
         title.setText(individualAccountBook.getName());
         income.setText(individualAccountBook.getDefaultCurrency() + " " + individualAccountBook.getIncome());
         expense.setText(individualAccountBook.getDefaultCurrency() + " " + individualAccountBook.getExpense());
+        income.setTypeface(null, Typeface.BOLD);
+        income.setTextSize(20);
+        expense.setTypeface(null, Typeface.BOLD);
+        expense.setTextSize(20);
         if (isViewAllBillClicked) {
             viewAllBills.setText("Hide");
         } else {
