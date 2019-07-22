@@ -86,7 +86,7 @@ public class SummaryActivity extends AppCompatActivity {
 
         // enable DataSet in Percentage
         pieChart.setUsePercentValues(true);
-        pieChart.setCenterText("Expense");
+//        pieChart.setCenterText("Expense");
 
         // create dataset
         ArrayList<Entry> values = new ArrayList<Entry>();
