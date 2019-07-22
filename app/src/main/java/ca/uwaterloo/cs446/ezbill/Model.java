@@ -687,8 +687,12 @@ public class Model extends Observable {
 
     public void cameraUpdateExpense(String fromCamera){
         mIndividualExpense = fromCamera;
+        setChanged();
+        notifyObservers();
+        Log.i("model","create");
     }
     public String getCameraUpdateExpense(){
+        Log.i("model","called in");
         return mIndividualExpense;
     }
 
