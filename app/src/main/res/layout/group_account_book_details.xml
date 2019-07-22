@@ -16,7 +16,7 @@
 
         <include
             android:id="@+id/group_toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/toolbar_with_icon" />
 
         <!--<Space-->
         <!--android:layout_width="match_parent"-->

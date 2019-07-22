@@ -35,6 +35,10 @@ public class IndividualTransactionDetailsActivity extends AppCompatActivity impl
     boolean isMenuOpen;
     RelativeLayout floating_menu;
 
+    public void cancelButtonHandlerBack(View v) {
+        finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

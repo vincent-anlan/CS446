@@ -26,6 +26,9 @@ public class BillSplitActivity extends AppCompatActivity {
     LinearLayout.LayoutParams params_v;
     LinearLayout.LayoutParams params_h;
 
+    public void cancelButtonHandlerBack(View v) {
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
