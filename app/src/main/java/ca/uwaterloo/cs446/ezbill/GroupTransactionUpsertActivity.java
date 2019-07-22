@@ -470,6 +470,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
                                 collectSumParticipant.add(item);
 
                                 TextView btn = new TextView(GroupTransactionUpsertActivity.this);
+                                btn.setText(item);
                                 btn.setTypeface(null, Typeface.ITALIC);
                                 btn.setTextSize(20);
                                 btn.setLayoutParams(params);
