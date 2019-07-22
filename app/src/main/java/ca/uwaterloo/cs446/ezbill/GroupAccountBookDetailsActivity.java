@@ -185,7 +185,9 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
             @Override
             public void onClick(View view) {
                 restoreDefaultSetting();
-                startActivity(new Intent(GroupAccountBookDetailsActivity.this, myQRCode.class));
+                Intent intent = new Intent(GroupAccountBookDetailsActivity.this, myQRCode.class);
+                intent.putExtra("accountBookId", model.getClickedAccountBookId());
+                startActivity(intent);
             }
         });
 
@@ -278,11 +280,23 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() != null) {
-                // update database here
-                // string decoded = result.getContents()
                 final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-                alertDialog.setMessage("Added to the account book.");
-                alertDialog.show();
+                String decoded = result.getContents();
+                String userId = decoded.substring(1);
+                Boolean share = true;
+                for (Participant participant : model.getGroupAccountBook(model.getClickedAccountBookId()).getParticipantList()) {
+                    if (participant.getId().equals(userId)) {
+                        share = false;
+                        alertDialog.setMessage("User already in the account book.");
+                        alertDialog.show();
+                    }
+                }
+                if (share) {
+                    // update database here
+                    model.addUserToAccountBook(userId);
+                    alertDialog.setMessage("User added to the account book.");
+                    alertDialog.show();
+                }
 
                 // Hide after some seconds
                 final Handler handler = new Handler();
@@ -408,10 +422,10 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         int size = participants.size();
         int numToDisplay = size > 3 ? 3 : size;
         for (int i = 0; i < numToDisplay; i++) {
-            addParticipantTextView(false, participants.get(i).getName());
+            addParticipantImage(participants.get(i));
         }
 
-        addParticipantTextView(true, "\u2022\u2022\u2022");
+        addParticipantTextView("\u2022\u2022\u2022");
     }
 
 
@@ -445,7 +459,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         participantsLayout.addView(imageView);
     }
 
-    public void addParticipantTextView(Boolean isClickable, String text) {
+    public void addParticipantTextView(String text) {
         Button btn = new Button(this);
         btn.setText(text);
         btn.setTextSize(20);
@@ -456,42 +470,40 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 //        btn.setWidth(dpTopx(35));
 //        btn.setHeight(dpTopx(35));
 
-        if (isClickable) {
-            btn.setClickable(true);
-            btn.setFocusable(true);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    closeMenu();
-                    ArrayList<Participant> participants = model.getParticipantsById(model.getClickedAccountBookId());
-                    int size = participants.size();
-                    DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(GroupAccountBookDetailsActivity.this, (Button) v);
-                    for (int i = 0; i < size; ++i) {
-                        Participant participant = participants.get(i);
+        btn.setClickable(true);
+        btn.setFocusable(true);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeMenu();
+                ArrayList<Participant> participants = model.getParticipantsById(model.getClickedAccountBookId());
+                int size = participants.size();
+                DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(GroupAccountBookDetailsActivity.this, (Button) v);
+                for (int i = 0; i < size; ++i) {
+                    Participant participant = participants.get(i);
 //                        droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + participant.getEmail()))
 //                                     .addSeparator();
 
-                        if (i == size - 1) {
-                            droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + participant.getEmail()));
-                        } else {
-                            droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + participant.getEmail())).addSeparator();
-                        }
+                    if (i == size - 1) {
+                        droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + participant.getEmail()));
+                    } else {
+                        droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + participant.getEmail())).addSeparator();
                     }
-
-                    // Set Callback handler
-                    droppyBuilder.setOnClick(new DroppyClickCallbackInterface() {
-                        @Override
-                        public void call(View v, int id) {
-                            Log.d("Clicked on ", String.valueOf(id));
-                        }
-                    });
-
-                    DroppyMenuPopup droppyMenu = droppyBuilder.build();
-                    droppyMenu.show();
-
                 }
-            });
-        }
+
+                // Set Callback handler
+                droppyBuilder.setOnClick(new DroppyClickCallbackInterface() {
+                    @Override
+                    public void call(View v, int id) {
+                        Log.d("Clicked on ", String.valueOf(id));
+                    }
+                });
+
+                DroppyMenuPopup droppyMenu = droppyBuilder.build();
+                droppyMenu.show();
+
+            }
+        });
         participantsLayout.setOrientation(LinearLayout.HORIZONTAL);
         participantsLayout.addView(btn);
     }

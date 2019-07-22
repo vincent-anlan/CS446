@@ -41,10 +41,10 @@ public class Model extends Observable {
     String currentUserId;
     String currentUsername;
     String profilePhotoURL;
+    String userEmail;
     String clickedAccountBookId;
     String mIndividualExpense;
     ArrayList<Transaction> currentTransactionList;
-    String userEmail;
     HashMap<String, Float> exchangeRates;
 
     Model() {
@@ -889,7 +889,7 @@ public class Model extends Observable {
                 });
     }
 
-    public void addUserToAccountBookInDB(final String userId) {
+    public void addUserToAccountBook(final String userId) {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -918,13 +918,13 @@ public class Model extends Observable {
                 });
     }
 
-    public void shareAccountBookToUserInDB(final String accountBookId) {
+    public void shareAccountBookToUser(final String accountBookId) {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // read data from database
         db.collection("user_account_book_info")
-                .whereEqualTo("id", accountBookId)
+                .whereEqualTo("accountBookId", accountBookId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -970,6 +970,19 @@ public class Model extends Observable {
     public String getCameraUpdateExpense(){
         Log.i("model","called in");
         return mIndividualExpense;
+    }
+
+    public void clear() {
+        groupAccountBookList.clear();
+        individualAccountBookList.clear();
+        currentUserId = "";
+        currentUsername = "";
+        profilePhotoURL = "";
+        userEmail = "";
+        clickedAccountBookId = "";
+        mIndividualExpense = "";
+        currentTransactionList.clear();
+        exchangeRates.clear();
     }
 
 

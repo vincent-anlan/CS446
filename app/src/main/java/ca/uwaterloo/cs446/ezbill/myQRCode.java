@@ -64,9 +64,18 @@ public class myQRCode extends AppCompatActivity {
 //            dimension = dimension * 3 / 4;
 
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.encodeBitmap("aaa-bbb-ccc-d", BarcodeFormat.QR_CODE, dimension, dimension);
-            ImageView imageViewQrCode = (ImageView) findViewById(R.id.QR_image);
-            imageViewQrCode.setImageBitmap(bitmap);
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                String id;
+                if (extras.getString("accountBookId") != null) {
+                    id = "A" + extras.getString("accountBookId");
+                } else {
+                    id = "U" + extras.getString("userId");
+                }
+                Bitmap bitmap = barcodeEncoder.encodeBitmap(id, BarcodeFormat.QR_CODE, dimension, dimension);
+                ImageView imageViewQrCode = (ImageView) findViewById(R.id.QR_image);
+                imageViewQrCode.setImageBitmap(bitmap);
+            }
 
         } catch (Exception e) {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
@@ -147,6 +156,10 @@ public class myQRCode extends AppCompatActivity {
             }
 
         }
+    }
+
+    public void cancelButtonHandlerBack(View v) {
+        finish();
     }
 
 }

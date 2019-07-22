@@ -3,6 +3,7 @@ package ca.uwaterloo.cs446.ezbill;
 import android.content.Intent;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -93,12 +94,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         model.setProfilePhotoURL(ImgAddr);
         //Login End
 
-        //another way to get url of profile picture.
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        String url= user.getPhotoUrl().toString();
-        Log.d("000","URL:"+url);
-
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         spinner.setVisibility(View.VISIBLE);
         readDB();
@@ -120,13 +115,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 loadFragment(groupAccountBookFragement);
                 break;
             case R.id.my_qrcode:
-                startActivity(new Intent(MainActivity.this, myQRCode.class));
+                Intent intent = new Intent(MainActivity.this, myQRCode.class);
+                intent.putExtra("userId", model.getCurrentUserId());
+                startActivity(intent);
                 break;
             case R.id.scan_qrcode:
                 startQRScanner();
                 break;
             case R.id.logout:
-                // logout logic here
+//                model.clear();
+                FirebaseAuth.getInstance().signOut();
+                showDialog("Successfully Signed Out");
+//                startActivity(new Intent(MainActivity.this, Login.class));
+//                // logout logic here
                 Log.d("WRITE", "Sign Out Btn clicked!!!");
                 break;
         }
@@ -150,9 +151,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() != null) {
-                // update database here
-                // string decoded = result.getContents()
-                showDialog("Added to the account book.");
+                String decoded = result.getContents();
+                String accountBookId = decoded.substring(1);
+                Boolean share = true;
+                for (GroupAccountBook groupAccountBook : model.groupAccountBookList) {
+                    if (groupAccountBook.getId().equals(accountBookId)) {
+                        share = false;
+                        showDialog("Account Book already exist.");
+                    }
+                }
+                if (share) {
+                    // update database here
+                    model.shareAccountBookToUser(accountBookId);
+                    showDialog("Account Book Added to the user.");
+                }
             } else {
 //                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             }
