@@ -9,12 +9,11 @@
 
     <include
         android:id="@+id/my_toolbar"
-        layout="@layout/toolbar_with_icon" />
+        layout="@layout/toolbar" />
 
     <include
         android:id="@+id/include"
         layout="@layout/progess_bar" />
-
 
 
     <android.support.design.widget.BottomNavigationView

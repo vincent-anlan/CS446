@@ -15,7 +15,7 @@
 
         <include
             android:id="@+id/individual_toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/toolbar_with_icon" />
 
         <ScrollView
             android:layout_width="match_parent"

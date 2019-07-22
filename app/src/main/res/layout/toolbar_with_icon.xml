@@ -16,6 +16,13 @@
         android:gravity="center"
         android:orientation="horizontal">
 
+        <Button
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:background="@drawable/cancel"
+            android:gravity="start"
+            android:onClick="cancelButtonHandlerBack" />
+
         <TextView
             android:id="@+id/toolbar_title"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
@@ -32,10 +39,8 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_gravity="end"
-            android:layout_marginRight="15dp"
-            android:layout_weight="0"
-            android:background="@drawable/user"
-            android:onClick="viewMyProfile" />
+            android:background="@drawable/empty" />
+
     </LinearLayout>
 
 </android.support.v7.widget.Toolbar>

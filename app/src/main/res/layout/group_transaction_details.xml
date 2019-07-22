@@ -13,7 +13,7 @@
 
         <include
             android:id="@+id/transaction_details_toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/toolbar_with_icon" />
 
         <!--<Space-->
         <!--android:layout_width="match_parent"-->

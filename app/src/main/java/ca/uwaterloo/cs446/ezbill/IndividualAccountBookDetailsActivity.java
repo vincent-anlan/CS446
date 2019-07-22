@@ -44,6 +44,10 @@ public class IndividualAccountBookDetailsActivity extends AppCompatActivity impl
     boolean isViewAllBillClicked;
     RelativeLayout floating_menu;
 
+    public void cancelButtonHandlerBack(View v) {
+        finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

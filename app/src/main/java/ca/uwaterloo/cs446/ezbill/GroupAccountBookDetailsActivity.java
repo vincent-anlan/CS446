@@ -52,6 +52,9 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     boolean isCreator;
     RelativeLayout floating_menu;
 
+    public void cancelButtonHandlerBack(View v) {
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

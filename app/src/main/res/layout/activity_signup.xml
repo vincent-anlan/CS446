@@ -19,9 +19,9 @@
         <ImageView
             android:id="@+id/icon"
             style="@style/ThemeOverlay.FirebaseIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/dining" />
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/ezbill" />
 
         <TextView
             android:id="@+id/titleText"
