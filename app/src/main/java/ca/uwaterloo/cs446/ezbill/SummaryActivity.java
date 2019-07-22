@@ -117,8 +117,8 @@ public class SummaryActivity extends AppCompatActivity {
 
         // set text size and color
         data.setValueTextSize(13f);
-//        data.setDrawValues(false);
-//        pieChart.setDrawSliceText(false);
+        data.setDrawValues(false);
+        pieChart.setDrawSliceText(false);
         data.setValueTextColor(Color.DKGRAY);
 
         // disable description
