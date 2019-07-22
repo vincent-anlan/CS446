@@ -41,10 +41,10 @@ public class Model extends Observable {
     String currentUserId;
     String currentUsername;
     String profilePhotoURL;
+    String userEmail;
     String clickedAccountBookId;
     String mIndividualExpense;
     ArrayList<Transaction> currentTransactionList;
-    String userEmail;
     HashMap<String, Float> exchangeRates;
 
     Model() {
@@ -328,6 +328,20 @@ public class Model extends Observable {
         GroupAccountBook groupAccountBook = getGroupAccountBook(id);
         return groupAccountBook.getParticipantList();
     }
+
+    public void addNewParticipant(String accountBookId, Participant participant) {
+        GroupAccountBook groupAccountBook = getGroupAccountBook(accountBookId);
+        groupAccountBook.addParticipant(participant);
+        String id = participant.getId();
+        String email = participant.getEmail();
+        String userPhotoUrl = participant.getPhotoUri();
+        String username = participant.getName();
+        addAccountBookToDB(groupAccountBook, "Group", email, id, username, userPhotoUrl);
+
+        setChanged();
+        notifyObservers();
+    }
+
 
     public float calculateMyExpense(String accountBookCurrency) {
         float totalAmount = 0;
@@ -787,6 +801,27 @@ public class Model extends Observable {
                         }
                     }
                 });
+
+
+        final Map<String, Object> data = new HashMap<>();
+        data.put("photoUrl", photoUrl);
+        db.collection("users")
+                .whereEqualTo("id", currentUserId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getReference().update(data);
+
+                                Log.d("WRITE", "Document updated");
+                            }
+                        } else {
+                            Log.w("WRITE", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 
     public void updateUsernameInDB(String username) {
@@ -798,6 +833,24 @@ public class Model extends Observable {
 
         // read data from database
         db.collection("user_account_book_info")
+                .whereEqualTo("id", currentUserId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getReference().update(updates);
+
+                                Log.d("WRITE", "Document updated");
+                            }
+                        } else {
+                            Log.w("WRITE", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
+        db.collection("users")
                 .whereEqualTo("userId", currentUserId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -836,6 +889,77 @@ public class Model extends Observable {
                 });
     }
 
+    public void addUserToAccountBook(final String userId) {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // read data from database
+        db.collection("users")
+                .whereEqualTo("id", userId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String username = document.getData().get("username").toString();
+                                String photoUrl = document.getData().get("photoUrl").toString();
+                                String email = document.getData().get("email").toString();
+
+                                Participant user = new Participant(userId, username, photoUrl, email);
+                                addNewParticipant(getClickedAccountBookId(), user);
+
+                                Log.d("READ", document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.w("READ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void shareAccountBookToUser(final String accountBookId) {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // read data from database
+        db.collection("user_account_book_info")
+                .whereEqualTo("accountBookId", accountBookId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String userId = document.getData().get("userId").toString();
+                                String username = document.getData().get("username").toString();
+                                String photoUrl = document.getData().get("userPhotoUrl").toString();
+                                String email = document.getData().get("email").toString();
+
+                                String accountBookName = document.getData().get("accountBookName").toString();
+                                String startDate = document.getData().get("accountBookStartDate").toString();
+                                String endDate = document.getData().get("accountBookEndDate").toString();
+                                String defaultCurrency = document.getData().get("accountBookCurrency").toString();
+                                String creatorId = document.getData().get("accountBookCreator").toString();
+
+                                if (!hasGroupAccountBook(accountBookId)) {
+                                    GroupAccountBook groupAccountBook = new GroupAccountBook(accountBookId, accountBookName, startDate, endDate, defaultCurrency, creatorId);
+                                    addGroupAccountBook(groupAccountBook);
+                                }
+                                Participant participant = new Participant(userId, username, photoUrl, email);
+                                addParticipant(accountBookId, participant);
+
+                                Log.d("READ", document.getId() + " => " + document.getData());
+                            }
+                            Participant user = new Participant(currentUserId, currentUsername, profilePhotoURL, userEmail);
+                            addNewParticipant(accountBookId, user);
+                        } else {
+                            Log.w("READ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
 
     public void cameraUpdateExpense(String fromCamera){
         mIndividualExpense = fromCamera;
@@ -846,6 +970,19 @@ public class Model extends Observable {
     public String getCameraUpdateExpense(){
         Log.i("model","called in");
         return mIndividualExpense;
+    }
+
+    public void clear() {
+        groupAccountBookList.clear();
+        individualAccountBookList.clear();
+        currentUserId = "";
+        currentUsername = "";
+        profilePhotoURL = "";
+        userEmail = "";
+        clickedAccountBookId = "";
+        mIndividualExpense = "";
+        currentTransactionList.clear();
+        exchangeRates.clear();
     }
 
 

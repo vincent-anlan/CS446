@@ -14,7 +14,7 @@
 
         <include
             android:id="@+id/profile_photo_toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/toolbar_with_icon" />
 
 
         <LinearLayout

@@ -3,6 +3,7 @@ package ca.uwaterloo.cs446.ezbill;
 import android.content.Intent;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,9 +19,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +32,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String ImgAddr;
     TextView text;
     private DrawerLayout drawer;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
@@ -83,34 +90,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ImgAddr = info.getString("image");
             //need a image view to add profile picture
         }
-
-//        //Update user info
-//        text = findViewById(R.id.User_info);
-//        text.setText("email:"+email+"\n"+"uid:"+uid+"\n"+"username:"+username+"\n"
-//        +"imageAddress:"+ImgAddr);
-
         model.setUserEmail(email);
-
         model.setProfilePhotoURL(ImgAddr);
         //Login End
-
-        //another way to get url of profile picture.
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        String url= user.getPhotoUrl().toString();
-        Log.d("000","URL:"+url);
-
-        model = Model.getInstance();
 
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         spinner.setVisibility(View.VISIBLE);
         readDB();
-
-        View header = navigationView.getHeaderView(0);
-        TextView user_name = (TextView) header.findViewById(R.id.user_name);
-        TextView user_email = (TextView) header.findViewById(R.id.user_email);
-        user_name.setText(username);
-        user_email.setText(email);
 
         thread.start();
 
@@ -129,13 +115,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 loadFragment(groupAccountBookFragement);
                 break;
             case R.id.my_qrcode:
-                startActivity(new Intent(MainActivity.this, myQRCode.class));
+                Intent intent = new Intent(MainActivity.this, myQRCode.class);
+                intent.putExtra("userId", model.getCurrentUserId());
+                startActivity(intent);
                 break;
             case R.id.scan_qrcode:
                 startQRScanner();
                 break;
             case R.id.logout:
-                // logout logic here
+//                model.clear();
+                FirebaseAuth.getInstance().signOut();
+                showDialog("Successfully Signed Out");
+//                startActivity(new Intent(MainActivity.this, Login.class));
+//                // logout logic here
                 Log.d("WRITE", "Sign Out Btn clicked!!!");
                 break;
         }
@@ -159,9 +151,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() != null) {
-                // update database here
-                // string decoded = result.getContents()
-                showDialog("Added to the account book.");
+                String decoded = result.getContents();
+                String accountBookId = decoded.substring(1);
+                Boolean share = true;
+                for (GroupAccountBook groupAccountBook : model.groupAccountBookList) {
+                    if (groupAccountBook.getId().equals(accountBookId)) {
+                        share = false;
+                        showDialog("Account Book already exist.");
+                    }
+                }
+                if (share) {
+                    // update database here
+                    model.shareAccountBookToUser(accountBookId);
+                    showDialog("Account Book Added to the user.");
+                }
             } else {
 //                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             }
@@ -204,6 +207,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void loadNavHeader() {
+        View header = navigationView.getHeaderView(0);
+        TextView user_name = (TextView) header.findViewById(R.id.user_name);
+        TextView user_email = (TextView) header.findViewById(R.id.user_email);
+        user_name.setText(model.getCurrentUsername());
+        user_email.setText(model.getUserEmail());
+
+        ImageView img = header.findViewById(R.id.photo);
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl(model.getProfilePhotoURL());
+        Glide.with(this)
+                .load(storageRef)
+                .apply(RequestOptions.circleCropTransform())
+                .into(img);
+
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ProfilePhotoActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void loadFragment(Fragment fragment) {
@@ -263,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             for (GroupAccountBook groupAccountBook : model.groupAccountBookList) {
                                 model.readParticipantsFromDB(groupAccountBook.getId());
                             }
+                            loadNavHeader();
                             loadFragment(new GroupAccountBookListFragment());
 
                         } else {

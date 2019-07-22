@@ -125,4 +125,8 @@ public class ProfilePhotoActivity extends AppCompatActivity {
         }
     }
 
+    public void cancelButtonHandlerBack(View v) {
+        finish();
+    }
+
 }
