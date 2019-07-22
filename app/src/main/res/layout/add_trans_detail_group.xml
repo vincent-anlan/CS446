@@ -20,7 +20,8 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="@string/payer"
-            android:textSize="25sp" />
+            android:textSize="20sp"
+            android:textStyle="bold"/>
 
         <Spinner
             android:id="@+id/payer_spinner"
@@ -43,7 +44,8 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="@string/amount"
-            android:textSize="25sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/amountShow"
@@ -53,7 +55,14 @@
             android:ems="10"
             android:gravity="center"
             android:text="Total Expense"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/button_refresh"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:background="@color/button"
+            android:src="@drawable/refersh" />
 
         <!--<EditText-->
         <!--android:id="@+id/autoSumCollect"-->
@@ -87,13 +96,15 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="@string/participant"
-            android:textSize="25sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/selectParticipant"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@color/button"
             android:text="@string/select_participant" />
     </LinearLayout>
 
@@ -102,6 +113,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
         android:gravity="center"
         android:orientation="horizontal">
 

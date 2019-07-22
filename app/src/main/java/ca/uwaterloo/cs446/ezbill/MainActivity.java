@@ -1,5 +1,6 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText("EzBill");
+        title.setText("         EzBill");
 
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         spinner.setVisibility(View.VISIBLE);
@@ -113,6 +114,11 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public void viewMyProfile(View view) {
+        Intent intent = new Intent(MainActivity.this, MyInfoActivity.class);
+        startActivity(intent);
     }
 
     private void readDB() {

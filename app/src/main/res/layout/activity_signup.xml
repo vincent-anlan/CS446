@@ -99,16 +99,19 @@
                 android:layout_below="@+id/emailPasswordButtons"
                 android:layout_alignStart="@+id/emailPasswordButtons"
                 android:layout_weight="1"
-                android:background="@color/background"
-                android:text="@string/create_account" />
+
+                android:background="@color/button"
+                android:text="@string/sign_in" />
+
 
             <Button
                 android:id="@+id/emailSignInButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/background"
-                android:text="@string/sign_in" />
+
+                android:background="@color/button"
+                android:text="@string/create_account" />
         </LinearLayout>
 
         <LinearLayout
