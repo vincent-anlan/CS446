@@ -41,13 +41,22 @@
                     android:layout_weight="1"
                     android:textSize="20sp"/>
 
-                <TextView
-                    android:id="@+id/profile_photo"
-                    android:layout_width="match_parent"
+                <Button
+                    android:id="@+id/photoButton"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:textSize="20sp"/>
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:text="view photo"
+                    android:onClick="viewPhoto"/>
+
+                <!--<TextView-->
+                    <!--android:id="@+id/profile_photo"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:textSize="20sp"/>-->
             </LinearLayout>
 
             <include layout="@layout/line_separator" />
