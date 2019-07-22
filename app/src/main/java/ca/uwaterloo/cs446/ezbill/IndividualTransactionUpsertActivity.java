@@ -2,6 +2,7 @@ package ca.uwaterloo.cs446.ezbill;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -28,7 +29,6 @@ public class IndividualTransactionUpsertActivity extends TransactionUpsertActivi
     @Override
     public void cameraScan(View view) {
         startActivity(new Intent(this, TextRecognitionActivity.class));
-        mAmountedit.setText(model.getCameraUpdateExpense());
     }
 
     @Override
@@ -99,6 +99,7 @@ public class IndividualTransactionUpsertActivity extends TransactionUpsertActivi
 
     @Override
     public void update(Observable o, Object arg) {
+        Log.i("model","activity in");
         mAmountedit.setText(model.getCameraUpdateExpense());
     }
 }

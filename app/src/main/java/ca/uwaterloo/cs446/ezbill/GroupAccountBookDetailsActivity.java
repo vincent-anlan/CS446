@@ -6,15 +6,17 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,10 +26,17 @@ import java.util.Observer;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.shehabic.droppy.DroppyClickCallbackInterface;
+import com.shehabic.droppy.DroppyMenuItem;
+import com.shehabic.droppy.DroppyMenuPopup;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
 
 public class GroupAccountBookDetailsActivity extends AppCompatActivity implements Observer {
 
@@ -53,7 +62,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     LinearLayout delete;
     LinearLayout edit;
     LinearLayout add;
-    FloatingActionButton addActionButton;
+    LinearLayout generate_qr_code;
+    LinearLayout scan_qr_code;
     boolean isMenuOpen;
     boolean isViewAllBillClicked;
     boolean isCreator;
@@ -90,16 +100,15 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         isCreator = model.getGroupAccountBook(model.getClickedAccountBookId()).getCreatorId().equals(model.currentUserId);
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.group_account_book_page);
-        if (isCreator) {
-            View newView = getLayoutInflater().inflate(R.layout.floating_menu, layout, false);
-            layout.addView(newView);
-        } else {
-            View newView = getLayoutInflater().inflate(R.layout.floating_menu_add_button, layout, false);
-            layout.addView(newView);
-        }
+
+        View newView = getLayoutInflater().inflate(R.layout.floating_menu, layout, false);
+        layout.addView(newView);
 
         model.readTransactionsFromDB(true);
 
+        participantsLayout = (LinearLayout) findViewById(R.id.participantIcons);
+        participantParams = new LinearLayout.LayoutParams(120, LinearLayout.LayoutParams.WRAP_CONTENT);
+        participantParams.setMargins(0, dpTopx(10), 0, dpTopx(10));
         drawParticipantIcons();
         displayTransactions();
         updateText();
@@ -110,21 +119,8 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
     private void initFloatingActionMenu() {
         if (isCreator) {
-            menu = (LinearLayout) findViewById(R.id.menu);
             delete = (LinearLayout) findViewById(R.id.delete);
             edit = (LinearLayout) findViewById(R.id.edit);
-            add = (LinearLayout) findViewById(R.id.add);
-            menu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (isMenuOpen) {
-                        closeMenu();
-                    } else {
-                        openMenu();
-                    }
-                }
-            });
-            floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
 
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -160,31 +156,86 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
                     startActivity(intent);
                 }
             });
-            add.setOnClickListener(onAddButtonClick());
-        } else {
-            addActionButton = (FloatingActionButton) findViewById(R.id.add);
-            addActionButton.setOnClickListener(onAddButtonClick());
         }
+
+        floating_menu = (RelativeLayout) findViewById(R.id.floating_menu);
+        menu = (LinearLayout) findViewById(R.id.menu);
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isMenuOpen) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            }
+        });
+
+        add = (LinearLayout) findViewById(R.id.add);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                startActivity(new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class));
+            }
+        });
+
+        generate_qr_code = (LinearLayout) findViewById(R.id.generate_qr_code);
+        generate_qr_code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                startActivity(new Intent(GroupAccountBookDetailsActivity.this, myQRCode.class));
+            }
+        });
+
+        scan_qr_code = (LinearLayout) findViewById(R.id.scan_qr_code);
+        scan_qr_code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                restoreDefaultSetting();
+                IntentIntegrator integrator = new IntentIntegrator(GroupAccountBookDetailsActivity.this);
+                integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                integrator.setPrompt("Scanning QR code.");
+                integrator.setBarcodeImageEnabled(true);
+                integrator.initiateScan();
+//        new IntentIntegrator(this).initiateScan();
+            }
+        });
     }
 
     private void closeMenu() {
-        if (isMenuOpen && isCreator) {
-            delete.animate().translationY(0).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    delete.setVisibility(View.GONE);
-                }
-            }).start();
-            edit.animate().translationY(0).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    edit.setVisibility(View.GONE);
-                }
-            }).start();
+        if (isMenuOpen) {
+            if (isCreator) {
+                delete.animate().translationY(0).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        delete.setVisibility(View.GONE);
+                    }
+                }).start();
+                edit.animate().translationY(0).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        edit.setVisibility(View.GONE);
+                    }
+                }).start();
+            }
             add.animate().translationY(0).withEndAction(new Runnable() {
                 @Override
                 public void run() {
                     add.setVisibility(View.GONE);
+                }
+            }).start();
+            generate_qr_code.animate().translationY(0).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    generate_qr_code.setVisibility(View.GONE);
+                }
+            }).start();
+            scan_qr_code.animate().translationY(0).withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    scan_qr_code.setVisibility(View.GONE);
                 }
             }).start();
             isMenuOpen = false;
@@ -193,32 +244,71 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     }
 
     private void openMenu() {
-        delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
-        edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
-        add.animate().translationY(-getResources().getDimension(R.dimen.add));
+        if (isCreator) {
+            add.animate().translationY(-getResources().getDimension(R.dimen.add_creator));
+            delete.animate().translationY(-getResources().getDimension(R.dimen.delete));
+            edit.animate().translationY(-getResources().getDimension(R.dimen.edit));
+            generate_qr_code.animate().translationY(-getResources().getDimension(R.dimen.generate_qr_code_creator));
+            scan_qr_code.animate().translationY(-getResources().getDimension(R.dimen.scan_qr_code_creator));
+            delete.setVisibility(View.VISIBLE);
+            edit.setVisibility(View.VISIBLE);
+        } else {
+            add.animate().translationY(-getResources().getDimension(R.dimen.add_no_creator));
+            generate_qr_code.animate().translationY(-getResources().getDimension(R.dimen.generate_qr_code_no_creator));
+            scan_qr_code.animate().translationY(-getResources().getDimension(R.dimen.scan_qr_code_no_creator));
+        }
         isMenuOpen = true;
-        delete.setVisibility(View.VISIBLE);
-        edit.setVisibility(View.VISIBLE);
         add.setVisibility(View.VISIBLE);
+        generate_qr_code.setVisibility(View.VISIBLE);
+        scan_qr_code.setVisibility(View.VISIBLE);
         floating_menu.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
-    }
 
-    private View.OnClickListener onAddButtonClick() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                restoreDefaultSetting();
-                startActivity(new Intent(GroupAccountBookDetailsActivity.this, GroupTransactionUpsertActivity.class));
-            }
-        };
     }
-
 
     private void restoreDefaultSetting() {
         closeMenu();
         isViewAllBillClicked = false;
         displayTransactions();
         updateText();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() != null) {
+                // update database here
+                // string decoded = result.getContents()
+                final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+                alertDialog.setMessage("Added to the account book.");
+                alertDialog.show();
+
+                // Hide after some seconds
+                final Handler handler = new Handler();
+                final Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (alertDialog.isShowing()) {
+                            alertDialog.dismiss();
+                        }
+                    }
+                };
+
+                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        handler.removeCallbacks(runnable);
+                    }
+                });
+
+                handler.postDelayed(runnable, 1200);
+            } else {
+//                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     public TextView createTextView(String text) {
@@ -237,13 +327,6 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         params_h = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         transactionHistoryLayout.setLayoutParams(params_h);
         transactionHistoryLayout.removeAllViews();
-    }
-
-    public void setupParticipantLayout() {
-        participantsLayout = (LinearLayout) findViewById(R.id.participantIcons);
-        participantParams = new LinearLayout.LayoutParams(120, LinearLayout.LayoutParams.WRAP_CONTENT);
-        participantParams.setMargins(0, dpTopx(10), 0, dpTopx(10));
-        participantsLayout.removeAllViews();
     }
 
     public void addRowToLayout(String text1, String text2, int index, String type){
@@ -298,7 +381,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
         for (int i = 0; i < numToDisplay; ++i) {
             GroupTransaction transaction = (GroupTransaction) model.currentTransactionList.get(i);
-            addRowToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()), i, "Amount");
+            addRowToLayout(transaction.getCategory(), transaction.getCurrency() + " " + transaction.getAmount(), i, "Amount");
             addRowToLayout(transaction.getDate(), "Paid by "+transaction.getPayer().getName(), i, "Detail");
             lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, transactionHistoryLayout, false);
             transactionHistoryLayout.addView(lineSeparator);
@@ -318,17 +401,17 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
     }
 
     public void drawParticipantIcons() {
-        setupParticipantLayout();
+        participantsLayout.removeAllViews();
 
         ArrayList<Participant> participants = model.getParticipantsById(model.getClickedAccountBookId());
-        int num = participants.size();
-        for (int i = 0; i < num; i++) {
-            if (i >= 4) {
-                break;
-            }
-            addParticipantImage(participants.get(i));
+
+        int size = participants.size();
+        int numToDisplay = size > 3 ? 3 : size;
+        for (int i = 0; i < numToDisplay; i++) {
+            addParticipantTextView(false, participants.get(i).getName());
         }
-        addParticipantTextView("\u2022\u2022\u2022");
+
+        addParticipantTextView(true, "\u2022\u2022\u2022");
     }
 
 
@@ -336,13 +419,14 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         closeMenu();
         Participant participant = new Participant(model.currentUserId, model.currentUsername, model.profilePhotoURL, model.userEmail);
         model.addParticipant(model.getClickedAccountBookId(), participant);
-        int numOfParticipants = model.getParticipantsById(model.getClickedAccountBookId()).size();
-        if (numOfParticipants > 4) {
+        ArrayList<Participant> participants = model.getParticipantsById(model.getClickedAccountBookId());
+        int numOfParticipants = participants.size();
+        if (numOfParticipants > 2) {
             return;
         }
 
-        participantsLayout.removeAllViews();
         drawParticipantIcons();
+
     }
 
     public void addParticipantImage(Participant participant) {
@@ -361,7 +445,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         participantsLayout.addView(imageView);
     }
 
-    public void addParticipantTextView(String text) {
+    public void addParticipantTextView(Boolean isClickable, String text) {
         Button btn = new Button(this);
         btn.setText(text);
         btn.setTextSize(20);
@@ -371,15 +455,43 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         btn.setBackgroundResource(R.drawable.circle);
 //        btn.setWidth(dpTopx(35));
 //        btn.setHeight(dpTopx(35));
-        btn.setClickable(true);
-        btn.setFocusable(true);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeMenu();
-                addMorePeople(v);
-            }
-        });
+
+        if (isClickable) {
+            btn.setClickable(true);
+            btn.setFocusable(true);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    closeMenu();
+                    ArrayList<Participant> participants = model.getParticipantsById(model.getClickedAccountBookId());
+                    int size = participants.size();
+                    DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(GroupAccountBookDetailsActivity.this, (Button) v);
+                    for (int i = 0; i < size; ++i) {
+                        Participant participant = participants.get(i);
+//                        droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + participant.getEmail()))
+//                                     .addSeparator();
+
+                        if (i == size - 1) {
+                            droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + participant.getEmail()));
+                        } else {
+                            droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + participant.getEmail())).addSeparator();
+                        }
+                    }
+
+                    // Set Callback handler
+                    droppyBuilder.setOnClick(new DroppyClickCallbackInterface() {
+                        @Override
+                        public void call(View v, int id) {
+                            Log.d("Clicked on ", String.valueOf(id));
+                        }
+                    });
+
+                    DroppyMenuPopup droppyMenu = droppyBuilder.build();
+                    droppyMenu.show();
+
+                }
+            });
+        }
         participantsLayout.setOrientation(LinearLayout.HORIZONTAL);
         participantsLayout.addView(btn);
     }

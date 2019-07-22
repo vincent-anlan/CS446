@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FirebaseUser user = auth.getCurrentUser();
         String url= user.getPhotoUrl().toString();
         Log.d("000","URL:"+url);
-//        //Login End
 
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         spinner.setVisibility(View.VISIBLE);
