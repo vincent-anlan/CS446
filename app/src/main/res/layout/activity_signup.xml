@@ -101,7 +101,7 @@
                 android:layout_weight="1"
 
                 android:background="@color/button"
-                android:text="@string/sign_in" />
+                android:text="@string/create_account" />
 
 
             <Button
@@ -111,7 +111,7 @@
                 android:layout_weight="1"
 
                 android:background="@color/button"
-                android:text="@string/create_account" />
+                android:text="@string/sign_in" />
         </LinearLayout>
 
         <LinearLayout
