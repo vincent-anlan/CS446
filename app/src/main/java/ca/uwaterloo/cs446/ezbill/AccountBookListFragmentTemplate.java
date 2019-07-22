@@ -81,6 +81,7 @@ public abstract class AccountBookListFragmentTemplate extends Fragment implement
         while (Rv.getItemDecorationCount() > 0) {
             Rv.removeItemDecorationAt(0);
         }
+        initDate();
         addDateToView();
         addAccountBookInfoToView();
     }
