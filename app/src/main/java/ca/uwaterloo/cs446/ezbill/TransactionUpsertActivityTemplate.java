@@ -111,7 +111,7 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
                     mSelectedCategory = "Tickets";
                     mDisplaySelectedCategory.setText(mSelectedCategory);
                 }else if(realCheck == R.id.radioButtonOther){
-                    mSelectedCategory = "Other";
+                    mSelectedCategory = "Expense_Other";
                     mDisplaySelectedCategory.setText(mSelectedCategory);
                 }
             }

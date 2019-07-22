@@ -117,7 +117,7 @@ public class IndividualIncomeTransactionUpsertActivity extends AppCompatActivity
                     mSelectedCategory = "Rental";
                     mDisplaySelectedCategory.setText(mSelectedCategory);
                 }else if(realCheck == R.id.radioButtonIncomeOther){
-                    mSelectedCategory = "Other";
+                    mSelectedCategory = "Income_Other";
                     mDisplaySelectedCategory.setText(mSelectedCategory);
                 }
             }
