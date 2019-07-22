@@ -38,6 +38,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -329,11 +330,31 @@ public class Login extends AppCompatActivity {
 
                         @Override
                         public void onSuccess(Uri uri) {
-                            // Got the download URL for 'users/me/profile.png'
+                            // Got the download URL for profile pics.
                             //final Uri imageUri = data.getData();
                             //String path = getAbsolutePath(data.getData());
                             URL url = null;
                             //try {
+                            //add username;
+                            FirebaseUser user = auth.getCurrentUser();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    //.setDisplayName(username.getText().toString())
+                                    .setPhotoUri(Uri.parse(uri.toString()))
+                                    .build();
+
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d("00", "User pics profile updated.");
+                                                FirebaseUser user = auth.getCurrentUser();
+                                                String photo = user.getPhotoUrl().toString();
+                                                Log.d("001", "url:"+photo);
+                                            }
+                                        }
+                                    });
+
                                 Log.d("300","uri:"+uri);
                                 imgurl =  uri.toString()+"";
                                 intent1.putExtra("image",imgurl);
@@ -341,6 +362,11 @@ public class Login extends AppCompatActivity {
                                 intent1.putExtra("uid", id2);
                                 intent1.putExtra("email", email1);
                                 //intent1.putExtra("image", imgurl);
+                                if(dialog.isShowing()){
+                                    dialog.dismiss();
+                                }
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivity(intent1);
                                 Log.d("301","uri:"+imgurl);
 
@@ -366,19 +392,17 @@ public class Login extends AppCompatActivity {
                     });
                     Log.d("302","uri:"+imgurl);
                     //close the dialog
-                    if(dialog.isShowing()){
-                        dialog.dismiss();
-                    }
+
 
 
 
 
                     Log.d("01","username:"+username1);
-                    detail.setText("username:"+username1);
-                    findViewById(R.id.link_reset).setVisibility(View.GONE);
-                    findViewById(R.id.google_login).setVisibility(View.GONE);
-                    findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
-                    findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
+//                    detail.setText("username:"+username1);
+//                    findViewById(R.id.link_reset).setVisibility(View.GONE);
+//                    findViewById(R.id.google_login).setVisibility(View.GONE);
+//                    findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
+//                    findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
                     //do something;
                     //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 //                    intent1.putExtra("username", username);

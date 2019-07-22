@@ -19,8 +19,8 @@
         <ImageView
             android:id="@+id/icon"
             style="@style/ThemeOverlay.FirebaseIcon"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ezbill" />
 
         <TextView
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Ezbill"
+            android:text="EZBILL"
             android:theme="@style/ThemeOverlay.MyTitleText" />
 
         <TextView
@@ -42,13 +42,29 @@
             style="@style/ThemeOverlay.MyTextDetail"
             tools:text="User test"
             android:visibility="invisible"/>
+        <EditText
+            android:id="@+id/fieldEmail"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_alignStart="@+id/emailPasswordFields"
+            android:layout_weight="1"
+            android:hint="@string/hint_email"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/fieldPassword"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword" />
 
     </LinearLayout>
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="60dp"
         android:layout_weight="1"
         android:background="@color/background"
         android:gravity="center_vertical">
@@ -61,32 +77,11 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <EditText
-                android:id="@+id/fieldEmail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_email"
-                android:inputType="textEmailAddress" />
-
-            <EditText
-                android:id="@+id/fieldPassword"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_password"
-                android:inputType="textPassword" />
-        </LinearLayout>
-        <LinearLayout
-
-            android:id="@+id/emailPasswordFields2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
 
         </LinearLayout>
+
+
+
         <LinearLayout
             android:id="@+id/emailPasswordButtons"
             android:layout_width="match_parent"
@@ -96,21 +91,27 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <Button
-                android:id="@+id/emailSignInButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/button"
-                android:text="@string/sign_in" />
 
             <Button
                 android:id="@+id/emailCreateAccountButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/emailPasswordButtons"
+                android:layout_alignStart="@+id/emailPasswordButtons"
                 android:layout_weight="1"
+
                 android:background="@color/button"
                 android:text="@string/create_account" />
+
+
+            <Button
+                android:id="@+id/emailSignInButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:background="@color/button"
+                android:text="@string/sign_in" />
         </LinearLayout>
 
         <LinearLayout
@@ -142,6 +143,7 @@
                 android:text="@string/verify_email"
                 android:theme="@style/ThemeOverlay.MyDarkButton" />
 
+
         </LinearLayout>
 
 
@@ -163,7 +165,7 @@
         android:layout_marginBottom="24dp"
         android:clickable="true"
         android:gravity="center"
-        android:text="Forget your password? Click"
+        android:text="Forget your password?"
         android:textSize="16dip" />
 
 </LinearLayout>
