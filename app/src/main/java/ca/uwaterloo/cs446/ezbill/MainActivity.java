@@ -1,9 +1,8 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.Intent;
 
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -15,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -61,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        model = Model.getInstance();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -83,6 +83,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ImgAddr = info.getString("image");
             //need a image view to add profile picture
         }
+
+//        //Update user info
+//        text = findViewById(R.id.User_info);
+//        text.setText("email:"+email+"\n"+"uid:"+uid+"\n"+"username:"+username+"\n"
+//        +"imageAddress:"+ImgAddr);
+
+        model.setUserEmail(email);
+
+        model.setProfilePhotoURL(ImgAddr);
+        //Login End
+
         //another way to get url of profile picture.
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();

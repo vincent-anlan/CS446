@@ -1,5 +1,6 @@
 package ca.uwaterloo.cs446.ezbill;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -42,5 +43,10 @@ public class MyInfoActivity extends AppCompatActivity {
 
     public void signOutOnClick(View view) {
         Log.d("WRITE", "Sign Out Btn clicked!!!");
+    }
+
+    public void viewPhoto(View view) {
+        Intent intent = new Intent(MyInfoActivity.this, ProfilePhotoActivity.class);
+        startActivity(intent);
     }
 }

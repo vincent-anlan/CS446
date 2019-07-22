@@ -275,7 +275,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
         String currency = getSelectedCurrency();
         String category = getCategory();
         Float amount = Float.valueOf(mSum.getText().toString());
-        Participant payer = new Participant(payerIDSaveString, mSelectPayer.getSelectedItem().toString());
+        Participant payer = new Participant(payerIDSaveString, mSelectPayer.getSelectedItem().toString(), model.getPhotoUri(payerIDSaveString), model.getUserEmail(payerIDSaveString));
 
         sumSaveString = Float.toString(collectExpense);
         select_participants = new HashMap<>();
@@ -289,7 +289,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
             }
             String checkName = selectName.get(i);
             String checkId = selectId.get(i);
-            Participant p = new Participant(checkId, checkName);
+            Participant p = new Participant(checkId, checkName, model.getPhotoUri(checkId), model.getUserEmail(checkId));
             select_participants.put(p, f);
         }
         HashMap<Participant, Float> participants = select_participants;
@@ -304,7 +304,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
             ((GroupTransaction) transaction).setParticipants(participants);
             model.updateTransactionInCurrentList(transaction, true);
         } else {
-            Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername());
+            Participant transactionCreator = new Participant(model.getCurrentUserId(), model.getCurrentUsername(), model.getProfilePhotoURL(), model.getUserEmail());
             String uuid = UUID.randomUUID().toString();
 
             GroupTransaction newGroupTransaction = new GroupTransaction(uuid, category, "Expense", amount, currency, note, date, transactionCreator, payer, participants);

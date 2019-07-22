@@ -38,7 +38,7 @@ public class IndividualAccountBookUpsertActivity extends AccountBookUpsertActivi
             String date = formatter.format(new Date());
             String creator = model.currentUserId;
             IndividualAccountBook newAccountBook = new IndividualAccountBook(uuid, name, date, date, currency, creator);
-            model.addToCurrentIndividualAccountBookList(newAccountBook, model.userEmail, model.getCurrentUserId(), model.getCurrentUsername());
+            model.addToCurrentIndividualAccountBookList(newAccountBook, model.userEmail, model.getCurrentUserId(), model.getCurrentUsername(), model.getProfilePhotoURL());
         }
         finish();
     }

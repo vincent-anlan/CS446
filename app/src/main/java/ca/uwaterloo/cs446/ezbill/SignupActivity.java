@@ -20,6 +20,8 @@ import com.google.firebase.auth.FirebaseUser;
 import android.util.Log;
 import android.net.Uri;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
@@ -31,6 +33,9 @@ import com.google.firebase.storage.UploadTask;
 import java.io.InputStream;
 import android.graphics.Bitmap;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.graphics.BitmapFactory;
 import android.database.Cursor;
 import android.provider.MediaStore.MediaColumns;
@@ -38,6 +43,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import javax.annotation.Nonnull;
 
 
 public class SignupActivity extends AppCompatActivity {
@@ -48,8 +54,10 @@ public class SignupActivity extends AppCompatActivity {
     private EditText password;
     private EditText Confirmpassword;
     private EditText username;
+    private String downloadURL;
     FirebaseStorage storage;
     StorageReference refstorage;
+    FirebaseFirestore db;
     private ProgressDialog dialog;
 
     @Override
@@ -67,6 +75,8 @@ public class SignupActivity extends AppCompatActivity {
         dialog =  new ProgressDialog(this,R.style.AppTheme);
         storage = FirebaseStorage.getInstance();
         refstorage = storage.getReference();
+        db = FirebaseFirestore.getInstance();
+
         dialog.setIndeterminate(true);
         // add listener
         findViewById(R.id.btn_signup).setOnClickListener(new View.OnClickListener() {
@@ -118,7 +128,7 @@ public class SignupActivity extends AppCompatActivity {
                         email.setError("Required");
                         return;
                     }
-                    StorageReference userRef = refstorage.child("images/"+EmailAddr);
+                    final StorageReference userRef = refstorage.child("images/"+EmailAddr);
                     UploadTask uploadTask = userRef.putFile(imageUri);
 
                     // add observers to listen the upload task
@@ -132,6 +142,13 @@ public class SignupActivity extends AppCompatActivity {
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            userRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    downloadURL = uri.toString();
+                                    Log.d("TAG", "onSuccess: uri= "+ uri.toString());
+                                }
+                            });
                             Toast.makeText(getApplicationContext(), "Uploading successfully",
                                     Toast.LENGTH_SHORT).show();
                             // do something
@@ -214,6 +231,28 @@ public class SignupActivity extends AppCompatActivity {
                                         if (task.isSuccessful()) {
                                             Log.d("00", "User profile updated.");
                                         }
+                                    }
+                                });
+
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("id", user.getUid());
+                        data.put("email", user.getEmail());
+                        data.put("username", username.getText().toString());
+                        data.put("photoUrl", downloadURL);
+
+                        // Add a new document with a generated ID
+                        db.collection("users")
+                                .add(data)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        Log.d("WRITE", "DocumentSnapshot added with ID: " + documentReference.getId());
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@Nonnull Exception e) {
+                                        Log.w("WRITE", "Error adding document", e);
                                     }
                                 });
 

@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,11 @@ import java.util.Observer;
 
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class GroupAccountBookDetailsActivity extends AppCompatActivity implements Observer {
 
@@ -320,15 +326,15 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
             if (i >= 4) {
                 break;
             }
-            addParticipantTextView(false, participants.get(i).getName());
+            addParticipantImage(participants.get(i));
         }
-        addParticipantTextView(true, "\u2022\u2022\u2022");
+        addParticipantTextView("\u2022\u2022\u2022");
     }
 
 
     public void addMorePeople(View view) {
         closeMenu();
-        Participant participant = new Participant(model.currentUserId, model.currentUsername);
+        Participant participant = new Participant(model.currentUserId, model.currentUsername, model.profilePhotoURL, model.userEmail);
         model.addParticipant(model.getClickedAccountBookId(), participant);
         int numOfParticipants = model.getParticipantsById(model.getClickedAccountBookId()).size();
         if (numOfParticipants > 4) {
@@ -339,7 +345,23 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         drawParticipantIcons();
     }
 
-    public void addParticipantTextView(boolean isClickable, String text) {
+    public void addParticipantImage(Participant participant) {
+        ImageView imageView = new ImageView(this);
+        imageView.setLayoutParams(participantParams);
+        imageView.setBackgroundResource(R.drawable.circle);
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageRef = storage.getReferenceFromUrl(participant.getPhotoUri());
+        Glide.with(this)
+                .load(storageRef)
+                .apply(RequestOptions.circleCropTransform())
+                .into(imageView);
+        participantsLayout.setOrientation(LinearLayout.HORIZONTAL);
+        participantsLayout.addView(imageView);
+    }
+
+    public void addParticipantTextView(String text) {
         Button btn = new Button(this);
         btn.setText(text);
         btn.setTextSize(20);
@@ -349,17 +371,15 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         btn.setBackgroundResource(R.drawable.circle);
 //        btn.setWidth(dpTopx(35));
 //        btn.setHeight(dpTopx(35));
-        if (isClickable) {
-            btn.setClickable(true);
-            btn.setFocusable(true);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    closeMenu();
-                    addMorePeople(v);
-                }
-            });
-        }
+        btn.setClickable(true);
+        btn.setFocusable(true);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeMenu();
+                addMorePeople(v);
+            }
+        });
         participantsLayout.setOrientation(LinearLayout.HORIZONTAL);
         participantsLayout.addView(btn);
     }
