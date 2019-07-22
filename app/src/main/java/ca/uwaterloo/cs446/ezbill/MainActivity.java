@@ -25,6 +25,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -81,6 +83,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ImgAddr = info.getString("image");
             //need a image view to add profile picture
         }
+        //another way to get url of profile picture.
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        String url= user.getPhotoUrl().toString();
+        Log.d("000","URL:"+url);
+        //Update user info
+        text = findViewById(R.id.User_info);
+        text.setText("email:"+email+"\n"+"uid:"+uid+"\n"+"username:"+username+"\n"
+        +"imageAddress:"+ImgAddr);
 
 //        //Update user info
 //        text = findViewById(R.id.User_info);
