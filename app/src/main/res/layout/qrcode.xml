@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".myQRCode"
+    android:background="@color/background"
     android:layout_gravity="center"
     >
 
@@ -28,5 +29,6 @@
         android:onClick="onSave"
         android:text="Save to gallary"
         android:layout_gravity="center"
+        android:background="@color/button"
         />
 </LinearLayout>

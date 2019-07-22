@@ -69,13 +69,15 @@ public class SummaryActivity extends AppCompatActivity {
         for (Transaction transaction : model.getCurrentTransactionList()) {
             // add total expense value to the payer
             IndividualTransaction individualTransaction = (IndividualTransaction) transaction;
-            String category = individualTransaction.getCategory();
-            Float amount = model.convertToABDefaultCurrency(individualTransaction.getAmount(),individualTransaction.getCurrency(),accountBookDefaultCurrency);
-            total += amount;
-            if (summary.containsKey(category)) {
-                summary.put(category, summary.get(category) + amount);
-            } else {
-                summary.put(category, amount);
+            if (transaction.getType().equals("Expense")){
+                String category = individualTransaction.getCategory();
+                Float amount = model.convertToABDefaultCurrency(individualTransaction.getAmount(),individualTransaction.getCurrency(),accountBookDefaultCurrency);
+                total += amount;
+                if (summary.containsKey(category)) {
+                    summary.put(category, summary.get(category) + amount);
+                } else {
+                    summary.put(category, amount);
+                }
             }
         }
     }
@@ -86,7 +88,7 @@ public class SummaryActivity extends AppCompatActivity {
 
         // enable DataSet in Percentage
         pieChart.setUsePercentValues(true);
-//        pieChart.setCenterText("Expense");
+        pieChart.setCenterText("Expense");
 
         // create dataset
         ArrayList<Entry> values = new ArrayList<Entry>();
