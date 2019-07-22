@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/border"
+    android:background="@color/background"
     android:orientation="vertical">
 
     <include
@@ -34,7 +34,7 @@
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:text="@string/name"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
             <EditText
                 android:id="@+id/editName"
                 android:layout_width="0dp"
@@ -44,7 +44,7 @@
                 android:gravity="center"
                 android:hint="@string/enter_name"
                 android:inputType="textPersonName"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <!--<LinearLayout-->
@@ -81,7 +81,7 @@
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:text="Currency"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
             <Spinner
                 android:id="@+id/currency_spinner"
                 android:layout_width="wrap_content"

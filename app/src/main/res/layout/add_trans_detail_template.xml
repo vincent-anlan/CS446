@@ -177,7 +177,8 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="@string/category"
-            android:textSize="25sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/select_category"
@@ -185,7 +186,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="Select Category"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
@@ -201,7 +202,8 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="@string/Note"
-            android:textSize="25sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editNote"
@@ -212,7 +214,7 @@
             android:gravity="center"
             android:hint="@string/enter_note"
             android:inputType="textPersonName"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -227,7 +229,8 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="@string/Date"
-            android:textSize="25sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/selectDate"
@@ -235,7 +238,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="@string/select_date"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -251,7 +254,8 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:text="Currency"
-            android:textSize="25sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Spinner
             android:id="@+id/currency_spinner"
