@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     String email;
     String uid;
     String username;
+    String ImgAddr;
     TextView text;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -70,11 +71,13 @@ public class MainActivity extends AppCompatActivity {
             email = info.getString("email");
             uid = info.getString("uid");
             username = info.getString("username");
+            ImgAddr = info.getString("image");
             //need a image view to add profile picture
         }
         //Update user info
         text = findViewById(R.id.User_info);
-        text.setText("email:"+email+"\n"+"uid:"+uid+"\n"+"username:"+username+"\n");
+        text.setText("email:"+email+"\n"+"uid:"+uid+"\n"+"username:"+username+"\n"
+        +"imageAddress:"+ImgAddr);
         //Login End
 
 
