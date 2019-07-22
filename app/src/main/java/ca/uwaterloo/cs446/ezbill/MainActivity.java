@@ -236,14 +236,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .load(storageRef)
                 .apply(RequestOptions.circleCropTransform())
                 .into(img);
-
-        img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ProfilePhotoActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     private void loadFragment(Fragment fragment) {
