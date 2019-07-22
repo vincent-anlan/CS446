@@ -53,7 +53,7 @@ public class SummaryActivity extends AppCompatActivity {
         // set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.summary_page_toolbar);
         TextView title = (TextView) toolbar.findViewById(R.id.toolbar_title);
-        title.setText(model.getIndividualAccountBook(model.getClickedAccountBookId()).getName()+ "Summary");
+        title.setText("Summary");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -86,7 +86,7 @@ public class SummaryActivity extends AppCompatActivity {
 
         // enable DataSet in Percentage
         pieChart.setUsePercentValues(true);
-        pieChart.setCenterText("Expense");
+//        pieChart.setCenterText("Expense");
 
         // create dataset
         ArrayList<Entry> values = new ArrayList<Entry>();

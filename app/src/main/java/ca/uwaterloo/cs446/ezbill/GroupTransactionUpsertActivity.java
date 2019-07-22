@@ -364,6 +364,8 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
             for (HashMap.Entry<Participant, Float> entry : select_participants.entrySet()) {
                 Participant participant = entry.getKey();
                 Float amount = entry.getValue();
+                selectName.add(participant.getName());
+                selectId.add(participant.getId());
 
                 TextView btn = new TextView(GroupTransactionUpsertActivity.this);
                 btn.setText(participant.getName());
@@ -390,6 +392,7 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
             }
 
             listPart = new String[participants.size()];
+
             for (int i = 0; i < participants.size(); i++) {
                 listPart[i] = participants.get(i).getName();
             }
