@@ -79,7 +79,7 @@ public class QRCode extends AppCompatActivity {
             BitmapDrawable draw = (BitmapDrawable) imageViewQrCode.getDrawable();
             Bitmap bitmap = draw.getBitmap();
 
-            File dir = new File(Environment.getExternalStorageDirectory() + "/save/");
+            File dir = new File(Environment.getExternalStorageDirectory() + "/EzBillQRcode/");
             dir.mkdirs();
 
             File file = new File(dir, String.format("%d.png", System.currentTimeMillis()));
