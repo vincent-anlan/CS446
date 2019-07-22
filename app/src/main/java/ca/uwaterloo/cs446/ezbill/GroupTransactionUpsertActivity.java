@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Observable;
 import java.util.UUID;
 
 public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTemplate {
@@ -521,4 +522,9 @@ public class GroupTransactionUpsertActivity extends TransactionUpsertActivityTem
     @Override
     public void cameraScan(View view) {
     }
+
+    @Override
+    public void update(Observable o, Object arg) {
+    }
+
 }

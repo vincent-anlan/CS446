@@ -19,8 +19,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Observer;
 
-public abstract class TransactionUpsertActivityTemplate extends AppCompatActivity {
+public abstract class TransactionUpsertActivityTemplate extends AppCompatActivity implements Observer {
 
     Model model;
 
@@ -45,6 +46,7 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
         setContentView(R.layout.add_trans);
 
         model = Model.getInstance();
+        model.addObserver(this);
 
         startActivityInitProcess();
     }
@@ -231,4 +233,12 @@ public abstract class TransactionUpsertActivityTemplate extends AppCompatActivit
     public abstract void cameraScan(View v);
 
     public abstract void setInitValues();
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Remove observer when activity is destroyed.
+        model.deleteObserver(this);
+    }
 }

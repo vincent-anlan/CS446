@@ -56,6 +56,7 @@ public class TextRecognitionActivity extends AppCompatActivity {
 
     public void saveButtonHandler(View v) {
         model.cameraUpdateExpense(saveAmount);
+        Log.i("finish", saveAmount);
         finish();
     }
 
@@ -160,6 +161,7 @@ public class TextRecognitionActivity extends AppCompatActivity {
                         public void run() {
                             StringBuilder stringBuilder = new StringBuilder();
                             ArrayList<Float> collectAllFloat = new ArrayList<>();
+                            collectAllFloat.add(Float.parseFloat("0"));
                             for (int i = 0; i < items.size(); i++) {
                                 TextBlock item = items.valueAt(i);
                                 if (item.getValue().equals("Total") || item.getValue().equals("TOTAL")) {
@@ -180,8 +182,8 @@ public class TextRecognitionActivity extends AppCompatActivity {
                                 }
                                 String regex="([0-9]+[.][0-9]+)";
 
-                                Pattern pattern=Pattern.compile(regex);
-                                Matcher matcher=pattern.matcher(item.getValue());
+                                Pattern pattern = Pattern.compile(regex);
+                                Matcher matcher = pattern.matcher(item.getValue());
                                 while(matcher.find()) {
                                     Log.i("camera get", matcher.group());
                                     collectAllFloat.add(Float.parseFloat(matcher.group()));
@@ -189,7 +191,8 @@ public class TextRecognitionActivity extends AppCompatActivity {
                                 i++;
                             }
 
-                            Float maxFloat = Collections.max(collectAllFloat);
+                            Float maxFloat = Float.parseFloat("0");
+                            maxFloat = Collections.max(collectAllFloat);
                             stringBuilder.append(Float.toString(maxFloat));
                             mTextView.setText(stringBuilder.toString());
                             Log.i("here", stringBuilder.toString());
