@@ -381,7 +381,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 
         for (int i = 0; i < numToDisplay; ++i) {
             GroupTransaction transaction = (GroupTransaction) model.currentTransactionList.get(i);
-            addRowToLayout(transaction.getCategory(), Float.toString(transaction.getAmount()), i, "Amount");
+            addRowToLayout(transaction.getCategory(), transaction.getCurrency() + " " + transaction.getAmount(), i, "Amount");
             addRowToLayout(transaction.getDate(), "Paid by "+transaction.getPayer().getName(), i, "Detail");
             lineSeparator = getLayoutInflater().inflate(R.layout.line_separator, transactionHistoryLayout, false);
             transactionHistoryLayout.addView(lineSeparator);
@@ -445,7 +445,7 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
         participantsLayout.addView(imageView);
     }
 
-    public void addParticipantTextView(String text) {
+    public void addParticipantTextView(Boolean isClickable, String text) {
         Button btn = new Button(this);
         btn.setText(text);
         btn.setTextSize(20);
@@ -472,9 +472,9 @@ public class GroupAccountBookDetailsActivity extends AppCompatActivity implement
 //                                     .addSeparator();
 
                         if (i == size - 1) {
-                            droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + "email@tdsf.com"));
+                            droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + participant.getEmail()));
                         } else {
-                            droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + "email@tdsf.com")).addSeparator();
+                            droppyBuilder.addMenuItem(new DroppyMenuItem(participant.getName() + "\n" + participant.getEmail())).addSeparator();
                         }
                     }
 
