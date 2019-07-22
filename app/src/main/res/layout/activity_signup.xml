@@ -28,18 +28,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="@string/emailpassword_title_text"
+            android:text="Ezbill"
             android:theme="@style/ThemeOverlay.MyTitleText" />
 
         <TextView
             android:id="@+id/status"
             style="@style/ThemeOverlay.MyTextDetail"
-            android:text="email(logout)" />
+            android:text="email(logout)"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/detail"
             style="@style/ThemeOverlay.MyTextDetail"
-            tools:text="User test" />
+            tools:text="User test"
+            android:visibility="invisible"/>
 
     </LinearLayout>
 
@@ -75,7 +77,16 @@
                 android:hint="@string/hint_password"
                 android:inputType="textPassword" />
         </LinearLayout>
+        <LinearLayout
 
+            android:id="@+id/emailPasswordFields2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/emailPasswordButtons"
             android:layout_width="match_parent"
