@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:17.0.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0@aar'
     implementation 'com.google.zxing:core:3.3.0'
+    implementation 'com.shehabic.droppy:Droppy:0.6.0@aar'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
