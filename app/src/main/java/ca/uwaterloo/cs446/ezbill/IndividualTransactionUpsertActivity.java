@@ -28,6 +28,7 @@ public class IndividualTransactionUpsertActivity extends TransactionUpsertActivi
     @Override
     public void cameraScan(View view) {
         startActivity(new Intent(this, TextRecognitionActivity.class));
+        mAmountedit.setText(model.getCameraUpdateExpense());
     }
 
     @Override
