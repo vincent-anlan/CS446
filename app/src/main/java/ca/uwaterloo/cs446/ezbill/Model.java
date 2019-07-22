@@ -8,6 +8,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -37,10 +40,11 @@ public class Model extends Observable {
     ArrayList<IndividualAccountBook> individualAccountBookList;
     String currentUserId;
     String currentUsername;
+    String profilePhotoURL;
     String clickedAccountBookId;
     String mIndividualExpense;
     ArrayList<Transaction> currentTransactionList;
-    String userEmail = "alice@gmail.com";
+    String userEmail;
     HashMap<String, Float> exchangeRates;
 
     Model() {
@@ -105,18 +109,18 @@ public class Model extends Observable {
         notifyObservers();
     }
 
-    public void addToCurrentGroupAccountBookList(GroupAccountBook newGroupAccountBook, String email, String userId, String username) {
+    public void addToCurrentGroupAccountBookList(GroupAccountBook newGroupAccountBook, String email, String userId, String username, String userPhotoUrl) {
         groupAccountBookList.add(newGroupAccountBook);
-        addAccountBookToDB(newGroupAccountBook, "Group", email, userId, username);
+        addAccountBookToDB(newGroupAccountBook, "Group", email, userId, username, userPhotoUrl);
         Collections.sort(groupAccountBookList);
 
         setChanged();
         notifyObservers();
     }
 
-    public void addToCurrentIndividualAccountBookList(IndividualAccountBook newGroupAccountBook, String email, String userId, String username) {
+    public void addToCurrentIndividualAccountBookList(IndividualAccountBook newGroupAccountBook, String email, String userId, String username, String userPhotoUrl) {
         individualAccountBookList.add(newGroupAccountBook);
-        addAccountBookToDB(newGroupAccountBook, "Individual", email, userId, username);
+        addAccountBookToDB(newGroupAccountBook, "Individual", email, userId, username, userPhotoUrl);
         Collections.sort(individualAccountBookList);
 
         setChanged();
@@ -273,6 +277,22 @@ public class Model extends Observable {
         this.currentUsername = currentUsername;
     }
 
+    public String getProfilePhotoURL() {
+        return profilePhotoURL;
+    }
+
+    public void setProfilePhotoURL(String profilePhotoURL) {
+        this.profilePhotoURL = profilePhotoURL;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
     public String getClickedAccountBookId() {
         return clickedAccountBookId;
     }
@@ -371,6 +391,57 @@ public class Model extends Observable {
         return "anonym";
     }
 
+    public String getPhotoUri(String id) {
+        ArrayList<Participant> participants = getGroupAccountBook(getClickedAccountBookId()).getParticipantList();
+        for (Participant participant : participants) {
+            if (participant.getId().equals(id)) {
+                return participant.getPhotoUri();
+            }
+        }
+        return "";
+    }
+
+    public String getUserEmail(String id) {
+        ArrayList<Participant> participants = getGroupAccountBook(getClickedAccountBookId()).getParticipantList();
+        for (Participant participant : participants) {
+            if (participant.getId().equals(id)) {
+                return participant.getPhotoUri();
+            }
+        }
+        return "";
+    }
+
+    public void updateProfilePhotoUrl(String photoUrl) {
+        setProfilePhotoURL(photoUrl);
+        for (GroupAccountBook groupAccountBook : groupAccountBookList) {
+            for (Participant participant : groupAccountBook.getParticipantList()) {
+                if (participant.getId().equals(currentUserId)) {
+                    participant.setPhotoUri(photoUrl);
+                }
+            }
+        }
+        updateProfilePhotoUrlInDB(photoUrl);
+
+        setChanged();
+        notifyObservers();
+    }
+
+    public void updateUsername(String username) {
+        setCurrentUsername(username);
+        for (GroupAccountBook groupAccountBook : groupAccountBookList) {
+            for (Participant participant : groupAccountBook.getParticipantList()) {
+                if (participant.getId().equals(currentUserId)) {
+                    participant.setName(username);
+                }
+            }
+        }
+        updateUsernameInAuth(username);
+        updateUsernameInDB(username);
+
+        setChanged();
+        notifyObservers();
+    }
+
     public Date parseStringToDate(String date) throws Exception{
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         Date parsedDate = (Date) formatter.parse(date);
@@ -416,11 +487,15 @@ public class Model extends Observable {
                                     } else {
                                         String creatorId = document.getData().get("creator").toString();
                                         String creatorName = getUsername(creatorId);
-                                        Participant creator = new Participant(creatorId, creatorName);
+                                        String creatorPhoto = getPhotoUri(creatorId);
+                                        String creatorEmail = getUserEmail(creatorId);
+                                        Participant creator = new Participant(creatorId, creatorName, creatorPhoto, creatorEmail);
 
                                         String payerId = document.getData().get("payer").toString();
                                         String payerName = getUsername(payerId);
-                                        Participant payer = new Participant(payerId, payerName);
+                                        String payerPhoto = getPhotoUri(payerId);
+                                        String payerEmail = getUserEmail(payerId);
+                                        Participant payer = new Participant(payerId, payerName, payerPhoto, payerEmail);
 
                                         String data = document.getData().get("participant").toString();
                                         data = data.substring(1,data.length()-1);
@@ -430,7 +505,7 @@ public class Model extends Observable {
                                         for (int i=0;i<pairs.length;i++) {
                                             String pair = pairs[i];
                                             String[] keyValue = pair.split("=");
-                                            Participant participant = new Participant(keyValue[0], getUsername(keyValue[0]));
+                                            Participant participant = new Participant(keyValue[0], getUsername(keyValue[0]), getPhotoUri(keyValue[0]), getUserEmail(keyValue[0]));
                                             participants.put(participant, Float.valueOf(keyValue[1]));
                                         }
 
@@ -477,9 +552,11 @@ public class Model extends Observable {
 
                                 String userId = document.getData().get("userId").toString();
                                 String username = document.getData().get("username").toString();
+                                String photoUri = document.getData().get("userPhotoUrl").toString();
+                                String userEmail = document.getData().get("email").toString();
 
                                 if (!hasParticipant(groupAccountBook.getId(), userId)) {
-                                    Participant participant = new Participant(userId, username);
+                                    Participant participant = new Participant(userId, username, photoUri, userEmail);
                                     groupAccountBook.addParticipant(participant);
                                 }
 
@@ -535,7 +612,7 @@ public class Model extends Observable {
                 });
     }
 
-    public void addAccountBookToDB(AccountBook accountBook, String type, String email, String userId, String username) {
+    public void addAccountBookToDB(AccountBook accountBook, String type, String email, String userId, String username, String userPhotoUrl) {
         // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -550,6 +627,7 @@ public class Model extends Observable {
         ab.put("email", email);
         ab.put("userId", userId);
         ab.put("username", username);
+        ab.put("userPhotoUrl", userPhotoUrl);
 
         // Add a new document with a generated ID
         db.collection("user_account_book_info")
@@ -682,6 +760,80 @@ public class Model extends Observable {
                 });
 
 
+    }
+
+    public void updateProfilePhotoUrlInDB(String photoUrl) {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final Map<String, Object> updates = new HashMap<>();
+        updates.put("userPhotoUrl", photoUrl);
+
+        // read data from database
+        db.collection("user_account_book_info")
+                .whereEqualTo("userId", currentUserId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getReference().update(updates);
+
+                                Log.d("WRITE", "Document updated");
+                            }
+                        } else {
+                            Log.w("WRITE", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void updateUsernameInDB(String username) {
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        final Map<String, Object> updates = new HashMap<>();
+        updates.put("username", username);
+
+        // read data from database
+        db.collection("user_account_book_info")
+                .whereEqualTo("userId", currentUserId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@Nonnull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getReference().update(updates);
+
+                                Log.d("WRITE", "Document updated");
+                            }
+                        } else {
+                            Log.w("WRITE", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void updateUsernameInAuth(String username) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        //add username;
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(username)
+                //.setPhotoUri(Uri.parse("https://www.google.com/logo.jpg"))
+                .build();
+
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("00", "User profile updated.");
+                        }
+                    }
+                });
     }
 
 

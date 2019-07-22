@@ -123,6 +123,13 @@
             android:windowSoftInputMode="stateHidden">
         </activity>
 
+        <activity
+            android:name=".ProfilePhotoActivity"
+            android:label="@string/exbill"
+            android:parentActivityName=".MyInfoActivity"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
     </application>
 
 </manifest>

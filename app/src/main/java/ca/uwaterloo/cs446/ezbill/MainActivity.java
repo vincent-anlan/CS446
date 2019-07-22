@@ -1,6 +1,7 @@
 package ca.uwaterloo.cs446.ezbill;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -66,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        model = Model.getInstance();
+
         //The value passed from sign in successfully
         Bundle info = getIntent().getExtras();
         if (info != null) {
@@ -79,10 +84,11 @@ public class MainActivity extends AppCompatActivity {
         text = findViewById(R.id.User_info);
         text.setText("email:"+email+"\n"+"uid:"+uid+"\n"+"username:"+username+"\n"
         +"imageAddress:"+ImgAddr);
+
+        model.setUserEmail(email);
+
+        model.setProfilePhotoURL(ImgAddr);
         //Login End
-
-
-        model = Model.getInstance();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
