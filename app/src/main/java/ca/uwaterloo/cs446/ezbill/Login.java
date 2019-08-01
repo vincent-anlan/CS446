@@ -201,7 +201,7 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    private void firebaseAuthWithGoogleSign(GoogleSignInAccount acct) {
         Log.d("2", "firebaseAuthWithGoogle:" + acct.getId());
 
 
@@ -240,19 +240,7 @@ public class Login extends AppCompatActivity {
 
     }
 
-    //comment since this is alternative function
-//    private void loading(String msg){
-//        dialog.setMessage(msg);
-//        dialog.show();
-//        try {
-//            TimeUnit.SECONDS.sleep(2);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        if (dialog.isShowing()) {
-//            dialog.dismiss();
-//        }
-//    }
+
 
     //check email and password
     private boolean checkinput() {
@@ -317,9 +305,6 @@ public class Login extends AppCompatActivity {
                         for (UserInfo profile : user.getProviderData()) {
                             String providerId = profile.getProviderId();
                             id = profile.getUid();
-                            //id2 = profile.getUid();
-                            //Log.d("31","uuid:"+id);
-                            //Log.d("331","uuid:"+id2);
                             username1 = profile.getDisplayName();
                             email1 = profile.getEmail();
                             //Uri photoUrl = profile.getPhotoUrl();
@@ -338,7 +323,6 @@ public class Login extends AppCompatActivity {
                             //add username;
                             FirebaseUser user = auth.getCurrentUser();
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                    //.setDisplayName(username.getText().toString())
                                     .setPhotoUri(Uri.parse(uri.toString()))
                                     .build();
 
@@ -398,18 +382,6 @@ public class Login extends AppCompatActivity {
 
 
                     Log.d("01","username:"+username1);
-//                    detail.setText("username:"+username1);
-//                    findViewById(R.id.link_reset).setVisibility(View.GONE);
-//                    findViewById(R.id.google_login).setVisibility(View.GONE);
-//                    findViewById(R.id.emailPasswordButtons).setVisibility(View.GONE);
-//                    findViewById(R.id.emailPasswordFields).setVisibility(View.GONE);
-                    //do something;
-                    //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                    intent1.putExtra("username", username);
-//                    intent1.putExtra("uid", id2);
-//                    intent1.putExtra("email", email);
-//                    //intent1.putExtra("image", imgurl);
-//                    startActivity(intent1);
                     Log.d("331","uuid:"+imgurl);
 
                 } else {
@@ -432,6 +404,30 @@ public class Login extends AppCompatActivity {
 
     private void signout(){
         auth.getInstance().signOut();
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d("000", "firebaseAuthWithGoogle:" + acct.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("001", "signInWithCredential:success");
+                            FirebaseUser user = auth.getCurrentUser();
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("001", "signInWithCredential:failure", task.getException());
+
+                        }
+
+                        // ...
+                    }
+                });
     }
 
 }
