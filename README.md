@@ -1,5 +1,5 @@
-# CS446
-CS 446 Project
+# EzBill
+Expense Tracking App
 		 	 	 		
 			
 
