@@ -192,7 +192,6 @@ public class SignupActivity extends AppCompatActivity {
                         //add username;
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(username.getText().toString())
-                                //.setPhotoUri(Uri.parse("https://www.google.com/logo.jpg"))
                                 .build();
 
                         user.updateProfile(profileUpdates)
